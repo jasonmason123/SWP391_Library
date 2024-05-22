@@ -1,5 +1,6 @@
 package com.springdemo.library.model;
 
+import com.springdemo.library.model.other.SachDuocMuon;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +44,8 @@ public class Sach {
             inverseJoinColumns = @JoinColumn(name = "TheLoaiId")
     )
     private List<TheLoai> theLoaiList;
+    @OneToMany(orphanRemoval = true)
+    private List<SachDuocMuon> sachDuocMuonList;
 
     @Builder
     public Sach(String tenSach,
