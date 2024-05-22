@@ -2,6 +2,7 @@ package com.springdemo.library.model.other.compositekeys;
 
 import com.springdemo.library.model.Sach;
 import com.springdemo.library.model.User;
+import com.springdemo.library.model.YeuCauMuonSach;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class MuonSachCompositeKey implements Serializable {
     private Sach sach;
-    private User nguoiMuon;
+    private YeuCauMuonSach nguoiMuon;
 
     @Override
     public int hashCode() {
