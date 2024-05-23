@@ -25,6 +25,11 @@ public class User {
     private String vaiTro; //1: admin, 0: customer, -1: staff
     @Column(name = "AvatarLink")
     private String avatarLink;
+    @Column(name = "SoDienThoai")
+    private String soDienThoai;
+    @Column(name = "SoCCCD")
+    @Setter(AccessLevel.NONE)
+    private String soCCCD;
     @Column(name = "FlagDel")
     private int flagDel; //0: Hoat dong, 1: Vo hieu hoa
 
@@ -34,12 +39,16 @@ public class User {
     private List<BinhLuanSach> binhLuanSachList;
     @OneToMany(orphanRemoval = true)
     private List<BinhLuanBlog> binhLuanBlogList;
+    @OneToMany(orphanRemoval = true)
+    private List<YeuCauMuonSach> yeuCauMuonSachList;
     @Builder
-    public User(String tenUser, String email, String vaiTro, String avatarLink) {
+    public User(String tenUser, String email, String vaiTro, String avatarLink, String soDienThoai, String soCCCD) {
         this.tenUser = tenUser;
         this.email = email;
         this.vaiTro = vaiTro;
         this.avatarLink = avatarLink;
+        this.soDienThoai = soDienThoai;
+        this.soCCCD = soCCCD;
         this.flagDel = 0;
     }
 }

@@ -1,0 +1,50 @@
+package com.springdemo.library.utils;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
+
+public class Common {
+
+    private static final Logger logger = Logger.getLogger(Common.class.getName());
+
+    public static String sha256Hash(String password) {
+        try {
+            // Create a MessageDigest instance for SHA-256
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            // Add password bytes to digest
+            md.update(password.getBytes());
+
+            // Get the hashed bytes
+            byte[] hashedBytes = md.digest();
+
+            // Convert hashed bytes to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+
+            // Return the hexadecimal representation of the hashed password
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            logger.warning(e.toString());
+            return null;
+        }
+    }
+
+    public static Cookie getCookie(HttpServletRequest request, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if(cookieName.equals(cookie.getName())) {
+                    return cookie;
+                }
+            }
+        }
+        return null;
+    }
+}
