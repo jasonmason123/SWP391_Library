@@ -34,20 +34,28 @@ CREATE TABLE  [dbo].[Sach]
 );
 
 --9
-CREATE TABLE  [dbo].[MuonSach]
+CREATE TABLE  [dbo].[YeuCauMuonSach]
 (
-  SoLuongMuon INT NOT NULL,
+  Id INT NOT NULL IDENTITY(1,1),
   NgayMuon DATETIME NOT NULL,
   NgayTra DATETIME NOT NULL,
   BoiThuong FLOAT,
   QuaHan INT,
-  TrangThaiXetDuyet INT DEFAULT 0,
+  TrangThai INT DEFAULT 0, --0:Chua duoc duyet, 1:Da duoc duyet, 2:Dang muon, 3:Da tra
   NguoiMuonId INT NOT NULL,
-  SachId INT NOT NULL,
-  PRIMARY KEY (NguoiMuonId, SachId),
-  FOREIGN KEY (NguoiMuonId) REFERENCES  [dbo].[User](Id),
-  FOREIGN KEY (SachId) REFERENCES  [dbo].[Sach](Id)
+  PRIMARY KEY (Id),
+  FOREIGN KEY (NguoiMuonId) REFERENCES  [dbo].[User](Id)
 );
+
+CREATE TABLE [dbo].[SachDuocMuon]
+(
+	SachId INT NOT NULL,
+	YeuCauId INT NOT NULL,
+	SoLuong INT NOT NULL,
+	PRIMARY KEY (SachId, YeuCauId),
+	FOREIGN KEY (SachId) REFERENCES [dbo].[Sach](Id),
+	FOREIGN KEY (YeuCauId) REFERENCES [dbo].[YeuCauMuonSach](Id)
+)
 
 --8
 CREATE TABLE  [dbo].[Blog]
@@ -142,6 +150,7 @@ CREATE TABLE  [dbo].[BlogTag]
 --drop table [TheLoai]
 --drop table [DanhMuc]
 --drop table [Blog]
---drop table [MuonSach]
+--drop table [SachDuocMuon]
+--drop table [YeuCauMuonSach]
 --drop table [Sach]
 --drop table [User]
