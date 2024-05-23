@@ -1,20 +1,17 @@
 package com.springdemo.library.model.other;
 
 import com.springdemo.library.model.Sach;
-import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
-import com.springdemo.library.model.other.compositekeys.MuonSachCompositeKey;
+import com.springdemo.library.model.other.compositekeys.SachDuocMuonCompositeKey;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "SachDuocMuon")
-@IdClass(MuonSachCompositeKey.class)
+@IdClass(SachDuocMuonCompositeKey.class)
 public class SachDuocMuon {
     @Id
     @ManyToOne

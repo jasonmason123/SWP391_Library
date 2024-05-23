@@ -1,7 +1,6 @@
 package com.springdemo.library.model.other.compositekeys;
 
 import com.springdemo.library.model.Sach;
-import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -17,20 +16,20 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MuonSachCompositeKey implements Serializable {
+public class SachDuocMuonCompositeKey implements Serializable {
     private Sach sach;
-    private YeuCauMuonSach nguoiMuon;
+    private YeuCauMuonSach yeuCauMuonSach;
 
     @Override
     public int hashCode() {
-        return Objects.hash(sach, nguoiMuon);
+        return Objects.hash(sach, yeuCauMuonSach);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MuonSachCompositeKey that = (MuonSachCompositeKey) o;
-        return Objects.equals(sach, that.sach) && Objects.equals(nguoiMuon, that.nguoiMuon);
+        SachDuocMuonCompositeKey that = (SachDuocMuonCompositeKey) o;
+        return Objects.equals(sach, that.sach) && Objects.equals(yeuCauMuonSach, that.yeuCauMuonSach);
     }
 }

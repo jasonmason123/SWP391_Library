@@ -144,7 +144,7 @@ CREATE TABLE  [dbo].[BlogTag]
 
 --drop table [TagTheLoai]
 --drop table [BinhLuanSach]
---drop table [BinhLuanBlog]
+--drop table [BinhLuanBlogRepository]
 --drop table [BlogTag]
 --drop table [Tag]
 --drop table [TheLoai]
