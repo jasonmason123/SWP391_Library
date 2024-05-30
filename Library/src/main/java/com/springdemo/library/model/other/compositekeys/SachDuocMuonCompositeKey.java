@@ -22,7 +22,7 @@ import java.util.Objects;
 public class SachDuocMuonCompositeKey implements Serializable {
     private Sach sach;
 
-    private YeuCauMuonSach nguoiMuon;
+
 
     private YeuCauMuonSach yeuCauMuonSach;
 
