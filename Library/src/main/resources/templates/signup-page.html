@@ -1,0 +1,89 @@
+<div class="user-login-area mb-70">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="login-title text-center mb-30">
+					<h2>Đăng ký</h2>
+					<i>Vui lòng điền đầy đủ những thông tin dưới đây</i>
+				</div>
+			</div>
+			<div class="offset-lg-2 col-lg-8 col-md-12 col-12">
+				<form class="billing-fields" id="signup-form">
+					<div class="row">
+						<div class="single-labeled-input">
+							<div>
+								<label>Tên đăng nhập</label>
+								<input type="text" id="username" required/>
+								<p id="duplicated-username" class="red-mark"></p>
+							</div>
+						</div>
+					</div>
+					<div class="single-labeled-input">
+						<div>
+							<label>Số CCCD/CMTND</label>
+							<input type="text" id="soCCCD" required/>
+							<p id="duplicated-soCCCD" class="red-mark"></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="single-labeled-input">
+							<div>
+								<label>Địa chỉ Email</label>
+								<input type="text" id="email" placeholder="abc@example.com" required/>
+								<p id="duplicated-email" class="red-mark"></p>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="single-labeled-input">
+							<div>
+								<label>Số điện thoại</label>
+								<input type="text" id="soDienThoai" placeholder="0912345678" required/>
+								<p id="duplicated-soDienThoai" class="red-mark"></p>
+							</div>
+						</div>
+					</div>
+					<div class="single-labeled-input">
+						<div>
+							<label>Mật khẩu</label>
+							<input type="password" id="matKhau" placeholder="Mật khẩu" required/>
+						</div>
+					</div>
+					<p><span class="red-mark">*</span>Mật khẩu nên có từ 8-20 ký tự,
+						có ít nhất một chữ cái viết hoa, một ký tự số và một ký tự đặc biệt</p>
+					<div class="single-labeled-input">
+						<div>
+							<label>Xác nhận mật khẩu</label>
+							<input type="password" id="xacNhanMatKhau" placeholder="Xác nhận mật khẩu" required/>
+						</div>
+					</div>
+					<p id="password-not-match" class="red-mark"></p>
+					<div class="single-labeled-input single-labeled-input-3">
+						<input id="rememberme" type="checkbox" name="rememberme" required>
+						<label class="inline" for="rememberme">Tôi đã đọc và cam kết sẽ nghiêm túc tuân thủ <a href="#">Nội quy thư viện</a></label>
+					</div>
+					<div class="single-labeled-input">
+						<button type="submit">Đăng ký</button>
+					</div>
+					<p id="missing-information-message" class="red-mark"></p>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header bg-light p-3">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div th:insert="~{otp-partial}"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- signup page js -->
+<script src="js/pages/signup-page.js"></script>

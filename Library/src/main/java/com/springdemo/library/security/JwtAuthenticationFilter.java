@@ -1,13 +1,16 @@
-package com.springdemo.library.security.jwt;
+package com.springdemo.library.security;
 
-import com.springdemo.library.security.UserService;
+import com.springdemo.library.services.JwtService;
+import com.springdemo.library.services.UserService;
+import com.springdemo.library.utils.Common;
+import com.springdemo.library.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,20 +23,20 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
-    private JwtServices jwtServices;
+    private JwtService jwtService;
     @Autowired
     private UserService customUserDetailsService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             // Lấy jwt từ request
-            String jwt = getJwtFromRequest(request);
+            String jwt = getJwt(request);
 
-            if (StringUtils.hasText(jwt) && jwtServices.validateToken(jwt)) {
+            if (StringUtils.hasText(jwt) && jwtService.validateToken(jwt)) {
                 // Lấy id user từ chuỗi jwt
-                int userId = jwtServices.getUserIdFromJWT(jwt);
+                String userName = jwtService.getSubjectFromJWT(jwt);
                 // Lấy thông tin người dùng từ id
-                UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
                 if(userDetails != null) {
                     // Nếu người dùng hợp lệ, set thông tin cho Seturity Context
                     UsernamePasswordAuthenticationToken
@@ -42,8 +45,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                } else {
-                    response.sendRedirect("/login");
                 }
             }
         } catch (Exception ex) {
@@ -53,11 +54,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        // Kiểm tra xem header Authorization có chứa thông tin jwt không
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+    private String getJwt(HttpServletRequest request) {
+//        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+        Cookie cookie = Common.getCookie(request, Constants.JWT_NAME);
+        if(cookie!=null) {
+            String token = cookie.getValue();
+            if(StringUtils.hasText(token)) {
+                return token;
+            }
         }
         return null;
     }

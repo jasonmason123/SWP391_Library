@@ -13,6 +13,7 @@ import java.util.List;
 public class Blog {
     @Id
     @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     @ManyToOne
     @JoinColumn(name = "TacGiaId")

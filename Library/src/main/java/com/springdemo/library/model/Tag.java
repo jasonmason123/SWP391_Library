@@ -15,6 +15,7 @@ import java.util.List;
 public class Tag {
     @Id
     @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     @Column(name = "TenTag")
     private String tenTag;

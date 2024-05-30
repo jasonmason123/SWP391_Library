@@ -15,6 +15,7 @@ import java.util.Date;
 public class BinhLuanSach {
     @Id
     @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     @ManyToOne
     @JoinColumn(name = "SachId")

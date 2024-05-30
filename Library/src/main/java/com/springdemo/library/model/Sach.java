@@ -15,6 +15,7 @@ public class Sach {
     @Id
     @Setter(AccessLevel.NONE)
     @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     @Column(name = "TenSach")
     private String tenSach;

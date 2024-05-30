@@ -12,4 +12,13 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.tenUser = :userName")
     Optional<User> findUserByTenUser(@Param("userName") String userName);
+
+    @Query("SELECT u FROM User u WHERE u.soDienThoai = :soDienThoai")
+    Optional<User> findUserBySoDienThoai(@Param("soDienThoai") String soDienThoai);
+
+    @Query("SELECT u FROM User u WHERE u.soCCCD = :soCCCD")
+    Optional<User> findUserBySoCCCD(@Param("soCCCD") String soCCCD);
+
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    Optional<User> findUserByEmail(@Param("email") String email);
 }
