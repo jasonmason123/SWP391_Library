@@ -1,7 +1,8 @@
-package com.springdemo.library.security;
+package com.springdemo.library.services;
 
 import com.springdemo.library.model.User;
 import com.springdemo.library.repositories.UserRepository;
+import com.springdemo.library.security.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,12 +19,6 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findUserByTenUser(username).orElse(null);
         if(user == null)
             throw new UsernameNotFoundException(username);
-        return new CustomUserDetails(user);
-    }
-    public UserDetails loadUserById(int Id) throws UsernameNotFoundException {
-        User user = userRepository.findById(Id).orElse(null);
-        if(user == null)
-            throw new UsernameNotFoundException("user not found: " + Id);
         return new CustomUserDetails(user);
     }
 }

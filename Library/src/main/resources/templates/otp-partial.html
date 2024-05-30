@@ -1,0 +1,105 @@
+<div class="otp-container">
+  <div class="otp-icon">
+    <i class="bx bxs-check-shield"></i>
+  </div>
+  <p>Nhập mã OTP</p>
+  <div class="otp-inputs">
+    <input type="text" maxlength="1" autocomplete="off">
+    <input type="text" maxlength="1" autocomplete="off">
+    <input type="text" maxlength="1" autocomplete="off">
+    <input type="text" maxlength="1" autocomplete="off">
+    <input type="text" maxlength="1" autocomplete="off">
+    <input type="text" maxlength="1" autocomplete="off">
+  </div>
+  <button class="verify-btn" disabled>Xác Nhận</button>
+  <p class="resend-container">
+    <a class="resend-link" id="resend-link">Gửi mã OTP</a>
+    <span id="countdown-timer"> (00:00)</span>
+  </p>
+  <div class="d-flex justify-content-center align-items-center">
+    <i class="text-center">Vui lòng ấn <b>Gửi mã OTP</b>. Chúng tôi sẽ gửi mã OTP qua email mà bạn đăng ký.<br/>
+      Nếu chưa nhận được mã, vui lòng đợi 2 phút và ấn <b>Gửi mã OTP</b> một lần nữa.</i>
+  </div>
+</div>
+
+<script>
+  const inputs = document.querySelectorAll('.otp-inputs input');
+  const verifyButton = document.querySelector('.verify-btn');
+  const resendLink = document.getElementById('resend-link');
+  const countdownTimer = document.getElementById('countdown-timer');
+  let inputOtp = "";
+  let timer;
+  const initialTime = 120;
+  let timeLeft = initialTime;
+
+  inputs.forEach((input, index) => {
+    input.addEventListener('input', () => {
+      validateInput(input);
+      toggleVerifyButton();
+      if (index < inputs.length - 1 && input.value) {
+        inputs[index + 1].focus();
+      }
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && input.value === '' && index !== 0) {
+        inputs[index - 1].focus();
+      }
+    });
+  });
+
+  function validateInput(input) {
+    const validChars = /^[0-9]$/;
+    if (!validChars.test(input.value)) {
+      input.value = '';
+    } else {
+      inputOtp += input.value;
+    }
+  }
+
+  function toggleVerifyButton() {
+    const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+    if (allFilled) {
+      verifyButton.disabled = false;
+      verifyButton.classList.add('enabled');
+    } else {
+      verifyButton.disabled = true;
+      verifyButton.classList.remove('enabled');
+    }
+  }
+
+  function startTimer() {
+    timer = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        updateCountdown();
+      } else {
+        clearInterval(timer);
+        timeLeft = 0;
+        updateCountdown();
+        $('#resend-link').css('pointer-events', 'auto')
+                .css('color', '#007bff')
+                .css('cursor', 'pointer');
+      }
+    }, 1000);
+  }
+
+  function updateCountdown() {
+    const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const seconds = (timeLeft % 60).toString().padStart(2, '0');
+    countdownTimer.textContent = ` (${minutes}:${seconds})`;
+  }
+
+  resendLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    timeLeft = initialTime;
+    $('#resend-link').css('pointer-events', 'none').css('color', '#ccc');
+    startTimer();
+    // Add logic here to resend the OTP code, e.g., make an API call
+    $.ajax({
+      type: 'POST',
+      url: "/Library/sendotp?receiver=" + $('#email').val(),
+      success: () => { console.log("Send otp success") },
+      error: (jqXHR, textStatus, errorThrown) => { console.error("Send otp failed! Error:" + textStatus + ', ' + errorThrown) }
+    })
+  });
+</script>

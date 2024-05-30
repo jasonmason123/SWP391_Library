@@ -17,6 +17,7 @@ public class TheLoai {
     @Id
     @Setter(AccessLevel.NONE)
     @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     @Column(name = "TenTheLoai")
     private String tenTheLoai;

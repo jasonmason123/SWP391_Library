@@ -9,25 +9,26 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "User")
+@Table(name = "`User`")
 public class User {
     @Id
     @Setter(AccessLevel.NONE)
     @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
-    @Column(name = "TenUser")
+    @Column(name = "TenUser", unique = true)
     private String tenUser;
     @Column(name = "MatKhau")
     private String matKhau;
-    @Column(name = "Email")
+    @Column(name = "Email", unique = true)
     private String email;
     @Column(name = "VaiTro")
-    private String vaiTro; //1: admin, 0: customer, -1: staff
+    private String vaiTro; //0: admin, 1: customer, 2: staff
     @Column(name = "AvatarLink")
     private String avatarLink;
-    @Column(name = "SoDienThoai")
+    @Column(name = "SoDienThoai", unique = true)
     private String soDienThoai;
-    @Column(name = "SoCCCD")
+    @Column(name = "SoCCCD", unique = true)
     @Setter(AccessLevel.NONE)
     private String soCCCD;
     @Column(name = "FlagDel")
@@ -46,7 +47,7 @@ public class User {
         this.tenUser = tenUser;
         this.email = email;
         this.vaiTro = vaiTro;
-        this.avatarLink = avatarLink;
+        this.avatarLink = (avatarLink!=null && !avatarLink.isEmpty()) ? avatarLink : "";
         this.soDienThoai = soDienThoai;
         this.soCCCD = soCCCD;
         this.flagDel = 0;
