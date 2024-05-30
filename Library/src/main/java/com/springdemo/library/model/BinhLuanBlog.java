@@ -16,6 +16,7 @@ import java.util.Date;
 public class BinhLuanBlog {
     @Id
     @Column(name = "Id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     @ManyToOne
     @JoinColumn(name = "BlogId")

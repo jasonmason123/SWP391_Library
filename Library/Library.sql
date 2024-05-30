@@ -8,10 +8,10 @@ CREATE TABLE  [dbo].[User]
   Id INT NOT NULL IDENTITY(1,1),
   TenUser  NVARCHAR(50) NOT NULL UNIQUE,
   MatKhau  NVARCHAR(100) NOT NULL,
-  VaiTro NVARCHAR(2) NOT NULL, --1:ADMIN, -1:STAFF, 0:CUSTOMER
+  VaiTro NVARCHAR(2) NOT NULL, --0:ADMIN, 1:STAFF, 2:CUSTOMER
   FlagDel INT NOT NULL DEFAULT 0,
   AvatarLink  NVARCHAR(100),
-  Email  NVARCHAR(100) NOT NULL,
+  Email  NVARCHAR(100) NOT NULL UNIQUE,
   SoCCCD NVARCHAR(20) NOT NULL UNIQUE,
   SoDienThoai NVARCHAR(20) NOT NULL UNIQUE,
   PRIMARY KEY (Id)
@@ -144,7 +144,7 @@ CREATE TABLE  [dbo].[BlogTag]
 
 --drop table [TagTheLoai]
 --drop table [BinhLuanSach]
---drop table [BinhLuanBlogRepository]
+--drop table [BinhLuanBlog]
 --drop table [BlogTag]
 --drop table [Tag]
 --drop table [TheLoai]
