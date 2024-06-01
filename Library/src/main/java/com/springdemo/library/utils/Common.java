@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public class Common {
@@ -36,14 +38,20 @@ public class Common {
         }
     }
 
+    public static String generateRandomNumberString(int length) {
+        Random random = new Random();
+        StringBuilder result = new StringBuilder(length);
+        for(int i=0; i<length; i++) {
+            int index = random.nextInt(9);
+            result.append(index);
+        }
+        return result.toString();
+    }
+
     public static Cookie getCookie(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if(cookies != null) {
-            for(Cookie cookie : cookies) {
-                if(cookieName.equals(cookie.getName())) {
-                    return cookie;
-                }
-            }
+            return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieName)).findFirst().orElse(null);
         }
         return null;
     }
