@@ -115,11 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
     $('.verify-btn').on('click', function () {
         console.log(inputOtp);
         $.ajax({
-           type: 'POST',
-           url: "/Library/processsignup",
+            type: 'POST',
+            url: "/Library/processsignup",
             contentType: 'application/json',
-            header: {
-               'otpInput': inputOtp
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('otpInput', inputOtp);
             },
             data: JSON.stringify({
                 'tenUser': userName,
@@ -129,12 +129,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'soCCCD': soCCCD
             }),
             success: () => {
-               console.log("Signup success");
+                console.log("Signup success");
                 window.location.replace("/Library/home");
             },
             error: (jqXHR, textStatus, errorThrown) => {
-               console.error("Signup failed! Error:" + textStatus + ', ' + errorThrown)
-           }
+                console.error("Signup failed! Error:" + textStatus + ', ' + errorThrown)
+            }
         });
     });
 

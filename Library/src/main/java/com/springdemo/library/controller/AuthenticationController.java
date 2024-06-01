@@ -88,7 +88,7 @@ public class AuthenticationController {
 
     @GetMapping("/changepassword")
     public ModelAndView changePassword(
-        @RequestParam(name = "auth") String auth
+            @RequestParam(name = "auth") String auth
     ) {
         String email = getEmailFromAuthToken(auth);
         if(email!=null  && userRepository.findUserByEmail(email).isPresent()) {
@@ -108,8 +108,8 @@ public class AuthenticationController {
     @PostMapping("/sendotp")
     @ResponseBody
     public ResponseEntity<String> sendOtp(
-        @RequestParam(name = "receiver") String receiver,
-        HttpServletRequest request
+            @RequestParam(name = "receiver") String receiver,
+            HttpServletRequest request
     ) {
         HttpSession session = request.getSession();
         if(session.getAttribute("otp")!=null) {
@@ -127,7 +127,7 @@ public class AuthenticationController {
     @PostMapping("/auth")
     @ResponseBody
     public ResponseEntity<String> generateChangePasswordToken(
-        @RequestParam(name = "email") String email
+            @RequestParam(name = "email") String email
     ) {
         if(isEmailExist(email)) {
             return ResponseEntity.ok(jwtService.generateToken(email, 60*60*1000));
@@ -138,8 +138,8 @@ public class AuthenticationController {
     @PostMapping("/processlogin")
     @ResponseBody
     public ResponseEntity<String> processLogin(
-        @RequestBody SigninDataDto signinDataDto,
-        HttpServletResponse response
+            @RequestBody SigninDataDto signinDataDto,
+            HttpServletResponse response
     ) {
         try {
             if(signinDataDto.getUserName()!=null && signinDataDto.getPassword()!=null) {
@@ -188,9 +188,9 @@ public class AuthenticationController {
             String soDienThoai = signupDataDto.getSoDienThoai().trim();
             String soCCCD = signupDataDto.getSoCCCD().trim();
             if(VALID_USERNAME_REGEX.matcher(tenUser).matches() &&
-                VALID_EMAIL_ADDRESS_REGEX.matcher(email).matches() &&
-                VALID_SODIENTHOAI_REGEX.matcher(soDienThoai).matches() &&
-                VALID_SOCCCD_REGEX.matcher(soCCCD).matches()
+                    VALID_EMAIL_ADDRESS_REGEX.matcher(email).matches() &&
+                    VALID_SODIENTHOAI_REGEX.matcher(soDienThoai).matches() &&
+                    VALID_SOCCCD_REGEX.matcher(soCCCD).matches()
             ) {
                 User newUser = new User(tenUser, email, "2", null, soDienThoai, soCCCD);
                 newUser.setMatKhau(Common.sha256Hash(signupDataDto.getMatKhau()));
@@ -206,8 +206,8 @@ public class AuthenticationController {
     @PostMapping("/processforgotpassword")
     @ResponseBody
     public ResponseEntity<String> processForgotPassword(
-        @RequestParam(name = "auth") String auth,
-        @RequestParam(name = "new") String newPassword
+            @RequestParam(name = "auth") String auth,
+            @RequestParam(name = "new") String newPassword
     ) {
         String email = getEmailFromAuthToken(auth);
         if(email != null) {
