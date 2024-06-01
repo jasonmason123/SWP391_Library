@@ -1,6 +1,5 @@
 --create database LibraryManagement
 --drop database LibraryManagement
-use LibraryManagement
 
 --11
 CREATE TABLE  [dbo].[User]
