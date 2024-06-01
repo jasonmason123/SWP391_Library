@@ -29,16 +29,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            // Lấy jwt từ request
             String jwt = getJwt(request);
 
             if (StringUtils.hasText(jwt) && jwtService.validateToken(jwt)) {
-                // Lấy id user từ chuỗi jwt
                 String userName = jwtService.getSubjectFromJWT(jwt);
-                // Lấy thông tin người dùng từ id
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
                 if(userDetails != null) {
-                    // Nếu người dùng hợp lệ, set thông tin cho Seturity Context
+                    //Spring Boot có một filter mặc định là UsernameAndPasswordAuthenticationFilter. Filter Jwt này sẽ được đặt
+                    //trước UsernameAndPasswordAuthenticationFilter để lấy ra thông tin người dùng (gồm tên đăng nhập và mật khẩu)
+                    //từ Jwt token và gửi thông tin đó cho UsernameAndAuthenticationFilter để xác thực
+                    //(bằng cách set thông tin cho Security Context)
                     UsernamePasswordAuthenticationToken
                             authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
                             userDetails.getAuthorities());
@@ -51,6 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error("failed on set user authentication", ex);
         }
 
+        //Đi tiếp đến UsernameAndPasswordAuthenticationFilter. Khi đăng nhập thất bại, không phải do
+        // JwtAuthenticationFilter từ chối, mà do UsernameAndPasswordAuthenticationFilter từ chối
         filterChain.doFilter(request, response);
     }
 
@@ -59,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
 //            return bearerToken.substring(7);
 //        }
-        Cookie cookie = Common.getCookie(request, Constants.JWT_NAME);
+        Cookie cookie = Common.getCookie(request, Constants.JWT_COOKIE_NAME);
         if(cookie!=null) {
             String token = cookie.getValue();
             if(StringUtils.hasText(token)) {

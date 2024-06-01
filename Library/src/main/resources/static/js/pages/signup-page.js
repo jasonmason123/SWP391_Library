@@ -118,8 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
            type: 'POST',
            url: "/Library/processsignup",
             contentType: 'application/json',
-            header: {
-               'otpInput': inputOtp
+            beforeSend: function (xhr) {
+               xhr.setRequestHeader('otpInput', inputOtp);
             },
             data: JSON.stringify({
                 'tenUser': userName,

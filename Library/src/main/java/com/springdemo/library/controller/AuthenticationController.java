@@ -1,6 +1,7 @@
 package com.springdemo.library.controller;
 
 import com.springdemo.library.model.User;
+import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.OtpDto;
 import com.springdemo.library.model.dto.SigninDataDto;
 import com.springdemo.library.model.dto.SignupDataDto;
@@ -19,7 +20,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,18 +52,26 @@ public class AuthenticationController {
 
     @GetMapping("/login")
     public ModelAndView login() {
-        ModelAndView loginViewModel = new ModelAndView("Layout");
-        loginViewModel.addObject("breadcrumb", "<ul>\n" +
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            return new ModelAndView("redirect:/home");
+        }
+        ModelAndView loginViewModel = new ModelAndView("Layout")
+        .addObject("title", "Đăng nhập")
+        .addObject("includedPage", "login-page")
+        .addObject("breadcrumb", "<ul>\n" +
                 "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
                 "                        <li><a href=\"#\" class=\"active\">Đăng nhập</a></li>\n" +
                 "                    </ul>");
-        loginViewModel.addObject("title", "Đăng nhập");
-        loginViewModel.addObject("includedPage", "login-page");
         return loginViewModel;
     }
 
     @GetMapping("/signup")
     public ModelAndView signup() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            return new ModelAndView("redirect:/home");
+        }
         ModelAndView signupViewModel = new ModelAndView("Layout");
         signupViewModel.addObject("breadcrumb", "<ul>\n" +
                 "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
@@ -70,20 +83,22 @@ public class AuthenticationController {
     }
 
     @GetMapping("/logout")
-    public ModelAndView logout() {
-        return new ModelAndView("");
+    public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        Cookie tokenCookie = Common.getCookie(request, Constants.JWT_COOKIE_NAME);
+        if(tokenCookie != null) {
+            tokenCookie.setMaxAge(0);
+            tokenCookie.setPath("/");
+            response.addCookie(tokenCookie);
+        }
+        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
+        securityContextLogoutHandler.logout(request, response, authentication);
+        SecurityContextHolder.clearContext();
+        return "redirect:/login";
     }
 
     @GetMapping("/forgotpassword")
     public ModelAndView forgotPassword() {
-        ModelAndView forgotPasswordViewModel = new ModelAndView("Layout");
-        forgotPasswordViewModel.addObject("breadcrumb", "<ul>\n" +
-                "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
-                "                        <li><a href=\"#\" class=\"active\">Quên mật khẩu</a></li>\n" +
-                "                    </ul>");
-        forgotPasswordViewModel.addObject("title", "Quên mật khẩu");
-        forgotPasswordViewModel.addObject("includedPage", "forgot-password-page");
-        return forgotPasswordViewModel;
+        return new ModelAndView("forgot-password-page");
     }
 
     @GetMapping("/changepassword")
@@ -91,18 +106,8 @@ public class AuthenticationController {
         @RequestParam(name = "auth") String auth
     ) {
         String email = getEmailFromAuthToken(auth);
-        if(email!=null  && userRepository.findUserByEmail(email).isPresent()) {
-            ModelAndView changePasswordViewModel = new ModelAndView("Layout");
-            changePasswordViewModel.addObject("breadcrumb", "<ul>\n" +
-                    "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
-                    "                        <li><a href=\"#\" class=\"active\">Đổi mật khẩu</a></li>\n" +
-                    "                    </ul>");
-            changePasswordViewModel.addObject("title", "Đổi mật khẩu");
-            changePasswordViewModel.addObject("includedPage", "change-password-page");
-            changePasswordViewModel.addObject("auth", auth);
-            return changePasswordViewModel;
-        }
-        return new ModelAndView("redirect:/error");
+        return (email!=null  && isExistEmail(email)) ?
+                new ModelAndView("change-password-page") : new ModelAndView("redirect:/error");
     }
 
     @PostMapping("/sendotp")
@@ -126,11 +131,16 @@ public class AuthenticationController {
 
     @PostMapping("/auth")
     @ResponseBody
-    public ResponseEntity<String> generateChangePasswordToken(
+    public ResponseEntity<String> sendChangePasswordEmail(
         @RequestParam(name = "email") String email
     ) {
-        if(isEmailExist(email)) {
-            return ResponseEntity.ok(jwtService.generateToken(email, 60*60*1000));
+        if(isExistEmail(email)) {
+            log.warn("Sent email to: " + email);
+            String token = jwtService.generateToken(email, 60*60*1000);
+            String link = Constants.CONTEXT_PATH + "/changepassword?auth=" + token;
+            return emailService.sendToUser(EmailDetailsDto.builder().recipient(email).subject("Đổi mật khẩu")
+                    .messageBody("Visit this url to change password: " + link).build()) //Đổi body thành định dạng html khi đã đẩy lên server
+                    ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         }
         return ResponseEntity.badRequest().build();
     }
@@ -148,7 +158,7 @@ public class AuthenticationController {
                 boolean rememberMe = signinDataDto.isRememberMe();
                 UserDetails customUserDetails = new UserService(userRepository).loadUserByUsername(userName);
                 if(password.equals(customUserDetails.getPassword())) {
-                    Cookie jwtCookie = new Cookie(Constants.JWT_NAME, jwtService.generateToken((CustomUserDetails) customUserDetails));
+                    Cookie jwtCookie = new Cookie(Constants.JWT_COOKIE_NAME, jwtService.generateToken((CustomUserDetails) customUserDetails));
                     if(rememberMe) {
                         jwtCookie.setMaxAge(7*24*60*60);
                     }
@@ -165,16 +175,16 @@ public class AuthenticationController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/processlogout")
-    @ResponseBody
-    public ResponseEntity<String> processLogout(HttpServletRequest request) {
-        Cookie tokenCookie = Common.getCookie(request, Constants.JWT_NAME);
-        if(tokenCookie != null) {
-            tokenCookie.setMaxAge(0);
-        }
-        request.getSession().invalidate();
-        return ResponseEntity.ok("logout_success"); //to home page
-    }
+//    @PostMapping("/processlogout")
+//    @ResponseBody
+//    public ResponseEntity<String> processLogout(HttpServletRequest request) {
+//        Cookie tokenCookie = Common.getCookie(request, Constants.JWT_NAME);
+//        if(tokenCookie != null) {
+//            tokenCookie.setMaxAge(0);
+//        }
+//        request.getSession().invalidate();
+//        return ResponseEntity.ok("logout_success"); //to home page
+//    }
 
     @PostMapping("/processsignup")
     @ResponseBody
@@ -205,7 +215,7 @@ public class AuthenticationController {
 
     @PostMapping("/processforgotpassword")
     @ResponseBody
-    public ResponseEntity<String> processForgotPassword(
+    public ModelAndView processForgotPassword(
         @RequestParam(name = "auth") String auth,
         @RequestParam(name = "new") String newPassword
     ) {
@@ -215,11 +225,11 @@ public class AuthenticationController {
             if(foundUser!=null) {
                 foundUser.setMatKhau(Common.sha256Hash(newPassword));
                 userRepository.save(foundUser);
-                return ResponseEntity.ok().build();
+                return new ModelAndView("redirect:/login");
             }
         }
         log.error("email not found or invalid");
-        return ResponseEntity.badRequest().build();
+        return new ModelAndView("redirect:/error");
     }
 
     @PostMapping("/isvalidemail")
@@ -228,7 +238,7 @@ public class AuthenticationController {
         email = email.trim();
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
         if(matcher.matches()) {
-            return isEmailExist(email) ? ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
+            return isExistEmail(email) ? ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
         } else {
             return ResponseEntity.ok("unmatched");
         }
@@ -273,7 +283,7 @@ public class AuthenticationController {
         }
     }
 
-    private boolean isEmailExist(String email) {
+    private boolean isExistEmail(String email) {
         return userRepository.findUserByEmail(email).isPresent();
     }
 

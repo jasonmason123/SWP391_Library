@@ -1,6 +1,7 @@
 $('document').ready(function () {
     $('#id-form-login').on('submit', function (e) {
         e.preventDefault();
+        console.log("Submitted");
         $.ajax({
             url: '/Library/processlogin',
             method: 'POST',
@@ -11,11 +12,12 @@ $('document').ready(function () {
                 rememberMe: $("#rememberme").prop("checked")
             }),
             success: function () {
+                console.log('Success');
                 window.location.replace("/Library/home");
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $('#error-message').text('Tên người dùng hoặc mật khẩu không hợp lệ').css('color', 'red');
                 console.warn('Error:', textStatus, errorThrown);
+                $('#error-message').text("Tên người dùng hoặc mật khẩu không chính xác").css('color', 'red');
             }
         });
     });
