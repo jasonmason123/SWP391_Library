@@ -7,7 +7,6 @@ CREATE TABLE  [dbo].[User]
   Id INT NOT NULL IDENTITY(1,1),
   TenUser  NVARCHAR(50) NOT NULL UNIQUE,
   MatKhau  NVARCHAR(100) NOT NULL,
-  VaiTro NVARCHAR(2) NOT NULL, --0:ADMIN, 1:STAFF, 2:CUSTOMER
   FlagDel INT NOT NULL DEFAULT 0,
   AvatarLink  NVARCHAR(100),
   Email  NVARCHAR(100) NOT NULL UNIQUE,
@@ -15,6 +14,18 @@ CREATE TABLE  [dbo].[User]
   SoDienThoai NVARCHAR(20) NOT NULL UNIQUE,
   PRIMARY KEY (Id)
 );
+
+--12
+CREATE TABLE [dbo].[NhanVien]
+(
+  Id INT NOT NULL IDENTITY(1,1),
+  TenNhanVien  NVARCHAR(50) NOT NULL UNIQUE,
+  MatKhau  NVARCHAR(100) NOT NULL,
+  VaiTro NVARCHAR(2) NOT NULL, --0:ADMIN, 1:STAFF
+  Email  NVARCHAR(100) NOT NULL UNIQUE,
+  FlagDel INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (Id)
+)
 
 --10
 CREATE TABLE  [dbo].[Sach]
@@ -153,3 +164,4 @@ CREATE TABLE  [dbo].[BlogTag]
 --drop table [YeuCauMuonSach]
 --drop table [Sach]
 --drop table [User]
+--drop table [NhanVien]
