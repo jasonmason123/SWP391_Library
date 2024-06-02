@@ -1,6 +1,7 @@
 package com.springdemo.library.services;
 
-import com.springdemo.library.security.CustomUserDetails;
+import com.springdemo.library.security.userdetails.CustomUserDetails;
+import com.springdemo.library.security.userdetails.NhanVienUserDetails;
 import com.springdemo.library.services.interfaces.IAuthTokenService;
 import com.springdemo.library.utils.Constants;
 import io.jsonwebtoken.*;
@@ -23,6 +24,10 @@ public class JwtService implements IAuthTokenService<CustomUserDetails> {
     @Override
     public String generateToken(CustomUserDetails userDetails) {
         return generateToken(userDetails.getUser().getTenUser(), Constants.JWT_EXPIRATION);
+    }
+
+    public String generateToken(NhanVienUserDetails userDetails) {
+        return generateToken(userDetails.getNhanVien().getTenNhanVien(), Constants.JWT_EXPIRATION);
     }
 
     //get userId from token

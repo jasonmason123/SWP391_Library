@@ -22,8 +22,6 @@ public class User {
     private String matKhau;
     @Column(name = "Email", unique = true)
     private String email;
-    @Column(name = "VaiTro")
-    private String vaiTro; //0: admin, 1: customer, 2: staff
     @Column(name = "AvatarLink")
     private String avatarLink;
     @Column(name = "SoDienThoai", unique = true)
@@ -43,10 +41,9 @@ public class User {
     @OneToMany(orphanRemoval = true)
     private List<YeuCauMuonSach> yeuCauMuonSachList;
     @Builder
-    public User(String tenUser, String email, String vaiTro, String avatarLink, String soDienThoai, String soCCCD) {
+    public User(String tenUser, String email, String avatarLink, String soDienThoai, String soCCCD) {
         this.tenUser = tenUser;
         this.email = email;
-        this.vaiTro = vaiTro;
         this.avatarLink = (avatarLink!=null && !avatarLink.isEmpty()) ? avatarLink : "";
         this.soDienThoai = soDienThoai;
         this.soCCCD = soCCCD;

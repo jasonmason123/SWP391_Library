@@ -1,5 +1,7 @@
 package com.springdemo.library.security;
 
+import com.springdemo.library.security.filters.JwtAuthenticationFilter;
+import com.springdemo.library.security.filters.OtpAuthenticationFilter;
 import com.springdemo.library.utils.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,10 +37,11 @@ public class SecurityConfig {
                                         "/forgotpassword", "/processforgotpassword",
                                         "/isvalidemail", "/isvalidsodienthoai",
                                         "/isvalidsocccd", "/isvalidtenuser").permitAll()
+                                .requestMatchers("/management/**").permitAll()
                                 //0:Admin, 1:Staff, 2:Customer
                                 //.requestMatchers("/").hasRole("ROLE_0")
                                 //.requestMatchers("/").hasRole("ROLE_1")
-                                //.requestMatchers("/").hasRole("ROLE_2")
+                                //.requestMatchers("/").hasRole("ROLE_CUSTOMER")
                                 .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/Library/logout").permitAll()
@@ -65,6 +68,6 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**");
+        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/static-admin_and_staff/**");
     }
 }
