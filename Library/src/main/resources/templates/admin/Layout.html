@@ -16,7 +16,7 @@
 <nav th:insert="~{admin/shared/header.html}"></nav>
 <div id="wrapper">
     <ul th:insert="~{admin/shared/sidebar.html}"></ul>
-    <div th:insert="~{${includedPage}}">
+    <div th:insert="~{${includedPage}}" th:with="modelClass=${modelClass}">
 
     </div>
 </div>
