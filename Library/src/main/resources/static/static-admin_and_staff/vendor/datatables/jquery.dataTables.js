@@ -11466,7 +11466,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfo": " _START_ đến _END_ trong _TOTAL_ nhân viên",
+			"sInfo": " _START_ đến _END_ trong _TOTAL_ bản ghi",
 	
 	
 			/**
@@ -11627,7 +11627,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sLengthMenu": " _MENU_ nhân viên",
+			"sLengthMenu": " _MENU_ bản ghi",
 	
 	
 			/**

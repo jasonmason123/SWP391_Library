@@ -1,15 +1,10 @@
 package com.springdemo.library.controller;
 
-import com.springdemo.library.model.NhanVien;
 import com.springdemo.library.model.User;
-import com.springdemo.library.model.dto.EmailDetailsDto;
-import com.springdemo.library.model.dto.OtpDto;
 import com.springdemo.library.model.dto.SigninDataDto;
 import com.springdemo.library.model.dto.SignupDataDto;
-import com.springdemo.library.repositories.NhanVienRepository;
 import com.springdemo.library.repositories.UserRepository;
 import com.springdemo.library.security.userdetails.CustomUserDetails;
-import com.springdemo.library.security.userdetails.NhanVienUserDetails;
 import com.springdemo.library.services.EmailService;
 import com.springdemo.library.services.UserService;
 import com.springdemo.library.services.JwtService;
@@ -18,31 +13,29 @@ import com.springdemo.library.utils.Constants;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 
 @Controller
 @Slf4j
-@AllArgsConstructor
 @RequestMapping
-public class AuthenticationController {
+public class CustomerAuthenticationController extends AbstractAuthenticationController {
     private UserRepository userRepository;
-    private NhanVienRepository nhanVienRepository;
-    private JwtService jwtService;
-    private EmailService emailService;
+
+    public CustomerAuthenticationController(JwtService jwtService, EmailService emailService, UserRepository userRepository) {
+        super(jwtService, emailService);
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/login")
     public ModelAndView login(Authentication authentication) {
@@ -73,17 +66,20 @@ public class AuthenticationController {
         return signupViewModel;
     }
 
+    @Override
     @GetMapping("/logout")
     public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         customLogout(authentication, request, response);
         return "redirect:/login";
     }
 
+    @Override
     @GetMapping("/forgotpassword")
     public ModelAndView forgotPassword() {
         return new ModelAndView("forgot-password-page");
     }
 
+    @Override
     @GetMapping("/changepassword")
     public ModelAndView changePassword(
             @RequestParam(name = "auth") String auth
@@ -93,6 +89,7 @@ public class AuthenticationController {
                 new ModelAndView("change-password-page") : new ModelAndView("redirect:/error");
     }
 
+    @Override
     @PostMapping("/processlogin")
     @ResponseBody
     public ResponseEntity<String> processLogin(
@@ -106,7 +103,7 @@ public class AuthenticationController {
                 boolean rememberMe = signinDataDto.isRememberMe();
                 UserDetails customUserDetails = UserService.builder()
                         .userRepository(userRepository).build().loadUserByUsername(userName);
-                if(password.equals(customUserDetails.getPassword())) {
+                if(password.equals(customUserDetails.getPassword()) && customUserDetails.isEnabled()) {
                     Cookie jwtCookie = new Cookie(Constants.JWT_COOKIE_NAME, jwtService.generateToken((CustomUserDetails) customUserDetails));
                     if(rememberMe) {
                         jwtCookie.setMaxAge(7*24*60*60);
@@ -140,10 +137,10 @@ public class AuthenticationController {
                     Constants.VALID_SODIENTHOAI_REGEX.matcher(soDienThoai).matches() &&
                     Constants.VALID_SOCCCD_REGEX.matcher(soCCCD).matches()
             ) {
-                User newUser = new User(tenUser, email, null, soDienThoai, soCCCD);
+                User newUser = new User(tenUser, email, null, soDienThoai, soCCCD, new Date());
                 newUser.setMatKhau(Common.sha256Hash(signupDataDto.getMatKhau()));
                 userRepository.save(newUser);
-                return processLogin(new SigninDataDto(tenUser, signupDataDto.getMatKhau(), false), response);
+                return this.processLogin(new SigninDataDto(tenUser, signupDataDto.getMatKhau(), false), response);
             }
         } catch (DataIntegrityViolationException | NullPointerException e) {
             log.error("Error: " + e);
@@ -151,6 +148,7 @@ public class AuthenticationController {
         return ResponseEntity.badRequest().build();
     }
 
+    @Override
     @PostMapping("/processforgotpassword")
     @ResponseBody
     public ModelAndView processForgotPassword(
@@ -170,9 +168,25 @@ public class AuthenticationController {
         return new ModelAndView("redirect:/error");
     }
 
+//Utils_________________________________________________________________________________________________________________
+
+    @Override
+    @PostMapping("/auth")
+    @ResponseBody
+    public ResponseEntity<String> sendChangePasswordEmail(
+            @RequestParam(name = "email") String email)
+    {
+        return super.sendChangePasswordEmail(email);
+    }
+
+    @Override
+    protected boolean isExistEmail(String email) {
+        return userRepository.findUserByEmail(email).isPresent();
+    }
+
     @PostMapping("/isvalidemail")
     @ResponseBody
-    public ResponseEntity<String> isExistedEmail(@RequestParam(name = "email") String email) {
+    public ResponseEntity<String> isValidEmail(@RequestParam(name = "email") String email) {
         email = email.trim();
         Matcher matcher = Constants.VALID_EMAIL_ADDRESS_REGEX.matcher(email);
         if(matcher.matches()) {
@@ -184,7 +198,7 @@ public class AuthenticationController {
 
     @PostMapping("/isvalidsodienthoai")
     @ResponseBody
-    public ResponseEntity<String> isExistedSoDienThoai(@RequestParam(name = "sodienthoai") String soDienThoai) {
+    public ResponseEntity<String> isValidSoDienThoai(@RequestParam(name = "sodienthoai") String soDienThoai) {
         soDienThoai = soDienThoai.trim();
         Matcher matcher = Constants.VALID_SODIENTHOAI_REGEX.matcher(soDienThoai);
         if(matcher.matches()) {
@@ -197,7 +211,7 @@ public class AuthenticationController {
 
     @PostMapping("/isvalidsocccd")
     @ResponseBody
-    public ResponseEntity<String> isExistedSoCCCD(@RequestParam(name = "socccd") String soCCCD) {
+    public ResponseEntity<String> isValidSoCCCD(@RequestParam(name = "socccd") String soCCCD) {
         soCCCD = soCCCD.trim();
         Matcher matcher = Constants.VALID_SOCCCD_REGEX.matcher(soCCCD);
         if(matcher.matches()) {
@@ -210,7 +224,7 @@ public class AuthenticationController {
 
     @PostMapping("/isvalidtenuser")
     @ResponseBody
-    public ResponseEntity<String> isExistedTenUser(@RequestParam(name = "tenuser") String userName) {
+    public ResponseEntity<String> isValidTenUser(@RequestParam(name = "tenuser") String userName) {
         userName = userName.trim();
         Matcher matcher = Constants.VALID_USERNAME_REGEX.matcher(userName);
         if (matcher.matches()) {
@@ -221,155 +235,12 @@ public class AuthenticationController {
         }
     }
 
-//Admin and staff_______________________________________________________________________________________________________
-    @GetMapping("/management/login")
-    public ModelAndView adminAndStaffLogin() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//            return new ModelAndView("redirect:/home");
-//        }
-        return new ModelAndView("admin_and_staff/login");
-    }
-
-    @GetMapping("/management/logout")
-    public String adminAndStaffLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        customLogout(authentication, request, response);
-        return "redirect:/management/login";
-    }
-
-    @GetMapping("/management/forgotpassword")
-    public ModelAndView adminAndStaffForgotPassword() {
-        return new ModelAndView("admin_and_staff/forgot-password");
-    }
-
-    @GetMapping("/management/changepassword")
-    public ModelAndView adminAndStaffChangePassword(
-            @RequestParam(name = "auth") String auth
-    ) {
-        String email = getEmailFromAuthToken(auth);
-        return (email!=null  && isExistEmail(email)) ?
-                new ModelAndView("admin_and_staff/change-password") : new ModelAndView("redirect:/error");
-    }
-
-    @PostMapping("/management/processlogin")
-    @ResponseBody
-    public ResponseEntity<String> adminAndStaffProcessLogin(
-            @RequestBody SigninDataDto signinDataDto,
-            HttpServletResponse response
-    ) {
-        try {
-            if(signinDataDto.getUserName()!=null && signinDataDto.getPassword()!=null) {
-                String tenNhanVien = signinDataDto.getUserName();
-                String password = Common.sha256Hash(signinDataDto.getPassword());
-                boolean rememberMe = signinDataDto.isRememberMe();
-                UserDetails customUserDetails = UserService.builder()
-                        .nhanVienRepository(nhanVienRepository).build().loadNhanVienByTenNhanVien(tenNhanVien);
-                if(password.equals(customUserDetails.getPassword())) {
-                    Cookie jwtCookie = new Cookie(Constants.JWT_COOKIE_NAME, jwtService.generateToken((NhanVienUserDetails) customUserDetails));
-                    if(rememberMe) {
-                        jwtCookie.setMaxAge(7*24*60*60);
-                    }
-                    jwtCookie.setPath("/");
-                    jwtCookie.setHttpOnly(true);
-                    response.addCookie(jwtCookie);
-                    return ResponseEntity.ok().build();
-                }
-            }
-        } catch (NullPointerException e) {
-            log.error("Error: " + e);
-        }
-        log.error("Login failed!");
-        return ResponseEntity.badRequest().build();
-    }
-
-    @PostMapping("/management/processforgotpassword")
-    @ResponseBody
-    public ModelAndView adminAndStaffProcessForgotPassword(
-            @RequestParam(name = "auth") String auth,
-            @RequestParam(name = "new") String newPassword)
-    {
-        String email = getEmailFromAuthToken(auth);
-        if(email != null) {
-            NhanVien foundNhanVien = nhanVienRepository.findNhanVienByEmail(email).orElse(null);
-            if(foundNhanVien!=null) {
-                foundNhanVien.setMatKhau(Common.sha256Hash(newPassword));
-                nhanVienRepository.save(foundNhanVien);
-                return new ModelAndView("redirect:/management/login");
-            }
-        }
-        log.error("email not found or invalid");
-        return new ModelAndView("redirect:/error");
-    }
-
-    @PostMapping("/management/isvalidemail")
-    @ResponseBody
-    public ResponseEntity<String> isExistedEmailNhanVien(@RequestParam(name = "email") String email) {
-        email = email.trim();
-        Matcher matcher = Constants.VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-        if(matcher.matches()) {
-            return isExistEmailNhanVien(email) ? ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
-        } else {
-            return ResponseEntity.ok("unmatched");
-        }
-    }
-
-//Utils_________________________________________________________________________________________________________________
     @PostMapping("/sendotp")
     @ResponseBody
     public ResponseEntity<String> sendOtp(
-            @RequestParam(name = "receiver") String receiver,
-            HttpServletRequest request
+        @RequestParam(name = "receiver") String receiver,
+        HttpServletRequest request
     ) {
-        HttpSession session = request.getSession();
-        if(session.getAttribute("otp")!=null) {
-            session.removeAttribute("otp");
-        }
-        session.setMaxInactiveInterval(2*60);
-        OtpDto otp = emailService.sendOtpViaEmail(receiver);
-        session.setAttribute("otp", otp);
-        if(otp!=null) {
-            return ResponseEntity.ok().build(); //proceed
-        }
-        return ResponseEntity.badRequest().build(); //error
-    }
-
-    @PostMapping("/auth")
-    @ResponseBody
-    public ResponseEntity<String> sendChangePasswordEmail(
-            @RequestParam(name = "email") String email)
-    {
-        if(isExistEmail(email)) {
-            log.warn("Sent email to: " + email);
-            String token = jwtService.generateToken(email, 60*60*1000);
-            String link = Constants.CONTEXT_PATH + "/changepassword?auth=" + token;
-            return emailService.sendToUser(EmailDetailsDto.builder().recipient(email).subject("Đổi mật khẩu")
-                    .messageBody("Visit this url to change password: " + link).build()) //Đổi body thành định dạng html khi đã đẩy lên server
-                    ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.badRequest().build();
-    }
-
-    private boolean isExistEmail(String email) {
-        return userRepository.findUserByEmail(email).isPresent();
-    }
-
-    private boolean isExistEmailNhanVien(String email) {
-        return nhanVienRepository.findNhanVienByEmail(email).isPresent();
-    }
-
-    private String getEmailFromAuthToken(String emailToken) {
-        return jwtService.validateToken(emailToken) ? jwtService.getSubjectFromJWT(emailToken) : null;
-    }
-
-    private void customLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        Cookie tokenCookie = Common.getCookie(request, Constants.JWT_COOKIE_NAME);
-        if(tokenCookie != null) {
-            tokenCookie.setMaxAge(0);
-            tokenCookie.setPath("/");
-            response.addCookie(tokenCookie);
-        }
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-        securityContextLogoutHandler.logout(request, response, authentication);
-        SecurityContextHolder.clearContext();
+        return super.sendOtp(receiver, request);
     }
 }

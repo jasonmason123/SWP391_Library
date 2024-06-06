@@ -1,11 +1,9 @@
 package com.springdemo.library.model;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -24,7 +22,19 @@ public class TheLoai {
     @ManyToOne
     @JoinColumn(name = "DanhMucId")
     private DanhMuc danhMuc;
+    @Setter(AccessLevel.NONE)
+    @Column(name = "DateCreated")
+    private Date dateCreated;
+    @Column(name = "DateUpdated")
+    private Date dateUpdated;
 
     @ManyToMany(mappedBy = "theLoaiList")
     private List<Sach> sachList;
+
+    @Builder
+    public TheLoai(String tenTheLoai, DanhMuc danhMuc, Date dateCreated) {
+        this.tenTheLoai = tenTheLoai;
+        this.danhMuc = danhMuc;
+        this.dateCreated = dateCreated;
+    }
 }
