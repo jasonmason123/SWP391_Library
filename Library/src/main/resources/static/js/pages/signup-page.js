@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
 //--------------------------------------------------------------------------------------------
 
     $('.verify-btn').on('click', function () {
-        console.log(inputOtp);
         $.ajax({
             type: 'POST',
             url: "/Library/processsignup",

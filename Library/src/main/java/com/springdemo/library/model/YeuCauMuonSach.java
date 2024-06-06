@@ -33,15 +33,20 @@ public class YeuCauMuonSach {
     @ManyToOne
     @JoinColumn(name = "NguoiMuonId")
     private User nguoiMuon;
+    @Column(name = "DateCreated")
+    private Date dateCreated;
+    @Column(name = "DateUpdated")
+    private Date dateUpdated;
     @OneToMany(orphanRemoval = true)
     List<SachDuocMuon> sachDuocMuonList;
 
-    public YeuCauMuonSach(Date ngayMuon, Date ngayTra, User nguoiMuon) {
+    public YeuCauMuonSach(Date ngayMuon, Date ngayTra, User nguoiMuon, Date dateCreated) {
         this.ngayMuon = ngayMuon;
         this.ngayTra = ngayTra;
         this.nguoiMuon = nguoiMuon;
         this.quaHan = 0;
         this.boiThuong = 0;
         this.trangThai = 0;
+        this.dateCreated = dateCreated;
     }
 }

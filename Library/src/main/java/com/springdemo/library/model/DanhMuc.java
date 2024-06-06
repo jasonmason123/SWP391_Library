@@ -1,11 +1,9 @@
 package com.springdemo.library.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,12 +17,18 @@ public class DanhMuc {
     private int Id;
     @Column(name = "TenDanhMuc")
     private String tenDanhMuc;
+    @Setter(AccessLevel.NONE)
+    @Column(name = "DateCreated")
+    private Date dateCreated;
+    @Column(name = "DateUpdated")
+    private Date dateUpdated;
 
     @OneToMany(orphanRemoval = true)
     private List<TheLoai> theLoaiList;
 
     @Builder
-    public DanhMuc(String tenDanhMuc) {
+    public DanhMuc(String tenDanhMuc, Date dateCreated) {
         this.tenDanhMuc = tenDanhMuc;
+        this.dateCreated = dateCreated;
     }
 }

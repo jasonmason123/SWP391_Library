@@ -26,7 +26,7 @@ public class NhanVienUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return nhanVien.getTenNhanVien();
+        return nhanVien.getEmail();
     }
 
     @Override
