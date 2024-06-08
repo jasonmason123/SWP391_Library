@@ -1,29 +1,37 @@
 $(document).ready(function () {
    $('#add-staff-form').on('submit', function (e) {
        e.preventDefault();
-       console.log('add staff called');
        let matKhau = $("#password-add").val();
        let xacNhanMatKhau = $("#confirm-password-add").val();
        if(matKhau === xacNhanMatKhau) {
-           $.ajax({
-               url: '/Library/management/isvalidemail?email=' + $('#email-add').val(),
-               method: 'POST',
-               success: (response) => {
-                   if(response=='existed' || response=='unmatched') {
-                       $('#errorMessage-add').text("Email không hợp lệ hoặc đã tồn tại");
-                   } else if(response=='notExist') {
-                       modifyStaff(JSON.stringify({
-                               tenNhanVien: $("#tenNhanVien-add").val(),
-                               matKhau: $("#password-add").val(),
-                               email: $("#email-add").val(),
-                               vaiTro: $('#role-add').val()
-                           }),'/Library/management/addStaff'
-                       );
-                   }
-               },
-               error: (jqXHR, textStatus, errorThrown) => {
-                   console.warn('Error:', textStatus, errorThrown);
-                   alert("Có lỗi");
+           $.when(
+               $.ajax({
+                   url: '/Library/management/isvalidemail?email=' + $('#email-add').val(),
+                   method: 'POST',
+                   success: (response) => {return response === 'notExist';}
+               }),
+               $.ajax({
+                   url: '/Library/management/isvalidsodienthoai?sodienthoai=' + $('#phoneNo-add').val(),
+                   method: 'POST',
+                   success: (response) => {return response === 'notExist';}
+               }),
+           ).done(function (a1, a2) {
+               if(a1[0]==='notExist' && a2[0]==='notExist') {
+                   modifyStaff(JSON.stringify({
+                           tenNhanVien: $("#tenNhanVien-add").val(),
+                           matKhau: $("#password-add").val(),
+                           email: $("#email-add").val(),
+                           soDienThoai: $("#phoneNo-add").val(),
+                           diaChi: $("#address-add").val(),
+                           vaiTro: $('#role-add').val()
+                       }),'/Library/management/addStaff'
+                   );
+               }
+               if(a1[0]==='existed' || a1[0]==='unmatched') {
+                   $('#errorMessageEmail-add').text("Email không hợp lệ hoặc đã tồn tại").css('color', 'red');
+               }
+               if(a2[0]==='existed' || a2[0]==='unmatched') {
+                   $('#errorMessagePhoneNo-add').text("Số điện thoại không hợp lệ hoặc đã tồn tại").css('color', 'red');
                }
            });
        } else {
@@ -34,18 +42,42 @@ $(document).ready(function () {
 
     $('#update-staff-form').on('submit', function (e) {
         e.preventDefault();
-        let matKhau = $("#password-update").val();
-        let xacNhanMatKhau = $("#confirm-password-update").val();
-        if(matKhau === xacNhanMatKhau) {
-            modifyStaff(JSON.stringify({
-                    matKhau: matKhau,
+        $.when(
+            $.ajax({
+                url: '/Library/management/isvalidemail?email=' + $('#email-add').val(),
+                method: 'POST',
+                success: (response) => {return response === 'notExist';}
+            }),
+            $.ajax({
+                url: '/Library/management/isvalidsodienthoai?sodienthoai=' + $('#phoneNo-add').val(),
+                method: 'POST',
+                success: (response) => {return response === 'notExist';}
+            }),
+        ).done(function (a1, a2) {
+            if(a1[0]==='notExist' && a2[0]==='notExist') {
+                modifyStaff(JSON.stringify({
+                    email: $("#email-update").val(),
+                    soDienThoai: $("#phoneNo-update").val(),
+                    diaChi: $("#address-update").val(),
                     vaiTro: $('#role-update').val()
-                }),'/Library/management/updateStaff?id=' + $('#staff-id-update').val()
-            );
-        } else {
-            $('#unmatched-password-message')
-                .text("Xác nhận mật khẩu chưa khớp với mật khẩu bạn đã nhập, vui lòng nhập lại").css('color', 'red');
-        }
+                    }),'/Library/management/updateStaff?id=' + $('#staff-id-update').val()
+                );
+            }
+            if(a1[0]==='existed' || a1[0]==='unmatched') {
+                $('#errorMessageEmail-update').text("Email không hợp lệ hoặc đã tồn tại").css('color', 'red');
+            }
+            if(a2[0]==='existed' || a2[0]==='unmatched') {
+                $('#errorMessagePhoneNo-update').text("Số điện thoại không hợp lệ hoặc đã tồn tại").css('color', 'red');
+            }
+        });
+
+        modifyStaff(JSON.stringify({
+            email: $("#email-update").val(),
+            soDienThoai: $("#phoneNo-update").val(),
+            diaChi: $("#address-update").val(),
+            vaiTro: $('#role-update').val()
+            }),'/Library/management/updateStaff?id=' + $('#staff-id-update').val()
+        );
     });
 
    function modifyStaff(data, url) {
