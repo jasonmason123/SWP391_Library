@@ -15,7 +15,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,10 +40,13 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
     @Override
     @GetMapping("/login")
     public ModelAndView login(Authentication authentication) {
-        //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//            return new ModelAndView("redirect:/home");
-//        }
+        if(authentication!=null && authentication.isAuthenticated()
+            && !(authentication instanceof AnonymousAuthenticationToken)
+            && authentication.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_0") || role.getAuthority().equals("ROLE_1"))
+        ) {
+            return new ModelAndView("redirect:/management/home");
+        }
         return new ModelAndView("admin_and_staff/login");
     }
 
@@ -77,6 +82,19 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
             return isExistEmail(email) ? ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
         } else {
             return ResponseEntity.ok("unmatched");
+        }
+    }
+
+    @PostMapping("/isvalidsodienthoai")
+    @ResponseBody
+    public ResponseEntity<String> isValidSoDienThoai(@RequestParam(name = "sodienthoai") String soDienThoai) {
+        soDienThoai = soDienThoai.trim();
+        Matcher matcher = Constants.VALID_SODIENTHOAI_REGEX.matcher(soDienThoai);
+        if(matcher.matches()) {
+            return nhanVienRepository.findNhanVienBySoDienThoai(soDienThoai).isPresent() ?
+                    ResponseEntity.ok(Constants.DATA_EXISTED) : ResponseEntity.ok(Constants.DATA_NOT_EXIST);
+        } else {
+            return ResponseEntity.ok(Constants.DATA_PATTERN_UNMATCHED);
         }
     }
 
@@ -138,6 +156,19 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
         }
         log.error("email not found or invalid");
         return new ModelAndView("redirect:/error");
+    }
+
+    @Override
+    @PostMapping("/sendotp")
+    @ResponseBody
+    public ResponseEntity<String> sendOtp(
+            @RequestParam(name = "receiver") String receiver,
+            HttpServletRequest request
+    ) {
+        if(nhanVienRepository.findNhanVienByEmail(receiver).isPresent()) {
+            return super.sendOtp(receiver, request);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @Override

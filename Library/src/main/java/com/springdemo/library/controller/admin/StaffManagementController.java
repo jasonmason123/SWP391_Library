@@ -1,7 +1,6 @@
 package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.NhanVien;
-import com.springdemo.library.model.dto.UpdateStaffDto;
 import com.springdemo.library.repositories.NhanVienRepository;
 import com.springdemo.library.utils.Common;
 import lombok.AllArgsConstructor;
@@ -36,19 +35,19 @@ public class StaffManagementController {
     @PostMapping("/addStaff")
     @ResponseBody
     public ResponseEntity<String> addStaff(
-            @RequestBody NhanVien nhanVien
+            @RequestBody NhanVien nhanVienDto
     ) {
         try {
-            NhanVien existedNhanVien = nhanVienRepository.findNhanVienByEmail(nhanVien.getEmail()).orElse(null);
+            NhanVien existedNhanVien = nhanVienRepository.findNhanVienByEmail(nhanVienDto.getEmail()).orElse(null);
             if (existedNhanVien == null) {
                 log.warn("adding");
                 nhanVienRepository.save(
-                        NhanVien.builder().tenNhanVien(nhanVien.getTenNhanVien())
-                                .matKhau(Common.sha256Hash(nhanVien.getMatKhau()))
-                                .email(nhanVien.getEmail())
-                                .soDienThoai(nhanVien.getSoDienThoai())
-                                .diaChi(nhanVien.getDiaChi())
-                                .vaiTro(nhanVien.getVaiTro())
+                        NhanVien.builder().tenNhanVien(nhanVienDto.getTenNhanVien())
+                                .matKhau(Common.sha256Hash(nhanVienDto.getMatKhau()))
+                                .email(nhanVienDto.getEmail())
+                                .soDienThoai(nhanVienDto.getSoDienThoai())
+                                .diaChi(nhanVienDto.getDiaChi())
+                                .vaiTro(nhanVienDto.getVaiTro())
                                 .dateCreated(new Date()).build()
                         ); //Add sdt and diachi to front-end
                 log.warn("added");
@@ -67,17 +66,17 @@ public class StaffManagementController {
     @ResponseBody
     public ResponseEntity<String> updateStaff(
             @RequestParam(name = "id") int id,
-            @RequestBody UpdateStaffDto nhanVien
+            @RequestBody NhanVien nhanVienDto
     ) {
         try {
             NhanVien existedNhanVien = nhanVienRepository.findById(id).orElse(null);
             log.warn("Id:" + id);
             if (existedNhanVien != null) {
                 log.warn("nhanVien found");
-                String newMatKhau = (nhanVien.getMatKhau()!=null && !nhanVien.getMatKhau().isBlank())
-                        ? Common.sha256Hash(nhanVien.getMatKhau()) : "";
-                String newVaiTro = (nhanVien.getVaiTro()!=null && !nhanVien.getVaiTro().isBlank())
-                        ? nhanVien.getVaiTro() : "";
+                String newMatKhau = (nhanVienDto.getMatKhau()!=null && !nhanVienDto.getMatKhau().isBlank())
+                        ? Common.sha256Hash(nhanVienDto.getMatKhau()) : "";
+                String newVaiTro = (nhanVienDto.getVaiTro()!=null && !nhanVienDto.getVaiTro().isBlank())
+                        ? nhanVienDto.getVaiTro() : "";
                 if(!newMatKhau.equals(existedNhanVien.getMatKhau())) {
                     existedNhanVien.setMatKhau(newMatKhau);
                 }
