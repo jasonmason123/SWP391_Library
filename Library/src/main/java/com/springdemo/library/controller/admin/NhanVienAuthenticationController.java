@@ -165,10 +165,7 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
             @RequestParam(name = "receiver") String receiver,
             HttpServletRequest request
     ) {
-        if(nhanVienRepository.findNhanVienByEmail(receiver).isPresent()) {
-            return super.sendOtp(receiver, request);
-        }
-        return ResponseEntity.badRequest().build();
+        return super.sendOtp(receiver, request);
     }
 
     @Override

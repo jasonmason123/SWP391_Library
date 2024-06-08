@@ -244,9 +244,6 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
         @RequestParam(name = "receiver") String receiver,
         HttpServletRequest request
     ) {
-        if(userRepository.findUserByEmail(receiver).isPresent()) {
-            return super.sendOtp(receiver, request);
-        }
-        return ResponseEntity.badRequest().build();
+        return super.sendOtp(receiver, request);
     }
 }
