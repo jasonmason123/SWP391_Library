@@ -14,7 +14,14 @@ import org.springframework.web.servlet.ModelAndView;
 public class HomeController {
     @GetMapping("/home")
     public ModelAndView home() {
-        return new ModelAndView("home");
+        ModelAndView homeViewModel = new ModelAndView("Layout");
+        homeViewModel.addObject("breadcrumb", "<ul>\n" +
+                "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
+                "                        <li><a href=\"#\" class=\"active\">home</a></li>\n" +
+                "                    </ul>");
+        homeViewModel.addObject("title", "home");
+        homeViewModel.addObject("includedPage", "home");
+        return homeViewModel;
     }
 
     @GetMapping("/anotherhome")

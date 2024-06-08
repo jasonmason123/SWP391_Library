@@ -105,6 +105,7 @@ public class AuthenticationController {
         return new ModelAndView("redirect:/error");
     }
 
+
     @PostMapping("/sendotp")
     @ResponseBody
     public ResponseEntity<String> sendOtp(
