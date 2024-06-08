@@ -15,10 +15,11 @@ public class BookController {
     @GetMapping("/book")
     public ModelAndView Book() {
         ModelAndView bookViewModel = new ModelAndView("Layout");
-        bookViewModel.addObject("breadcrumb", "<ul>\n" +
-                "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
-                "                        <li><a href=\"#\" class=\"active\">Book</a></li>\n" +
-                "                    </ul>");
+        bookViewModel.addObject("breadcrumb", """
+                                    <ul>
+                                        <li><a href="#">Trang chủ</a></li>
+                                        <li><a href="#" class="active">Book</a></li>
+                                    </ul>""");
         bookViewModel.addObject("title", "book");
         bookViewModel.addObject("includedPage", "book");
         return bookViewModel;

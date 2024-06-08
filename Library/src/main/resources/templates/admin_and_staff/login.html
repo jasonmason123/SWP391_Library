@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Nhân viên - Đăng nhập</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="../static-admin_and_staff/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+  <!-- Custom styles for this template-->
+  <link href="../static-admin_and_staff/css/sb-admin.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-dark">
+
+  <div class="container">
+    <div class="card card-login mx-auto mt-5">
+      <div class="card-header">Nhân viên - Đăng nhập</div>
+      <div class="card-body">
+        <p id="error-message"></p>
+        <form id="staff-login-form">
+          <div class="form-group">
+            <div class="form-label-group">
+              <input type="email" id="inputUsername" class="form-control" placeholder="Email" required="required" autofocus="autofocus">
+              <label for="inputUsername">Email</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label-group">
+              <input type="password" id="inputPassword" class="form-control" placeholder="Mật khẩu" required="required">
+              <label for="inputPassword">Mật khẩu</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="rememberme">
+                Duy trì đăng nhập
+              </label>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Đăng nhập</button>
+        </form>
+        <div class="text-center">
+          <a class="d-block small" href="/Library/management/forgotpassword">Quên mật khẩu?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page js-->
+  <script src="../static-admin_and_staff/pages/login.js"></script>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="../static-admin_and_staff/vendor/jquery/jquery.min.js"></script>
+  <script src="../static-admin_and_staff/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="../static-admin_and_staff/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+</body>
+
+</html>

@@ -7,7 +7,7 @@
 				</div>
 			</div>
 			<div class="offset-lg-3 col-lg-6 col-md-12 col-12">
-				<form class="login-form" id="id-form-login">
+				<form class="login-form" id="id-form-login" action="/Library/processlogin" method="post">
 					<p id="error-message"></p>
 					<div class="single-login">
 						<label>Tên người dùng</label>
@@ -19,7 +19,7 @@
 					</div>
 					<div class="single-login single-login-2">
 						<button id="login-submit-button" type="submit">Đăng nhập</button>
-						<input id="rememberme" type="checkbox">
+						<input id="rememberme" name="rememberme" type="checkbox">
 						<span>Duy trì đăng nhập</span>
 					</div>
 					<div class="row">

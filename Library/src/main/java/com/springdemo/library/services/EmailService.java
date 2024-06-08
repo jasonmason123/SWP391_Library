@@ -47,6 +47,22 @@ public class EmailService implements IMessageService<EmailDetailsDto> {
         }
     }
 
+    public boolean sendHtmlEmail(EmailDetailsDto emailDetailsDto) {
+        try {
+            MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
+            mimeMessage.setContent(emailDetailsDto.getMessageBody(), "text/html");
+            mimeMessageHelper.setTo(emailDetailsDto.getRecipient());
+            mimeMessageHelper.setFrom(this.sender);
+            mimeMessageHelper.setSubject(emailDetailsDto.getSubject());
+            this.javaMailSender.send(mimeMessage);
+            return true;
+        } catch (Exception e) {
+            log.error("failed to send email: " + e);
+            return false;
+        }
+    }
+
     public boolean sendEmailWithAttachment(EmailDetailsDto emailDetailsDto) {
         if(emailDetailsDto.getAttachmentPath() != null || !emailDetailsDto.getAttachmentPath().isEmpty()) {
             // Creating a mime message

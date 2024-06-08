@@ -3,6 +3,7 @@ package com.springdemo.library.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -22,8 +23,6 @@ public class User {
     private String matKhau;
     @Column(name = "Email", unique = true)
     private String email;
-    @Column(name = "VaiTro")
-    private String vaiTro; //0: admin, 1: customer, 2: staff
     @Column(name = "AvatarLink")
     private String avatarLink;
     @Column(name = "SoDienThoai", unique = true)
@@ -33,6 +32,11 @@ public class User {
     private String soCCCD;
     @Column(name = "FlagDel")
     private int flagDel; //0: Hoat dong, 1: Vo hieu hoa
+    @Setter(AccessLevel.NONE)
+    @Column(name = "DateCreated")
+    private Date dateCreated;
+    @Column(name = "DateUpdated")
+    private Date dateUpdated;
 
     @OneToMany(orphanRemoval = true)
     private List<Blog> blogList;
@@ -43,13 +47,13 @@ public class User {
     @OneToMany(orphanRemoval = true)
     private List<YeuCauMuonSach> yeuCauMuonSachList;
     @Builder
-    public User(String tenUser, String email, String vaiTro, String avatarLink, String soDienThoai, String soCCCD) {
+    public User(String tenUser, String email, String avatarLink, String soDienThoai, String soCCCD, Date dateCreated) {
         this.tenUser = tenUser;
         this.email = email;
-        this.vaiTro = vaiTro;
         this.avatarLink = (avatarLink!=null && !avatarLink.isEmpty()) ? avatarLink : "";
         this.soDienThoai = soDienThoai;
         this.soCCCD = soCCCD;
         this.flagDel = 0;
+        this.dateCreated = dateCreated;
     }
 }

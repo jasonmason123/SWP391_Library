@@ -4,6 +4,7 @@ import com.springdemo.library.model.other.SachDuocMuon;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -26,15 +27,20 @@ public class Sach {
     @Column(name = "MoTa")
     private String moTa;
     @Column(name = "DanhGia")
-    private int DanhGia;
+    private int danhGia;
     @Column(name = "GiaTien")
-    private double GiaTien;
+    private double giaTien;
     @Column(name = "SoLuongTrongKho")
     private int soLuongTrongKho;
     @Column(name = "LinkAnh")
     private String linkAnh;
     @Column(name = "FlagDel")
     private int flagDel;
+    @Setter(AccessLevel.NONE)
+    @Column(name = "DateCreated")
+    private Date dateCreated;
+    @Column(name = "DateUpdated")
+    private Date dateUpdated;
 
     @OneToMany(orphanRemoval = true)
     private List<BinhLuanSach> binhLuan;
@@ -57,15 +63,17 @@ public class Sach {
                 double giaTien,
                 int soLuongTrongKho,
                 String linkAnh,
-                int flagDel) {
+                int flagDel,
+                Date dateCreated) {
         this.tenSach = tenSach;
         this.tacGia = tacGia;
         this.nhaXuatBan = nhaXuatBan;
         this.moTa = moTa;
-        DanhGia = danhGia;
-        GiaTien = giaTien;
+        this.danhGia = danhGia;
+        this.giaTien = giaTien;
         this.soLuongTrongKho = soLuongTrongKho;
         this.linkAnh = linkAnh;
         this.flagDel = flagDel;
+        this.dateCreated = dateCreated;
     }
 }

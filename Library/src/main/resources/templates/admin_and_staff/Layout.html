@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}"></title>
+    <!-- Custom fonts for this template-->
+    <link href="../static-admin_and_staff/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Page level plugin CSS-->
+    <link href="../static-admin_and_staff/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="../static-admin_and_staff/css/sb-admin.css" rel="stylesheet">
+</head>
+<body id="page-top">
+<!-- jquery latest version -->
+<script src="../js/vendor/jquery-1.12.4.min.js"></script>
+
+<nav th:insert="~{admin_and_staff/shared/header.html}"></nav>
+<div id="wrapper">
+    <ul class="sidebar navbar-nav" th:insert="~{admin_and_staff/shared/sidebar.html}"></ul>
+    <div style="width: 100%;" th:insert="~{${includedPage}}" th:with="modelClass=${modelClass}"></div>
+    <!-- Sticky Footer -->
+    <footer class="sticky-footer">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>Copyright © Library 2024</span>
+            </div>
+        </div>
+    </footer>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="../static-admin_and_staff/vendor/jquery/jquery.min.js"></script>
+<script src="../static-admin_and_staff/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="../static-admin_and_staff/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Page level plugin JavaScript-->
+<script src="../static-admin_and_staff/vendor/datatables/jquery.dataTables.js"></script>
+<script src="../static-admin_and_staff/vendor/datatables/dataTables.bootstrap4.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="../static-admin_and_staff/js/sb-admin.min.js"></script>
+
+<!-- Demo scripts for this page-->
+<script src="../static-admin_and_staff/js/demo/datatables-demo.js"></script>
+</body>
+</html>

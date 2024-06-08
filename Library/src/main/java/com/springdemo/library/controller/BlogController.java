@@ -15,10 +15,11 @@ public class BlogController {
     @GetMapping("/blog")
     public ModelAndView Blog() {
         ModelAndView blogViewModel = new ModelAndView("Layout");
-        blogViewModel.addObject("breadcrumb", "<ul>\n" +
-                "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
-                "                        <li><a href=\"#\" class=\"active\">Blog</a></li>\n" +
-                "                    </ul>");
+        blogViewModel.addObject("breadcrumb", """
+                                    <ul>
+                                        <li><a href="#">Trang chủ</a></li>
+                                        <li><a href="#" class="active">Blog</a></li>
+                                    </ul>""");
         blogViewModel.addObject("title", "blog");
         blogViewModel.addObject("includedPage", "blog");
         return blogViewModel;

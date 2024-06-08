@@ -1,6 +1,5 @@
 --create database LibraryManagement
 --drop database LibraryManagement
-use LibraryManagement
 
 --11
 CREATE TABLE  [dbo].[User]
@@ -8,14 +7,31 @@ CREATE TABLE  [dbo].[User]
   Id INT NOT NULL IDENTITY(1,1),
   TenUser  NVARCHAR(50) NOT NULL UNIQUE,
   MatKhau  NVARCHAR(100) NOT NULL,
-  VaiTro NVARCHAR(2) NOT NULL, --0:ADMIN, 1:STAFF, 2:CUSTOMER
   FlagDel INT NOT NULL DEFAULT 0,
   AvatarLink  NVARCHAR(100),
   Email  NVARCHAR(100) NOT NULL UNIQUE,
   SoCCCD NVARCHAR(20) NOT NULL UNIQUE,
   SoDienThoai NVARCHAR(20) NOT NULL UNIQUE,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (Id)
 );
+
+--12
+CREATE TABLE [dbo].[NhanVien]
+(
+  Id INT NOT NULL IDENTITY(1,1),
+  TenNhanVien  NVARCHAR(50) NOT NULL,
+  MatKhau  NVARCHAR(100) NOT NULL,
+  VaiTro NVARCHAR(2) NOT NULL, --0:ADMIN, 1:STAFF
+  Email  NVARCHAR(100) NOT NULL UNIQUE,
+  SoDienThoai NVARCHAR(20) NOT NULL UNIQUE,
+  DiaChi NVARCHAR(100) NOT NULL,
+  FlagDel INT NOT NULL DEFAULT 0,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
+  PRIMARY KEY (Id)
+)
 
 --10
 CREATE TABLE  [dbo].[Sach]
@@ -30,6 +46,8 @@ CREATE TABLE  [dbo].[Sach]
   TacGia  NVARCHAR(100) NOT NULL,
   NhaXuatBan  NVARCHAR(100) NOT NULL,
   FlagDel INT NOT NULL DEFAULT 0,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (Id)
 );
 
@@ -41,8 +59,10 @@ CREATE TABLE  [dbo].[YeuCauMuonSach]
   NgayTra DATETIME NOT NULL,
   BoiThuong FLOAT,
   QuaHan INT,
-  TrangThai INT DEFAULT 0, --0:Chua duoc duyet, 1:Da duoc duyet, 2:Dang muon, 3:Da tra
+  TrangThai INT DEFAULT 0, --0:Chua duoc duyet, 1:Da duoc duyet, 2:Dang muon, 3:Da tra, -1:Huy
   NguoiMuonId INT NOT NULL,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (Id),
   FOREIGN KEY (NguoiMuonId) REFERENCES  [dbo].[User](Id)
 );
@@ -101,6 +121,8 @@ CREATE TABLE  [dbo].[DanhMuc]
 (
   Id INT NOT NULL IDENTITY(1,1),
   TenDanhMuc NVARCHAR(100) NOT NULL UNIQUE,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (Id)
 );
 
@@ -109,6 +131,8 @@ CREATE TABLE [dbo].[Tag]
 (
   Id INT NOT NULL IDENTITY(1,1),
   TenTag NVARCHAR(50) NOT NULL UNIQUE,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (Id)
 );
 
@@ -118,6 +142,8 @@ CREATE TABLE  [dbo].[TheLoai]
   Id INT NOT NULL IDENTITY(1,1),
   TenTheLoai NVARCHAR(100) NOT NULL UNIQUE,
   DanhMucId INT NOT NULL,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (Id),
   FOREIGN KEY (DanhMucId) REFERENCES  [dbo].[DanhMuc](Id)
 );
@@ -127,6 +153,8 @@ CREATE TABLE  [dbo].[TagTheLoai]
 (
   SachId INT NOT NULL,
   TheLoaiId INT NOT NULL,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (SachId, TheLoaiId),
   FOREIGN KEY (SachId) REFERENCES  [dbo].[Sach](Id) ON DELETE CASCADE,
   FOREIGN KEY (TheLoaiId) REFERENCES  [dbo].[TheLoai](Id) ON DELETE CASCADE
@@ -137,6 +165,8 @@ CREATE TABLE  [dbo].[BlogTag]
 (
   BlogId INT NOT NULL,
   TagId INT NOT NULL,
+  DateCreated DATETIME NOT NULL,
+  DateUpdated DATETIME,
   PRIMARY KEY (BlogId, TagId),
   FOREIGN KEY (BlogId) REFERENCES  [dbo].[Blog](Id) ON DELETE CASCADE,
   FOREIGN KEY (TagId) REFERENCES  [dbo].[Tag](Id) ON DELETE CASCADE
@@ -154,3 +184,4 @@ CREATE TABLE  [dbo].[BlogTag]
 --drop table [YeuCauMuonSach]
 --drop table [Sach]
 --drop table [User]
+--drop table [NhanVien]

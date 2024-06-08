@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 public class Common {
 
     private static final Logger logger = Logger.getLogger(Common.class.getName());
+    private static final Random random = new Random();
 
     public static String sha256Hash(String password) {
         try {
@@ -39,7 +40,6 @@ public class Common {
     }
 
     public static String generateRandomNumberString(int length) {
-        Random random = new Random();
         StringBuilder result = new StringBuilder(length);
         for(int i=0; i<length; i++) {
             int index = random.nextInt(9);

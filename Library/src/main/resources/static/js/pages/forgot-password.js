@@ -6,7 +6,8 @@ $(document).ready(function () {
          url: "/Library/isvalidemail?email=" + $('#email').val(),
          success: (response) => {
             if(response=="existed") {
-               $('#otpModal').modal('show');
+               $('#messageModal').modal('show');
+               getLink();
             } else {
                $('#text-danger').text("Email không tồn tại, hoặc không hợp lệ").css('color', 'red');
             }
@@ -18,63 +19,25 @@ $(document).ready(function () {
       });
    });
 
-//Otp
+//Send change password link
 //--------------------------------------------------------------------------------------------
 
-   $('.verify-btn').on('click', function () {
-      console.log(inputOtp);
+   function getLink() {
       $.ajax({
          type: 'POST',
          url: "/Library/auth?email=" + $('#email').val(),
          contentType: 'application/json',
-         header: {
-            'otpInput': inputOtp
-         },
-         success: (response) => {
-            window.location.replace("/Library/changepassword?auth=" + response);
+         success: () => {
+            console.error("Success");
          },
          error: (jqXHR, textStatus, errorThrown) => {
             console.error("Failed! Error:" + textStatus + ', ' + errorThrown);
+            $('#text-danger').text("Có lỗi! Vui lòng thử lại sau").css('color', 'red');
          }
       });
-   });
+   }
 
-//end otp
+//end send change password link
 //--------------------------------------------------------------------------------------------
 
 });
-
-//Change password
-//--------------------------------------------------------------------------------------------
-
-$(document).ready(function () {
-   $('#change-password-form').on('submit', function (e) {
-      e.preventDefault();
-      let matKhauUnchecked = $('#matKhau').val();
-      let xacNhanMatKhau = $('#xacNhanMatKhau').val();
-      if(matKhauUnchecked === xacNhanMatKhau) {
-         // var currentUrl = window.location.href;
-         // var pathValues = currentUrl.split('/')
-         // var lastPath = pathValues[pathValues.length-1];
-         let url = new URL(window.location.href);
-         let params = new URLSearchParams(url.search);
-         let last = params.get("auth");
-         $.ajax({
-            method: 'POST',
-            url: '/Library/processforgotpassword?auth=' + last + "&new=" + matKhauUnchecked,
-            success: () => {
-               console.log("success");
-               window.location.replace("/Library/login")
-            },
-            error: (jqXHR, textStatus, errorThrown) => {
-               console.log("Error: " + textStatus + ', ' + errorThrown);
-            }
-         });
-      } else {
-         $('#unmatched-message').text("Xác nhận mật khẩu không khớp, vui lòng nhập lại").css('color', 'red');
-      }
-   });
-});
-
-//end change password
-//--------------------------------------------------------------------------------------------
