@@ -40,6 +40,7 @@ public class YeuCauMuonSach {
     @OneToMany(orphanRemoval = true)
     List<SachDuocMuon> sachDuocMuonList;
 
+
     public YeuCauMuonSach(Date ngayMuon, Date ngayTra, User nguoiMuon, Date dateCreated) {
         this.ngayMuon = ngayMuon;
         this.ngayTra = ngayTra;

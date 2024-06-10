@@ -32,7 +32,7 @@ public class SachDuocMuon {
     @JoinColumn(name = "YeuCauId")
     @Setter(AccessLevel.NONE)
     private YeuCauMuonSach yeuCauMuonSach;
-    @Column(name = "YeuCauId")
+    @Column(name = "SoLuong")
     private int soLuongMuon;
 
     @Builder

@@ -49,7 +49,7 @@ public class StaffManagementController {
                                 .diaChi(nhanVienDto.getDiaChi())
                                 .vaiTro(nhanVienDto.getVaiTro())
                                 .dateCreated(new Date()).build()
-                        ); //Add sdt and diachi to front-end
+                ); //Add sdt and diachi to front-end
                 log.warn("added");
                 return ResponseEntity.ok().build();
             }
@@ -99,7 +99,7 @@ public class StaffManagementController {
     @PostMapping("/deactivateStaff")
     @ResponseBody
     public ResponseEntity<String> deactivateStaff(
-        @RequestParam(name = "id") int id
+            @RequestParam(name = "id") int id
     ) {
         try {
             NhanVien existedNhanVien = nhanVienRepository.findById(id).orElse(null);
