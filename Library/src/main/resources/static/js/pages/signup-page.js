@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     let userName="", soCCCD="", email="", soDienThoai="", matKhau="";
 

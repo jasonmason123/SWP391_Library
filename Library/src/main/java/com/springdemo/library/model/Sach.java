@@ -27,9 +27,9 @@ public class Sach {
     @Column(name = "MoTa")
     private String moTa;
     @Column(name = "DanhGia")
-    private int DanhGia;
+    private int danhGia;
     @Column(name = "GiaTien")
-    private double GiaTien;
+    private double giaTien;
     @Column(name = "SoLuongTrongKho")
     private int soLuongTrongKho;
     @Column(name = "LinkAnh")
@@ -69,8 +69,8 @@ public class Sach {
         this.tacGia = tacGia;
         this.nhaXuatBan = nhaXuatBan;
         this.moTa = moTa;
-        DanhGia = danhGia;
-        GiaTien = giaTien;
+        this.danhGia = danhGia;
+        this.giaTien = giaTien;
         this.soLuongTrongKho = soLuongTrongKho;
         this.linkAnh = linkAnh;
         this.flagDel = flagDel;

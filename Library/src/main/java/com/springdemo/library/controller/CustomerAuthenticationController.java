@@ -45,10 +45,11 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
         return new ModelAndView("Layout")
         .addObject("title", "Đăng nhập")
         .addObject("includedPage", "login-page")
-        .addObject("breadcrumb", "<ul>\n" +
-                "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
-                "                        <li><a href=\"#\" class=\"active\">Đăng nhập</a></li>\n" +
-                "                    </ul>");
+        .addObject("breadcrumb", """
+                                    <ul>
+                                        <li><a href="#">Trang chủ</a></li>
+                                        <li><a href="#" class="active">Đăng nhập</a></li>
+                                    </ul>""");
     }
 
     @GetMapping("/signup")
@@ -57,10 +58,11 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
             return new ModelAndView("redirect:/home");
         }
         ModelAndView signupViewModel = new ModelAndView("Layout");
-        signupViewModel.addObject("breadcrumb", "<ul>\n" +
-                "                        <li><a href=\"#\">Trang chủ</a></li>\n" +
-                "                        <li><a href=\"#\" class=\"active\">Đăng ký</a></li>\n" +
-                "                    </ul>");
+        signupViewModel.addObject("breadcrumb", """
+                                    <ul>
+                                        <li><a href="#">Trang chủ</a></li>
+                                        <li><a href="#" class="active">Đăng ký</a></li>
+                                    </ul>""");
         signupViewModel.addObject("title", "Đăng ký");
         signupViewModel.addObject("includedPage", "signup-page");
         return signupViewModel;
@@ -190,9 +192,9 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
         email = email.trim();
         Matcher matcher = Constants.VALID_EMAIL_ADDRESS_REGEX.matcher(email);
         if(matcher.matches()) {
-            return isExistEmail(email) ? ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
+            return isExistEmail(email) ? ResponseEntity.ok(Constants.DATA_EXISTED) : ResponseEntity.ok(Constants.DATA_NOT_EXIST);
         } else {
-            return ResponseEntity.ok("unmatched");
+            return ResponseEntity.ok(Constants.DATA_PATTERN_UNMATCHED);
         }
     }
 
@@ -203,9 +205,9 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
         Matcher matcher = Constants.VALID_SODIENTHOAI_REGEX.matcher(soDienThoai);
         if(matcher.matches()) {
             return userRepository.findUserBySoDienThoai(soDienThoai).isPresent() ?
-                    ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
+                    ResponseEntity.ok(Constants.DATA_EXISTED) : ResponseEntity.ok(Constants.DATA_NOT_EXIST);
         } else {
-            return ResponseEntity.ok("unmatched");
+            return ResponseEntity.ok(Constants.DATA_PATTERN_UNMATCHED);
         }
     }
 
@@ -216,9 +218,9 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
         Matcher matcher = Constants.VALID_SOCCCD_REGEX.matcher(soCCCD);
         if(matcher.matches()) {
             return userRepository.findUserBySoCCCD(soCCCD).isPresent() ?
-                    ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
+                    ResponseEntity.ok(Constants.DATA_EXISTED) : ResponseEntity.ok(Constants.DATA_NOT_EXIST);
         } else {
-            return ResponseEntity.ok("unmatched");
+            return ResponseEntity.ok(Constants.DATA_PATTERN_UNMATCHED);
         }
     }
 
@@ -229,12 +231,13 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
         Matcher matcher = Constants.VALID_USERNAME_REGEX.matcher(userName);
         if (matcher.matches()) {
             return userRepository.findUserByTenUser(userName).isPresent() ?
-                    ResponseEntity.ok("existed") : ResponseEntity.ok("notExist");
+                    ResponseEntity.ok(Constants.DATA_EXISTED) : ResponseEntity.ok(Constants.DATA_NOT_EXIST);
         } else {
-            return ResponseEntity.ok("unmatched");
+            return ResponseEntity.ok(Constants.DATA_PATTERN_UNMATCHED);
         }
     }
 
+    @Override
     @PostMapping("/sendotp")
     @ResponseBody
     public ResponseEntity<String> sendOtp(
