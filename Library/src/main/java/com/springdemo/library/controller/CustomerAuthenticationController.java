@@ -39,7 +39,7 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
 
     @GetMapping("/login")
     public ModelAndView login(Authentication authentication) {
-        if(authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+        if(Common.isAuthenticated(authentication)) {
             return new ModelAndView("redirect:/home");
         }
         return new ModelAndView("Layout")
@@ -54,7 +54,7 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
 
     @GetMapping("/signup")
     public ModelAndView signup(Authentication authentication) {
-        if(authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+        if(Common.isAuthenticated(authentication)) {
             return new ModelAndView("redirect:/home");
         }
         ModelAndView signupViewModel = new ModelAndView("Layout");

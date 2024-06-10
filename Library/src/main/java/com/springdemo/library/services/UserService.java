@@ -22,6 +22,21 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
         this.nhanVienRepository = nhanVienRepository;
     }
+
+    public UserDetails loadUserByIdAndName(int id, String userName) throws UsernameNotFoundException {
+        User user = userRepository.findUserByIdAndTenUser(id, userName).orElse(null);
+        if(user == null)
+            throw new UsernameNotFoundException(userName);
+        return new CustomUserDetails(user);
+    }
+
+    public UserDetails loadNhanVienByIdAndEmail(int id, String email) throws UsernameNotFoundException {
+        NhanVien nhanVien = nhanVienRepository.findNhanVienByIdAndEmail(id, email).orElse(null);
+        if(nhanVien == null)
+            throw new UsernameNotFoundException(email);
+        return new NhanVienUserDetails(nhanVien);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findUserByTenUser(username).orElse(null);
@@ -30,10 +45,10 @@ public class UserService implements UserDetailsService {
         return new CustomUserDetails(user);
     }
 
-    public UserDetails loadNhanVienByTenNhanVien(String tenNhanVien) throws UsernameNotFoundException {
-        NhanVien nhanVien = nhanVienRepository.findNhanVienByTenNhanVien(tenNhanVien).orElse(null);
+    public UserDetails loadNhanVienByEmail(String email) throws UsernameNotFoundException {
+        NhanVien nhanVien = nhanVienRepository.findNhanVienByEmail(email).orElse(null);
         if(nhanVien == null)
-            throw new UsernameNotFoundException(tenNhanVien);
+            throw new UsernameNotFoundException(email);
         return new NhanVienUserDetails(nhanVien);
     }
 }

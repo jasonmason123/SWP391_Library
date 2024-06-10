@@ -4,6 +4,7 @@ import com.springdemo.library.services.JwtService;
 import com.springdemo.library.services.UserService;
 import com.springdemo.library.utils.Common;
 import com.springdemo.library.utils.Constants;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -15,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -26,14 +29,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     private UserService customUserDetailsService;
+    private final RequestMatcher managementMatcher = new AntPathRequestMatcher("/management/**");
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwt(request);
 
             if (StringUtils.hasText(jwt) && jwtService.validateToken(jwt)) {
-                String userName = jwtService.getSubjectFromJWT(jwt);
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
+                Claims claims = jwtService.getClaimsFromJWT(jwt);
+                String userIdClaim = (String) claims.get(Constants.TOKEN_USER_ID_CLAIM);
+                int userId = userIdClaim!=null ? Integer.parseInt(userIdClaim) : 0;
+                String userName = (String) claims.get(Constants.TOKEN_USERNAME_CLAIM);
+                UserDetails userDetails;
+                if(managementMatcher.matches(request)) {
+                    userDetails = customUserDetailsService.loadNhanVienByIdAndEmail(userId, userName);
+                } else {
+                    userDetails = customUserDetailsService.loadUserByIdAndName(userId, userName);
+                }
                 if(userDetails != null) {
                     //Spring Boot có một filter mặc định là UsernameAndPasswordAuthenticationFilter. Filter Jwt này sẽ được đặt
                     //trước UsernameAndPasswordAuthenticationFilter để lấy ra thông tin người dùng (gồm tên đăng nhập và mật khẩu)

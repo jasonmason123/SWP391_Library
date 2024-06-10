@@ -49,18 +49,18 @@
                             <tr th:each="item : ${modelClass}">
                                 <td th:id="'tenNV_' + ${item.getId()}" th:text="${item.getTenNhanVien()}"></td>
                                 <td th:id="'email_' + ${item.getId()}" th:text="${item.getEmail()}"></td>
-                                <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}"
-                                    th:if="${item.getVaiTro().equals('0')}">Quản trị viên</td>
-                                <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}"
-                                    th:if="${item.getVaiTro().equals('1')}">Thủ thư</td>
+                                <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}">
+                                    <span th:if="${item.getVaiTro().equals('0')}">Quản trị viên</span>
+                                    <span th:if="${item.getVaiTro().equals('1')}">Thủ thư</span>
+                                </td>
                                 <td class="text-center">
                                     <div th:if="${item.getFlagDel()==0}" class="badge badge-success">Đang hoạt động</div>
                                     <div th:if="${item.getFlagDel()==1}" class="badge badge-danger">Ngừng hoạt động</div>
                                 </td>
-                                <td style="display: none" th:id="'soDienThoai_' + ${item.getId()}"
-                                    th:attr="data-soDienThoai=${item.getSoDienThoai()}"></td>
-                                <td style="display: none" th:id="'diaChi_' + ${item.getId()}"
-                                    th:attr="data-diaChi=${item.getDiaChi()}"></td>
+                                <div style="display: none" th:id="'soDienThoai_' + ${item.getId()}"
+                                    th:attr="data-soDienThoai=${item.getSoDienThoai()}"></div>
+                                <div style="display: none" th:id="'diaChi_' + ${item.getId()}"
+                                    th:attr="data-diaChi=${item.getDiaChi()}"></div>
                                 <td class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-light"
                                             th:onclick="'openModalViewStaffDetail(' + ${item.getId()} + ')'">

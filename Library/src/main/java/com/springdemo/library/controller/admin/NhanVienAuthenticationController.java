@@ -15,9 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +38,7 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
     @Override
     @GetMapping("/login")
     public ModelAndView login(Authentication authentication) {
-        if(authentication!=null && authentication.isAuthenticated()
-            && !(authentication instanceof AnonymousAuthenticationToken)
+        if(Common.isAuthenticated(authentication)
             && authentication.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_0") || role.getAuthority().equals("ROLE_1"))
         ) {
@@ -116,11 +113,11 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
     ) {
         try {
             if(signinDataDto.getUserName()!=null && signinDataDto.getPassword()!=null) {
-                String tenNhanVien = signinDataDto.getUserName();
+                String email = signinDataDto.getUserName();
                 String password = Common.sha256Hash(signinDataDto.getPassword());
                 boolean rememberMe = signinDataDto.isRememberMe();
                 UserDetails nhanVienUserDetails = UserService.builder()
-                        .nhanVienRepository(nhanVienRepository).build().loadNhanVienByTenNhanVien(tenNhanVien);
+                        .nhanVienRepository(nhanVienRepository).build().loadNhanVienByEmail(email);
                 if(password.equals(nhanVienUserDetails.getPassword()) && nhanVienUserDetails.isEnabled()) {
                     Cookie jwtCookie = new Cookie(Constants.JWT_COOKIE_NAME, jwtService.generateToken((NhanVienUserDetails) nhanVienUserDetails));
                     if(rememberMe) {

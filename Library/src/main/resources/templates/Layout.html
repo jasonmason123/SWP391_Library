@@ -42,7 +42,7 @@
 <![endif]-->
 
 <!-- header-area-start -->
-<header th:insert="~{shared/_header.html}"></header>
+<header th:insert="~{shared/_header.html}" th:with="isAuthenticated=${isAuthenticated}"></header>
 <!-- header-area-end -->
 <!-- breadcrumbs-area-start -->
 <div class="breadcrumbs-area mb-70">
@@ -57,7 +57,8 @@
 <!-- breadcrumbs-area-end -->
 <!-- user-login-area-start -->
 <p th:text="${errorMessage}"></p>
-<div class="user-login-area mb-70" th:insert="~{${includedPage}}"></div>
+<div class="user-login-area mb-70" th:insert="~{${includedPage}}"
+     th:with="modelClass=${modelClass}, isAuthenticated=${isAuthenticated}"></div>
 <!-- user-login-area-end -->
 <!-- footer-area-start -->
 <footer th:insert="~{shared/_footer.html}"></footer>
@@ -65,7 +66,8 @@
 
 
 <!-- all js here -->
-
+<!-- jquery latest version -->
+<script src="js/vendor/jquery-1.12.4.min.js"></script>
 <!-- bootstrap js -->
 <script src="js/bootstrap.min.js"></script>
 <!-- owl.carousel js -->

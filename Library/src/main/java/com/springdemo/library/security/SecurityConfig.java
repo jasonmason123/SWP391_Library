@@ -36,7 +36,8 @@ public class SecurityConfig {
                                         "/signup", "/processsignup", "/auth", "/changepassword",
                                         "/forgotpassword", "/processforgotpassword",
                                         "/isvalidemail", "/isvalidsodienthoai",
-                                        "/isvalidsocccd", "/isvalidtenuser").permitAll()
+                                        "/isvalidsocccd", "/isvalidtenuser",
+                                        "/home", "/book/**", "/blog/**").permitAll()
                                 .requestMatchers("/management/**").permitAll()
                                 //0:Admin, 1:Staff, 2:Customer
                                 //.requestMatchers("/").hasRole("ROLE_0")

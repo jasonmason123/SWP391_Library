@@ -1,7 +1,9 @@
 package com.springdemo.library.controller;
 
-import lombok.AllArgsConstructor;
+import com.springdemo.library.utils.Common;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,12 +11,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @Slf4j
-@AllArgsConstructor
 @RequestMapping
 public class HomeController {
+
     @GetMapping("/home")
-    public ModelAndView home() {
+    public ModelAndView home(Authentication authentication) {
         ModelAndView homeViewModel = new ModelAndView("Layout");
+        if(Common.isAuthenticated(authentication)
+                && authentication.getAuthorities().stream().anyMatch(x -> x.getAuthority().equals("CUSTOMER"))) {
+            homeViewModel.addObject("isAuthenticated", 1);
+        } else {
+            homeViewModel.addObject("isAuthenticated", 0);
+        }
         homeViewModel.addObject("breadcrumb", """
                                     <ul>
                                         <li><a href="#">Trang chủ</a></li>
@@ -23,11 +31,6 @@ public class HomeController {
         homeViewModel.addObject("title", "home");
         homeViewModel.addObject("includedPage", "home");
         return homeViewModel;
-    }
-
-    @GetMapping("/anotherhome")
-    public ModelAndView anotherHome() {
-        return new ModelAndView("anotherhome");
     }
 
     @GetMapping("/error")
