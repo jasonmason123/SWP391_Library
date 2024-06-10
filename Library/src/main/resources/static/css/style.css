@@ -1745,7 +1745,7 @@ body {
 
 .tab-active-3.owl-carousel .owl-nav button:hover,
 .hot-sell-active.owl-carousel .owl-nav button:hover {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
     color: #fff;
 }
 
@@ -2336,7 +2336,8 @@ body {
 /*----------------------------------------*/
 
 .social-group-area {
-    background: #F6F6F6;
+    margin-top: 40px;
+    background: #EBEBEB;
 }
 
 .section-title-3 h3 {
@@ -3114,176 +3115,6 @@ a#scrollUp:hover {
 }
 
 /*----------------------------------------*/
-/*  14. Home 3
-/*----------------------------------------*/
-
-.home-3-main {
-    background: #fff none repeat scroll 0 0;
-    margin: 0 auto;
-    max-width: 1452px;
-    vertical-align: top;
-    z-index: 1;
-}
-
-.home-3 {
-    background: #ffffff url("img/banner/13.jpg") no-repeat scroll center top;
-}
-
-.home-3 .header-top-area,
-.home-3 .header-mid-area,
-.banner-area-4 {
-    background: #fff none repeat scroll 0 0;
-}
-
-.home-3 .header-top-area {
-    border-bottom: 1px solid #ededed;
-}
-
-.home-3 .language-area ul li a,
-.home-3 .account-area ul li a {
-    color: #222;
-}
-
-.home-3 .language-area ul li a:hover,
-.home-3 .account-area ul li a:hover,
-.home-3 .language-area ul li .header-sub ul li a:hover,
-.home-3 .account-area ul li .header-sub ul li a:hover {
-    color: #ffb400;
-}
-
-.home-3 .main-menu ul li:hover a,
-.home-3 .main-menu ul li.active a,
-.home-3 .header-mid-area .mini-cart ul li a:hover,
-.home-3 .main-menu ul li .sub-menu ul li a:hover {
-    color: #ffb400;
-}
-
-.home-3 .header-mid-area .my-cart ul li span {
-    background: #ffb400 none repeat scroll 0 0;
-}
-
-.home-3 .header-mid-area .my-cart ul li:hover a {
-    color: #ffb400;
-}
-
-.home-3 .header-bottom-area {
-    background: #ffb400 none repeat scroll 0 0;
-}
-
-.home-3 .category-menu ul li:hover>a,
-.home-3 .category-menu ul li .left-menu span a:hover {
-    color: #ffb400;
-}
-
-.home-3 .category-menu ul li .left-menu span a {
-    color: #fff;
-}
-
-.home-3 .slider-active {
-    float: none;
-    width: 100%;
-}
-
-.home-3 .slider-content {
-    left: 30%;
-}
-
-.home-3 .slider-active.owl-carousel.owl-theme .owl-controls .owl-dots .owl-dot.active span {
-    background: #ffb400 none repeat scroll 0 0;
-}
-
-.home-3 a#scrollUp:hover {
-    background: #ffb400 none repeat scroll 0 0;
-    border-color: #ffb400;
-}
-
-.banner-area-4 .banner-img-2 a img {
-    border-radius: 4px;
-}
-
-.banner-total {
-    overflow: hidden;
-}
-
-.banner-total-2 {
-    margin-top: 23px;
-    overflow: hidden;
-}
-
-.banner-total .single-banner-7 {
-    float: left;
-    padding-right: 15px;
-    width: 56%;
-}
-
-.banner-total .single-banner-3 {
-    float: left;
-    padding-left: 15px;
-    width: 44%;
-}
-
-.banner-total-2 .single-banner-4 {
-    float: left;
-    padding-right: 15px;
-    width: 44%;
-}
-
-.banner-total-2 .single-banner-5 {
-    float: left;
-    padding-left: 15px;
-    width: 56%;
-}
-
-.home-3 .tab-menu ul li a::before {
-    background: #ffb400 none repeat scroll 0 0;
-}
-
-.home-3 .product-details h4 a:hover,
-.home-3 .product-link .product-button a:hover,
-.home-3 .product-link .add-to-link ul li a:hover {
-    color: #ffb400;
-}
-
-.home-3 .product-price ul li {
-    color: #22aeac;
-}
-
-.home-3 .product-price ul li.old-price {
-    color: #666;
-    font-size: 14px;
-}
-
-.home-3 .most-product-content h4 a:hover,
-.home-3 .block-newsletter a:hover,
-.home-3 .post-content h3 a:hover {
-    color: #ffb400;
-}
-
-.home-3 .block-newsletter::before {
-    background: #22aeac none repeat scroll 0 0;
-}
-
-.home-3 .block-newsletter::after {
-    background: rgba(0, 0, 0, 0) none repeat scroll center top;
-    border: 2px solid #22aeac;
-    z-index: 1;
-}
-
-.home-3 .block-newsletter {
-    background: #22aeac url("img/banner/19.jpg") no-repeat scroll center top;
-}
-
-.home-3 .tab-active.owl-carousel.owl-theme .owl-controls .owl-nav div:hover,
-.home-3 .post-active.owl-carousel.owl-theme .owl-controls .owl-nav div:hover {
-    background: #f07c29 none repeat scroll 0 0;
-}
-
-.home-3 .footer-top-menu ul li a:hover,
-.home-3 .footer-mid-menu ul li a:hover {
-    color: #ffb400;
-}
-
-/*----------------------------------------*/
 /*  15. Home 4
 /*----------------------------------------*/
 
@@ -3323,31 +3154,31 @@ a#scrollUp:hover {
 .home-4 .twitter-content .twitter-text p>a:hover,
 .home-4 .footer-top-menu ul li a:hover,
 .home-4 .footer-mid-menu ul li a:hover {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .home-4 .header-search form a,
 .home-4 .header-mid-area .my-cart ul li span {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
 }
 
 .home-4 .main-menu-area {
-    background: #006f91 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
 }
 
 .home-4 .menu-area ul li a::before,
 .home-4 .menu-area ul li::before,
 .home-4 .twitter-content .twitter-icon a {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
 }
 
 .home-4 .menu-area ul li .mega-menu span a:hover,
 .home-4 .menu-area ul li .sub-menu ul li a:hover {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .home-4 .twitter-text a {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .home-4 .twitter-text a:hover {
@@ -3356,18 +3187,18 @@ a#scrollUp:hover {
 
 .home-4 .product-active-2.owl-carousel .owl-nav button:hover,
 .home-4 .product-active-3.owl-carousel .owl-nav button:hover {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
     color: #fff;
 }
 
 .home-4 .menu-area ul li a:after {
-    border-bottom-color: #00abe0;
-    border-left-color: #00abe0;
+    border-bottom-color: #f07c29;
+    border-left-color: #f07c29;
 }
 
 .home-4 a#scrollUp:hover {
-    background: #00abe0 none repeat scroll 0 0;
-    border-color: #00abe0;
+    background: #f07c29 none repeat scroll 0 0;
+    border-color: #f07c29;
 }
 
 .home-4 .slider-content-4 h1 {
@@ -3392,7 +3223,7 @@ a#scrollUp:hover {
 }
 
 .home-4 .slider-content-4 a {
-    background: #006f91 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
     border-radius: 4px;
     border: none;
     color: #fff;
@@ -3413,11 +3244,11 @@ a#scrollUp:hover {
 
 .home-4 .slider-active.owl-carousel .owl-nav .owl-prev:hover,
 .home-4 .slider-active.owl-carousel .owl-nav .owl-next:hover {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .home-4 .slider-active.owl-carousel .owl-dots .owl-dot.active span {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
 }
 
 .single-banner-2 {
@@ -3429,7 +3260,7 @@ a#scrollUp:hover {
 }
 
 .single-banner-2:hover {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
 }
 
 .single-banner-2 .single-icon-2 {
@@ -3439,7 +3270,7 @@ a#scrollUp:hover {
 }
 
 .single-banner-2 .single-icon-2 a {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .single-banner-2:hover .single-icon-2 a {
@@ -3493,13 +3324,13 @@ nav.menu .cr-dropdown ul {
 
 .home-4 .category-menu {
     background: #fff none repeat scroll 0 0;
-    border: 1px solid #00abe0;
+    border: 1px solid #f07c29;
     border-top: none;
     position: relative;
 }
 
 .home-4 .category-area h3 {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
     border-bottom: medium none;
 }
 
@@ -3513,7 +3344,7 @@ nav.menu .cr-dropdown ul {
 
 .home-4 .category-menu ul li:hover>a,
 .home-4 .category-menu ul li .left-menu span a:hover {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .home-4 .category-menu ul li .left-menu span a.title {
@@ -3530,23 +3361,23 @@ nav.menu .cr-dropdown ul {
 }
 
 .home-4 .section-title-2 h3 {
-    border-bottom: 3px solid #00abe0;
+    border-bottom: 3px solid #f07c29;
 }
 
 .home-4 .quick-view a {
-    background-color: #00abe0;
+    background-color: #f07c29;
 }
 
 .home-4 .product-details h4 a:hover,
 .home-4 .product-link .product-button a:hover,
 .home-4 .product-link .add-to-link ul li a:hover {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .home-4 .most-product-content h4 a:hover,
 .home-4 .post-content h3 a:hover,
 .home-4 .block-newsletter a:hover {
-    color: #00abe0;
+    color: #f07c29;
 }
 
 .home-4 .post-content h3 a {
@@ -3554,7 +3385,7 @@ nav.menu .cr-dropdown ul {
 }
 
 .home-4 .block-newsletter {
-    background: #00abe0 url("img/banner/22.jpg") no-repeat scroll center top;
+    background: #f07c29 url("img/banner/22.jpg") no-repeat scroll center top;
     margin-top: 0;
 }
 
@@ -3630,7 +3461,7 @@ nav.menu .cr-dropdown ul {
 }
 
 .tab-menu-2 ul li a:before {
-    background: #00abe0 none repeat scroll 0 0;
+    background: #f07c29 none repeat scroll 0 0;
     bottom: 0;
     content: "";
     height: 3px;

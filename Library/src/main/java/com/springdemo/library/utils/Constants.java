@@ -18,4 +18,6 @@ public class Constants {
     public static final String DATA_EXISTED = "existed";
     public static final String DATA_NOT_EXIST = "notExist";
     public static final String DATA_PATTERN_UNMATCHED = "unmatched";
+    public static final String TOKEN_USER_ID_CLAIM = "id";
+    public static final String TOKEN_USERNAME_CLAIM = "name";
 }

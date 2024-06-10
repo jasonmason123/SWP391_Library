@@ -2,6 +2,8 @@ package com.springdemo.library.utils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -54,5 +56,9 @@ public class Common {
             return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieName)).findFirst().orElse(null);
         }
         return null;
+    }
+
+    public static boolean isAuthenticated(Authentication authentication) {
+        return authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken);
     }
 }

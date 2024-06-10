@@ -7,9 +7,12 @@
         <div class="col-lg-6 col-md-6 col-12">
           <div class="account-area text-end">
             <ul>
-              <li><a href="my-account.html">Tài khoản</a></li>
-              <li><a href="checkout.html">Checkout</a></li>
-              <li><a href="/Library/login">Đăng nhập</a></li>
+              <li th:if="${isAuthenticated==1}"><a href="my-account.html">Tài khoản</a></li>
+              <li th:if="${isAuthenticated==0 || isAuthenticated==null}"><a href="/Library/signup">Đăng ký</a></li>
+              <li>
+                <a th:if="${isAuthenticated==0 || isAuthenticated==null}" href="/Library/login">Đăng nhập</a>
+                <a th:if="${isAuthenticated==1}" href="/Library/logout">Đăng xuất</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -35,7 +38,12 @@
           </div>
         </div>
         <div class="col-lg-3 col-md-3 col-12">
-          <div class="my-cart">
+          <div th:if="${isAuthenticated==0}" class="my-cart">
+            <ul>
+              <li><a href="/Library/login"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a></li>
+            </ul>
+          </div>
+          <div th:if="${isAuthenticated==1}" class="my-cart">
             <ul>
               <li><a href="#"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a>
                 <span>2</span>
@@ -90,56 +98,23 @@
           <div class="menu-area">
             <nav>
               <ul>
-                <li class="active"><a href="/Library/home">Trang chủ<i class="fa fa-angle-down"></i></a>
-                  <div class="sub-menu">
-                    <!--<ul>
-                      <li><a href="index.html">Home-1</a></li>
-                      <li><a href="index-2.html">Home-2</a></li>
-                      <li><a href="index-3.html">Home-3</a></li>
-                      <li><a href="index-4.html">Home-4</a></li>
-                      <li><a href="index-5.html">Home-5</a></li>
-                      <li><a href="index-6.html">Home-6</a></li>
-                      <li><a href="index-7.html">Home-7</a></li>
-                    </ul>-->
-                  </div>
+                <li class="active">
+                  <a href="/Library/home">Trang chủ</a>
                 </li>
-                <li><a href="/Library/book">Sách<i class="fa fa-angle-down"></i></a>
-                  <div class="mega-menu">
-                    <span>
-                        <a href="#" class="title">Jackets</a>
-                        <a href="/Library/book">Tops & Tees</a>
-                        <a href="shop.html">Polo Short Sleeve</a>
-                        <a href="shop.html">Graphic T-Shirts</a>
-                        <a href="shop.html">Jackets & Coats</a>
-                        <a href="shop.html">Fashion Jackets</a>
-                    </span>
-                    <span>
-                        <a href="#" class="title">weaters</a>
-                        <a href="shop.html">Crochet</a>
-                        <a href="shop.html">Sleeveless</a>
-                        <a href="shop.html">Stripes</a>
-                        <a href="shop.html">Sweaters</a>
-                        <a href="shop.html">hoodies</a>
-                    </span>
-                    <span>
-                        <a href="#" class="title">Bottoms</a>
-                        <a href="shop.html">Heeled sandals</a>
-                        <a href="shop.html">Polo Short Sleeve</a>
-                        <a href="shop.html">Flat sandals</a>
-                        <a href="shop.html">Short Sleeve</a>
-                        <a href="shop.html">Long Sleeve</a>
-                    </span>
-                    <span>
-                        <a href="#" class="title">Jeans Pants</a>
-                        <a href="shop.html">Polo Short Sleeve</a>
-                        <a href="shop.html">Sleeveless</a>
-                        <a href="shop.html">Graphic T-Shirts</a>
-                        <a href="shop.html">Hoodies</a>
-                        <a href="shop.html">Jackets</a>
-                    </span>
-                  </div>
+                <!-- <i class="fa fa-angle-down"></i> -->
+                <li><a href="/Library/book">Sách</a>
+<!--                  <div class="mega-menu">-->
+<!--                    <span>-->
+<!--                        <a href="#" class="title">Jackets</a>-->
+<!--                        <a href="/Library/book">Tops & Tees</a>-->
+<!--                        <a href="shop.html">Polo Short Sleeve</a>-->
+<!--                        <a href="shop.html">Graphic T-Shirts</a>-->
+<!--                        <a href="shop.html">Jackets & Coats</a>-->
+<!--                        <a href="shop.html">Fashion Jackets</a>-->
+<!--                    </span>-->
+<!--                  </div>-->
                 </li>
-                <li><a href="#">blog<i class="fa fa-angle-down"></i></a>
+                <li><a href="/Library/blog">blog<i class="fa fa-angle-down"></i></a>
                   <div class="sub-menu sub-menu-2">
                     <ul>
                       <li><a href="/Library/blog">blog</a></li>
@@ -163,45 +138,12 @@
           <div class="mobile-menu">
             <nav id="mobile-menu-active">
               <ul id="nav">
-                <li><a href="index.html">Trang chủ</a>
-                  <ul>
-                    <li><a href="index.html">Home-1</a></li>
-                    <li><a href="index-2.html">Home-2</a></li>
-                    <li><a href="index-3.html">Home-3</a></li>
-                    <li><a href="index-4.html">Home-4</a></li>
-                    <li><a href="index-5.html">Home-5</a></li>
-                    <li><a href="index-6.html">Home-6</a></li>
-                    <li><a href="index-7.html">Home-7</a></li>
-                  </ul>
-                </li>
-                <li><a href="product-details.html">Sách</a>
-                  <ul>
-                    <li><a href="shop.html">Tops & Tees</a></li>
-                    <li><a href="shop.html">Polo Short Sleeve</a></li>
-                    <li><a href="shop.html">Graphic T-Shirts</a></li>
-                    <li><a href="shop.html">Jackets & Coats</a></li>
-                    <li><a href="shop.html">Fashion Jackets</a></li>
-                    <li><a href="shop.html">Crochet</a></li>
-                    <li><a href="shop.html">Sleeveless</a></li>
-                    <li><a href="shop.html">Stripes</a></li>
-                    <li><a href="shop.html">Sweaters</a></li>
-                    <li><a href="shop.html">hoodies</a></li>
-                    <li><a href="shop.html">Heeled sandals</a></li>
-                    <li><a href="shop.html">Polo Short Sleeve</a></li>
-                    <li><a href="shop.html">Flat sandals</a></li>
-                    <li><a href="shop.html">Short Sleeve</a></li>
-                    <li><a href="shop.html">Long Sleeve</a></li>
-                    <li><a href="shop.html">Polo Short Sleeve</a></li>
-                    <li><a href="shop.html">Sleeveless</a></li>
-                    <li><a href="shop.html">Graphic T-Shirts</a></li>
-                    <li><a href="shop.html">Hoodies</a></li>
-                    <li><a href="shop.html">Jackets</a></li>
-                  </ul>
-                </li>
+                <li><a href="/Library/home">Trang chủ</a></li>
+                <li><a href="/Library/book">Sách</a></li>
                 <li><a href="#">blog</a>
                   <ul>
-                    <li><a href="../blog.html">Blog</a></li>
-                    <li><a href="../blog-details.html">blog-details</a></li>
+                    <li><a href="/Library/blog">Blog</a></li>
+                    <li><a href="/Library/blogDetail">blog-details</a></li>
                   </ul>
                 </li>
               </ul>
