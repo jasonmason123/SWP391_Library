@@ -36,50 +36,50 @@
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr>
-                                <th>Tên nhân viên</th>
-                                <th>Email</th>
-                                <th>Vị trí</th>
-                                <th class="text-center">Trạng thái</th>
-                                <th></th>
-                            </tr>
+                        <tr>
+                            <th>Tên nhân viên</th>
+                            <th>Email</th>
+                            <th>Vị trí</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th></th>
+                        </tr>
                         </thead>
 
                         <tbody>
-                            <tr th:each="item : ${modelClass}">
-                                <td th:id="'tenNV_' + ${item.getId()}" th:text="${item.getTenNhanVien()}"></td>
-                                <td th:id="'email_' + ${item.getId()}" th:text="${item.getEmail()}"></td>
-                                <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}"
-                                    th:if="${item.getVaiTro().equals('0')}">Quản trị viên</td>
-                                <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}"
-                                    th:if="${item.getVaiTro().equals('1')}">Thủ thư</td>
-                                <td class="text-center">
-                                    <div th:if="${item.getFlagDel()==0}" class="badge badge-success">Đang hoạt động</div>
-                                    <div th:if="${item.getFlagDel()==1}" class="badge badge-danger">Ngừng hoạt động</div>
-                                </td>
-                                <td style="display: none" th:id="'soDienThoai_' + ${item.getId()}"
-                                    th:attr="data-soDienThoai=${item.getSoDienThoai()}"></td>
-                                <td style="display: none" th:id="'diaChi_' + ${item.getId()}"
-                                    th:attr="data-diaChi=${item.getDiaChi()}"></td>
-                                <td class="d-flex justify-content-center">
-                                    <button type="button" class="btn btn-light"
-                                            th:onclick="'openModalViewStaffDetail(' + ${item.getId()} + ')'">
-                                        <i class="fa fa-eye text-primary"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-light"
+                        <tr th:each="item : ${modelClass}">
+                            <td th:id="'tenNV_' + ${item.getId()}" th:text="${item.getTenNhanVien()}"></td>
+                            <td th:id="'email_' + ${item.getId()}" th:text="${item.getEmail()}"></td>
+                            <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}"
+                                th:if="${item.getVaiTro().equals('0')}">Quản trị viên</td>
+                            <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}"
+                                th:if="${item.getVaiTro().equals('1')}">Thủ thư</td>
+                            <td class="text-center">
+                                <div th:if="${item.getFlagDel()==0}" class="badge badge-success">Đang hoạt động</div>
+                                <div th:if="${item.getFlagDel()==1}" class="badge badge-danger">Ngừng hoạt động</div>
+                            </td>
+                            <td style="display: none" th:id="'soDienThoai_' + ${item.getId()}"
+                                th:attr="data-soDienThoai=${item.getSoDienThoai()}"></td>
+                            <td style="display: none" th:id="'diaChi_' + ${item.getId()}"
+                                th:attr="data-diaChi=${item.getDiaChi()}"></td>
+                            <td class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-light"
+                                        th:onclick="'openModalViewStaffDetail(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-eye text-primary"></i>
+                                </button>
+                                <button type="button" class="btn btn-light"
                                         th:onclick="'openModalUpdateStaff(' + ${item.getId()} + ')'">
-                                        <i class="fa fa-pen text-primary"></i>
-                                    </button>
-                                    <button th:if="${item.getFlagDel()==0}" type="button" class="btn btn-light"
+                                    <i class="fa fa-pen text-primary"></i>
+                                </button>
+                                <button th:if="${item.getFlagDel()==0}" type="button" class="btn btn-light"
                                         th:onclick="'openModalDeactivateStaff(' + ${item.getId()} + ')'">
-                                        <i class="fa fa-times text-primary"></i>
-                                    </button>
-                                    <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
-                                            th:onclick="'openModalActivateStaff(' + ${item.getId()} + ')'">
-                                        <i class="fa fa-times text-primary"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                                    <i class="fa fa-times text-primary"></i>
+                                </button>
+                                <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
+                                        th:onclick="'openModalActivateStaff(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-times text-primary"></i>
+                                </button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

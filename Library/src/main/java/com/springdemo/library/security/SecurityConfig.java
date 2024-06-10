@@ -38,6 +38,7 @@ public class SecurityConfig {
                                         "/isvalidemail", "/isvalidsodienthoai",
                                         "/isvalidsocccd", "/isvalidtenuser").permitAll()
                                 .requestMatchers("/management/**").permitAll()
+                                .requestMatchers("/management/manageBookBorrowed").permitAll()
                                 //0:Admin, 1:Staff, 2:Customer
                                 //.requestMatchers("/").hasRole("ROLE_0")
                                 //.requestMatchers("/").hasRole("ROLE_1")

@@ -36,7 +36,7 @@ public class CustomerManagementController {
     @PostMapping("/deactivateCustomer")
     @ResponseBody
     public ResponseEntity<String> deactivateCustomer(
-        @RequestParam(name = "id") int id
+            @RequestParam(name = "id") int id
     ) {
         try {
             User existedCustomer = userRepository.findById(id).orElse(null);
