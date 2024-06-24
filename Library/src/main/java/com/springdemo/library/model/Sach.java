@@ -27,11 +27,11 @@ public class Sach {
     @Column(name = "MoTa")
     private String moTa;
     @Column(name = "DanhGia")
-    private int danhGia;
+    private String danhGia;
     @Column(name = "GiaTien")
-    private double giaTien;
+    private String giaTien;
     @Column(name = "SoLuongTrongKho")
-    private int soLuongTrongKho;
+    private String soLuongTrongKho;
     @Column(name = "LinkAnh")
     private String linkAnh;
     @Column(name = "FlagDel")
@@ -59,9 +59,9 @@ public class Sach {
                 String tacGia,
                 String nhaXuatBan,
                 String moTa,
-                int danhGia,
-                double giaTien,
-                int soLuongTrongKho,
+                String danhGia,
+                String giaTien,
+                String soLuongTrongKho,
                 String linkAnh,
                 int flagDel,
                 Date dateCreated) {

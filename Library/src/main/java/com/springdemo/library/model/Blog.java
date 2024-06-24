@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "Blog")
@@ -27,6 +28,8 @@ public class Blog {
     @Setter(AccessLevel.NONE)
     @Column(name = "NgayTao")
     private Date ngayTao;
+    @Column(name = "FlagDel")
+    private int flagDel;
 
     @OneToMany(orphanRemoval = true)
     private List<BinhLuanBlog> binhLuanBlogList;
@@ -45,5 +48,6 @@ public class Blog {
         this.noiDung = noiDung;
         this.danhGia = danhGia;
         this.ngayTao = ngayTao;
+        this.flagDel = 1;
     }
 }
