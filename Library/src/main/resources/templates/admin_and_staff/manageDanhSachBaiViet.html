@@ -108,7 +108,7 @@
                             <td th:id="'TieuDe_' + ${item.getId()}" th:text="${item.getTieuDe()}"></td>
                             <td th:id="'NgayTao_' + ${item.getId()}" th:text="${item.getNgayTao()}"></td>
                             <td th:id="'TacGia_' + ${item.getId()}" th:text="${item.tacGia.getTenUser()}"></td>
-                            <td th:id="'NoiDung_' + ${item.getId()}" th:text="${item.getNoiDung()}"></td>
+                            <td><a href="#" th:id="'NoiDung_' + ${item.getId()}" th:text="${item.getNoiDung()}"></a></td>
                             <td class="text-center">
                                 <div th:if="${item.getFlagDel()==0 }" class="badge badge-success">Hiển thị</div>
                                 <div th:if="${item.getFlagDel()==1 ||item.getFlagDel()==2 }" class="badge badge-danger">Đã ẩn</div>

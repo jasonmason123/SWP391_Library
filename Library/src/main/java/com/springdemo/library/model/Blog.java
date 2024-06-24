@@ -31,7 +31,7 @@ public class Blog {
     @Column(name = "FlagDel")
     private int flagDel;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, mappedBy = "blog")
     private List<BinhLuanBlog> binhLuanBlogList;
     @ManyToMany
     @JoinTable(

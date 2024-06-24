@@ -22,7 +22,7 @@ public class BaiVietCanDuyetController {
     @GetMapping("/manageBaiVietCanDuyet")
     public ModelAndView manageBookBorrowed() {
         ModelAndView manageBlogViewModel = new ModelAndView("admin_and_staff/Layout");
-        List<Blog> list=blogRepository.findAll();
+        List<Blog> list = blogRepository.findByFlagDel(2);
 
 
 
@@ -61,8 +61,9 @@ public class BaiVietCanDuyetController {
             Blog existedBlog = blogRepository.findById(id).orElse(null);
             if(existedBlog!=null) {
                 existedBlog.setFlagDel(1);
-
                 blogRepository.save(existedBlog);
+                blogRepository.deleteById(id);
+
                 return ResponseEntity.ok().build();
             }
         } catch (DataIntegrityViolationException e) {

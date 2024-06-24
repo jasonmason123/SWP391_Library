@@ -123,10 +123,10 @@
                                 <td th:id="'NgayMuon_' + ${item.getId()}" th:text="${item.getNgayMuon()}"></td>
                                 <td th:id="'NgayTra_' + ${item.getId()}" th:text="${item.getNgayTra()}"></td>
                                 <td th:id="'TrangThai_' + ${item.getId()}">
-                                    <span th:if="${item.getTrangThai()==0}" class="btn btn-danger" th:text="'Chưa được duyệt'"></span>
-                                    <span th:if="${item.getTrangThai()==1}" class="btn btn-success" th:text="'Đã được duyệt'"></span>
-                                    <span th:if="${item.getTrangThai()==2}" class="order-status pending" th:text="'Đang mượn'"></span>
-                                    <span th:if="${item.getTrangThai()==3}" class="btn btn-primary" th:text="'Đã trả'"></span>
+                                    <span th:if="${item.getTrangThai()==0}" class="badge badge-danger" th:text="'Chưa được duyệt'"></span>
+                                    <span th:if="${item.getTrangThai()==1}" class="badge badge-success" th:text="'Đã được duyệt'"></span>
+                                    <span th:if="${item.getTrangThai()==2}" class="badge badge-warning" th:text="'Đang mượn'"></span>
+                                    <span th:if="${item.getTrangThai()==3}" class="badge badge-primary" th:text="'Đã trả'"></span>
                                 </td>
                                 <div style="display: none" th:id="'TenNguoiMuon_' + ${item.getId()}" th:attr="data-TenNguoiMuon=${item.nguoiMuon.getTenUser()}"></div>
                                 <div style="display: none" th:id="'QuaHan_' + ${item.getId()}" th:attr="data-QuaHan=${item.getQuaHan()}"></div>

@@ -42,7 +42,7 @@ public class Sach {
     @Column(name = "DateUpdated")
     private Date dateUpdated;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true,mappedBy = "sach")
     private List<BinhLuanSach> binhLuan;
     @ManyToMany
     @JoinTable(

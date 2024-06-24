@@ -24,7 +24,7 @@ public class DanhSachBaiVietController {
     @GetMapping("/manageDanhSachBaiViet")
     public ModelAndView manageBookBorrowed() {
         ModelAndView manageBlogViewModel = new ModelAndView("admin_and_staff/Layout");
-        List<Blog> list=blogRepository.findAll();
+        List<Blog> list = blogRepository.findByFlagDelIn(List.of(0, 1));
 
 
 
