@@ -29,7 +29,7 @@ public class YeuCauMuonSach {
     @Column(name = "BoiThuong")
     private double boiThuong;
     @Column(name = "TrangThai")
-    private int trangThai;
+    private int trangThai; //0:Chua duoc duyet, 1:Da duoc duyet, 2:Dang muon, 3:Da tra, -1:Tu choi
     @ManyToOne
     @JoinColumn(name = "NguoiMuonId")
     private User nguoiMuon;
@@ -37,7 +37,9 @@ public class YeuCauMuonSach {
     private Date dateCreated;
     @Column(name = "DateUpdated")
     private Date dateUpdated;
-    @OneToMany(orphanRemoval = true)
+    @Column(name = "SoTienDatCoc")
+    private double soTienDatCoc;
+    @OneToMany(mappedBy = "yeuCauMuonSach", orphanRemoval = true)
     List<SachDuocMuon> sachDuocMuonList;
 
 

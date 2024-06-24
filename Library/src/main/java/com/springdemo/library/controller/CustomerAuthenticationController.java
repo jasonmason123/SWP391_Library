@@ -16,9 +16,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -70,8 +70,8 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
 
     @Override
     @GetMapping("/logout")
-    public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        customLogout(authentication, request, response);
+    public String logout(SecurityContextLogoutHandler securityContextLogoutHandler, Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        customLogout(securityContextLogoutHandler, authentication, request, response);
         return "redirect:/login";
     }
 

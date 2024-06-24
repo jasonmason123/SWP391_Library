@@ -39,7 +39,7 @@ public class SecurityConfig {
                                         "/isvalidsocccd", "/isvalidtenuser",
                                         "/home", "/book/**", "/blog/**").permitAll()
                                 .requestMatchers("/management/**").permitAll()
-                                .requestMatchers("/management/manageBookBorrowed").permitAll()
+                                //.requestMatchers("/cart/**").permitAll()
                                 //0:Admin, 1:Staff, 2:Customer
                                 //.requestMatchers("/").hasRole("ROLE_0")
                                 //.requestMatchers("/").hasRole("ROLE_1")
@@ -55,18 +55,6 @@ public class SecurityConfig {
         http.addFilterBefore(otpAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-//    @Bean
-//    protected SecurityFilterChain otpFilterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeRequests(authorizeRequests ->
-//                        authorizeRequests
-//                                .requestMatchers("/processsignup", "/auth").authenticated()
-//                                .anyRequest().permitAll()
-//                );
-//        http.addFilterAfter(otpAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {

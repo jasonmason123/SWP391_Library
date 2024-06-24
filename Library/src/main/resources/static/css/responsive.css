@@ -394,8 +394,8 @@
         margin-bottom: 40px;
         overflow: hidden;
     }
-    .home-4 .header-search form input,
-    .home-5 .header-search form input {
+    .home-4 .header-search input,
+    .home-5 .header-search input {
         width: 100%;
     }
     .home-4 .header-search,
@@ -1132,8 +1132,8 @@
     .pt-85 {
         padding-top: 60px;
     }
-    .home-4 .header-search form input,
-    .home-5 .header-search form input {
+    .home-4 .header-search input,
+    .home-5 .header-search input {
         float: none;
         width: 100%;
     }

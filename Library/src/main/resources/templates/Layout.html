@@ -36,13 +36,13 @@
 </head>
 <!-- jquery latest version -->
 <script src="js/vendor/jquery-1.12.4.min.js"></script>
-<body class="login">
+<body class="shop">
 <!--[if lt IE 8]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 <![endif]-->
 
 <!-- header-area-start -->
-<header th:insert="~{shared/_header.html}" th:with="isAuthenticated=${isAuthenticated}"></header>
+<header th:insert="~{shared/_header.html}" th:with="isAuthenticated=${isAuthenticated}, userName=${userName}"></header>
 <!-- header-area-end -->
 <!-- breadcrumbs-area-start -->
 <div class="breadcrumbs-area mb-70">
@@ -55,11 +55,10 @@
     </div>
 </div>
 <!-- breadcrumbs-area-end -->
-<!-- user-login-area-start -->
-<p th:text="${errorMessage}"></p>
-<div class="user-login-area mb-70" th:insert="~{${includedPage}}"
+<!-- content-area-start -->
+<div th:insert="~{${includedPage}}"
      th:with="modelClass=${modelClass}, isAuthenticated=${isAuthenticated}"></div>
-<!-- user-login-area-end -->
+<!-- content-area-end -->
 <!-- footer-area-start -->
 <footer th:insert="~{shared/_footer.html}"></footer>
 <!-- footer-area-end -->
@@ -92,6 +91,8 @@
 <script src="js/plugins.js"></script>
 <!-- main js -->
 <script src="js/main.js"></script>
+<!-- cart process -->
+<script src="js/pages/cart.js"></script>
 
 </body>
 

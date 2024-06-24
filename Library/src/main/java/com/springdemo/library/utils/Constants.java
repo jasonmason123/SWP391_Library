@@ -1,5 +1,9 @@
 package com.springdemo.library.utils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.springdemo.library.model.dto.CartItemDto;
+
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Constants {
@@ -20,4 +24,5 @@ public class Constants {
     public static final String DATA_PATTERN_UNMATCHED = "unmatched";
     public static final String TOKEN_USER_ID_CLAIM = "id";
     public static final String TOKEN_USERNAME_CLAIM = "name";
+    public static final int MAXIMUM_NUMBER_OF_BOOKS_BORROWED = 5;
 }

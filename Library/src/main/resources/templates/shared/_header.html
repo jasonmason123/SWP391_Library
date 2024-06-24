@@ -13,6 +13,7 @@
                 <a th:if="${isAuthenticated==0 || isAuthenticated==null}" href="/Library/login">Đăng nhập</a>
                 <a th:if="${isAuthenticated==1}" href="/Library/logout">Đăng xuất</a>
               </li>
+              <li th:if="${userName!=null and !userName.isEmpty()}"><b th:text="${userName}"></b></li>
             </ul>
           </div>
         </div>
@@ -24,17 +25,10 @@
   <div class="header-mid-area ptb-40">
     <div class="container">
       <div class="row">
-        <div class="col-lg-3 col-md-5 col-12">
-          <div class="header-search">
-            <form action="#">
-              <input type="text" placeholder="Tìm kiếm tại đây..." />
-              <a href="#"><i class="fa fa-search"></i></a>
-            </form>
-          </div>
-        </div>
+        <div class="col-lg-3 col-md-5 col-12"></div>
         <div class="col-lg-6 col-md-4 col-12">
           <div class="logo-area text-center logo-xs-mrg">
-            <a href="index.html"><img src="img/logo/logo.png" alt="logo" /></a>
+            <a href="index.html"><img src="img/logo/library_logo.jpg" alt="logo" /></a>
           </div>
         </div>
         <div class="col-lg-3 col-md-3 col-12">
@@ -46,24 +40,24 @@
           <div th:if="${isAuthenticated==1}" class="my-cart">
             <ul>
               <li><a href="#"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a>
-                <span>2</span>
+                <span id="number-of-items">2</span> <!-- number of items -->
                 <div class="mini-cart-sub">
-                  <div class="cart-product">
-                    <div class="single-cart">
+                  <ul class="cart-product" id="cart">
+                    <li class="single-cart">
                       <div class="cart-img">
-                        <a href="#"><img src="img/product/1.jpg" alt="book" /></a>
+                        <a href="#"><img src="img/product/nom1.jpg" alt="book" /></a>
                       </div>
                       <div class="cart-info">
                         <h5><a href="#">Joust Duffle Bag</a></h5>
-                        <p>1 x £60.00</p>
+                        <p>1</p>
                       </div>
                       <div class="cart-icon">
                         <a href="#"><i class="fa fa-remove"></i></a>
                       </div>
-                    </div>
-                    <div class="single-cart">
+                    </li>
+                    <li class="single-cart">
                       <div class="cart-img">
-                        <a href="#"><img src="img/product/3.jpg" alt="book" /></a>
+                        <a href="#"><img src="img/product/nom3.jpg" alt="book" /></a>
                       </div>
                       <div class="cart-info">
                         <h5><a href="#">Chaz Kangeroo Hoodie</a></h5>
@@ -72,8 +66,8 @@
                       <div class="cart-icon">
                         <a href="#"><i class="fa fa-remove"></i></a>
                       </div>
-                    </div>
-                  </div>
+                    </li>
+                  </ul>
                   <div class="cart-totals">
                     <h5>Total <span>£12.00</span></h5>
                   </div>
@@ -114,14 +108,7 @@
 <!--                    </span>-->
 <!--                  </div>-->
                 </li>
-                <li><a href="/Library/blog">blog<i class="fa fa-angle-down"></i></a>
-                  <div class="sub-menu sub-menu-2">
-                    <ul>
-                      <li><a href="/Library/blog">blog</a></li>
-                      <li><a href="/Library/blogDetail">blog-details</a></li>
-                    </ul>
-                  </div>
-                </li>
+                <li><a href="/Library/blog">Blog</a></li>
               </ul>
             </nav>
           </div>
@@ -140,12 +127,7 @@
               <ul id="nav">
                 <li><a href="/Library/home">Trang chủ</a></li>
                 <li><a href="/Library/book">Sách</a></li>
-                <li><a href="#">blog</a>
-                  <ul>
-                    <li><a href="/Library/blog">Blog</a></li>
-                    <li><a href="/Library/blogDetail">blog-details</a></li>
-                  </ul>
-                </li>
+                <li><a href="/Library/blog">Blog</a></li>
               </ul>
             </nav>
           </div>
