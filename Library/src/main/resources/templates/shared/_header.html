@@ -40,36 +40,11 @@
           <div th:if="${isAuthenticated==1}" class="my-cart">
             <ul>
               <li><a href="#"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a>
-                <span id="number-of-items">2</span> <!-- number of items -->
+                <span id="number-of-items"></span> <!-- number of items -->
                 <div class="mini-cart-sub">
-                  <ul class="cart-product" id="cart">
-                    <li class="single-cart">
-                      <div class="cart-img">
-                        <a href="#"><img src="img/product/nom1.jpg" alt="book" /></a>
-                      </div>
-                      <div class="cart-info">
-                        <h5><a href="#">Joust Duffle Bag</a></h5>
-                        <p>1</p>
-                      </div>
-                      <div class="cart-icon">
-                        <a href="#"><i class="fa fa-remove"></i></a>
-                      </div>
-                    </li>
-                    <li class="single-cart">
-                      <div class="cart-img">
-                        <a href="#"><img src="img/product/nom3.jpg" alt="book" /></a>
-                      </div>
-                      <div class="cart-info">
-                        <h5><a href="#">Chaz Kangeroo Hoodie</a></h5>
-                        <p>1 x £52.00</p>
-                      </div>
-                      <div class="cart-icon">
-                        <a href="#"><i class="fa fa-remove"></i></a>
-                      </div>
-                    </li>
-                  </ul>
+                  <ul class="cart-product" id="cart"></ul>
                   <div class="cart-totals">
-                    <h5>Total <span>£12.00</span></h5>
+                    <h5>Tổng giá trị đặt cọc: <span id="total-price"></span> VNĐ</h5>
                   </div>
                   <div class="cart-bottom">
                     <a class="view-cart" href="cart.html">view cart</a>

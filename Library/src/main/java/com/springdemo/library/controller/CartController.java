@@ -77,6 +77,9 @@ public class CartController {
         }
         int totalQuantityInCart = 0;
         for(int quantity : cart.values()) {
+            if (quantity > 3) {
+                return true;
+            }
             totalQuantityInCart += quantity;
         }
         return totalQuantityInCart == Constants.MAXIMUM_NUMBER_OF_BOOKS_BORROWED;

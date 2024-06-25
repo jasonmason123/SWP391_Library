@@ -1515,6 +1515,7 @@ body {
 }
 
 .product-details h4 a:hover,
+.product-link .product-button .dangKyButton:hover,
 .product-link .product-button a:hover,
 .product-link .add-to-link ul li a:hover {
     color: #f07c29;
@@ -1601,6 +1602,7 @@ body {
     z-index: 2;
 }
 
+.product-link .product-button .dangKyButton,
 .product-link .product-button a {
     border-radius: 0;
     color: #333;
@@ -1614,6 +1616,7 @@ body {
     transition: .3s;
 }
 
+.product-link .product-button .dangKyButton i,
 .product-link .product-button a i {
     padding-right: 8px;
 }
@@ -3149,6 +3152,28 @@ a#scrollUp:hover {
     margin-top: -6px;
 }
 
+.quantity-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-minus, .quantity-plus {
+    background-color: #ddd;
+    border-radius: 50%;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.quantity-minus:hover, .quantity-plus:hover {
+    background-color: #ccc;
+}
+
+.quantity {
+    margin: 0 10px;
+    font-size: 16px;
+}
+
 .home-4 .header-top-area {
     background: #fff none repeat scroll 0 0;
     border-bottom: 1px solid #ededed;
@@ -3379,6 +3404,7 @@ nav.menu .cr-dropdown ul {
 }
 
 .home-4 .product-details h4 a:hover,
+.home-4 .product-link .product-button .dangKyButton:hover,
 .home-4 .product-link .product-button a:hover,
 .home-4 .product-link .add-to-link ul li a:hover {
     color: #f07c29;

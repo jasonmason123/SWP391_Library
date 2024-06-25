@@ -3,7 +3,6 @@ package com.springdemo.library.controller.admin;
 import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.dto.SachDuocMuonViewDto;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

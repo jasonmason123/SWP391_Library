@@ -32,6 +32,8 @@ public class BlogController {
     @GetMapping("/blog")
     public ModelAndView blog(
             @RequestParam(name = "id", required = false) Integer blogId,
+            @RequestParam(name = "search", required = false) String searchString,
+            @RequestParam(name = "tag", required = false) Integer tagId,
             @RequestParam(name = "page", required = false) Integer pageNumberParam,
             Authentication authentication
     ) {

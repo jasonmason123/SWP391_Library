@@ -125,8 +125,9 @@
                             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6" th:each="sach : ${modelClass.get('sachList')}">
                                 <div class="product-wrapper mb-40">
                                     <div class="product-img">
-                                        <a href="#">
-                                            <img th:src="${sach.getLinkAnh()}" alt="book" class="primary" />
+                                        <a th:href="@{/book(bookId=${sach.getId()})}">
+                                            <img th:id="'imagePath_' + ${sach.getId()}"
+                                                 th:src="${sach.getLinkAnh()}" alt="book" class="primary" />
                                         </a>
                                         <div class="quick-view">
                                             <a class="action-view" href="#" data-bs-target="#productModal" data-bs-toggle="modal" title="Quick View">
@@ -150,7 +151,9 @@
                                                 <li><a href="#"><i class="fa fa-star"></i></a></li>
                                             </ul>
                                         </div>
-                                        <h4><a href="#" th:text="${sach.getTenSach()}"></a></h4>
+                                        <h4><a th:id="'bookName_' + ${sach.getId()}"
+                                               th:href="@{/book(bookId=${sach.getId()})}"
+                                               th:text="${sach.getTenSach()}"></a></h4>
                                         <div class="product-price">
                                             <ul>
                                                 <li th:text="${sach.getTacGia()}"></li>
@@ -159,7 +162,13 @@
                                     </div>
                                     <div class="product-link">
                                         <div class="product-button">
-                                            <a href="#" title="Đăng ký mượn"><i class="fa fa-shopping-cart"></i>Đăng ký mượn</a>
+                                            <button class="dangKyButton" th:if="${isAuthenticated==1}" title="Đăng ký mượn"
+                                                    th:onclick="'addToCart(' + ${sach.getId()} + ')'">
+                                                <i class="fa fa-shopping-cart"></i> Đăng ký mượn
+                                            </button>
+                                            <a th:unless="${isAuthenticated==1}" href="/Library/login">
+                                                <i class="fa fa-shopping-cart"></i> Đăng ký mượn
+                                            </a>
                                         </div>
                                         <div class="add-to-link">
                                             <ul>
@@ -167,6 +176,10 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    <div class="hide" th:id="'quantityInStock_' + ${sach.getId()}"
+                                         th:attr="data-quantityInStock=${sach.getSoLuongTrongKho()}"></div>
+                                    <div class="hide" th:id="'price_' + ${sach.getId()}"
+                                         th:attr="data-price=${sach.getGiaTien()}"></div>
                                 </div>
                             </div>
                         </div>
@@ -531,7 +544,6 @@
     </div>
 </div>
 <!-- Modal end -->
-<script src="js/pages/book-page.js"></script>
 <script>
     $(document).ready(function() {
         $('input[name="tacGia"], input[name="nhaXuatBan"]').change(function(e) {
@@ -539,6 +551,9 @@
             $('#filterForm').submit();
         });
     });
+    function addToCart(id) {
+        updateCart(id, 'ADD');
+    }
 </script>
 
 <!-- Mirrored from htmldemo.net/koparion/koparion/shop.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 23 Feb 2024 17:30:52 GMT -->
