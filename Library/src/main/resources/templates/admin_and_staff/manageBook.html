@@ -1,1809 +1,368 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Thông tin</title>
-
-
-
-    <style>
-        .btn-custom {
-            background-color: #f07c29; /* Mã màu cam tùy chỉnh */
-            color: white;
-        }
-        .badge-custom{
-            background-color: grey;
-            color: white;
-        }
-        .btn-custom2 {
-            background-color:darkturquoise; /* Mã màu cam tùy chỉnh */
-            color: white;
-        }
-    </style>
-
-</head>
-
-<body id="page-top">
-
-
-
+<style>
+    .btn-custom {
+        background-color: #f07c29; /* Mã màu cam tùy chỉnh */
+        color: white;
+    }
+    .badge-custom{
+        background-color: grey;
+        color: white;
+    }
+    .badge-danger{
+        background-color: red;
+        color: white;
+    }
+    .btn-custom2 {
+        background-color:darkturquoise; /* Mã màu cam tùy chỉnh */
+        color: white;
+    }
+    img {
+        width: 100px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
 
 <div id="content-wrapper">
-
     <div class="container-fluid">
-
         <!-- Breadcrumbs-->
-
         <ol class="breadcrumb d-flex justify-content-between align-items-center">
             <li class="breadcrumb-item active">Bảng thông tin</li>
             <div class="text-right">
-                <a href="#addEmployeeModal" class="btn btn-custom" data-toggle="modal"><i class="fa fa-plus"></i></a>
+                <a href="#addBookModal" class="btn btn-custom" data-toggle="modal"><span>Thêm </span><i class="fa fa-plus"></i></a>
             </div>
         </ol>
-
-
 
         <!-- DataTables Example -->
         <div class="card mb-3">
             <div class="card-header">
                 <i class="fas fa-table"></i>
-                Bảng thông tin sách được mượn</div>
+                Bảng thông tin sách</div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
-                            <th>Tên</th>
+                            <th>Tên sách</th>
                             <th>Ảnh</th>
                             <th>Tác giả</th>
                             <th>Giá tiền</th>
-                            <th>Số lượng/th>
+                            <th>Số lượng</th>
+                            <th class="text-center">Trạng thái</th>
                             <th></th>
                         </tr>
                         </thead>
 
                         <tbody>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
+                        <tr th:each="item : ${modelClass}">
+                            <td th:id="'tenSach_' + ${item.getId()}" th:text="${item.getTenSach()}"></td>
+                            <td > <img th:id="'anh_' + ${item.getId()}" th:src="@{${item.getLinkAnh()}}"/></td>
+                            <td th:id="'tacGia_' + ${item.getId()}" th:text="${item.getTacGia()}">
+
                             </td>
-                            <td>
-
+                            <td th:id="'giaTien_' + ${item.getId()}" th:text="${item.getGiaTien()}"></td>
+                            <td th:id="'soLuong_' + ${item.getId()}" th:text="${item.getSoLuongTrongKho()}"></td>
+                            <td class="text-center">
+                                <div th:if="${item.getFlagDel()==0}" class="badge badge-success">Hiển thị</div>
+                                <div th:if="${item.getFlagDel()==1}" class="badge badge-danger">Bị ẩn</div>
+                            </td>
+                            <div style="display: none" th:id="'moTa_' + ${item.getId()}"
+                                 th:attr="data-moTa=${item.getMoTa()}"></div>
+                            <div style="display: none" th:id="'danhGia_' + ${item.getId()}"
+                                 th:attr="data-danhGia=${item.getDanhGia()}"></div>
+                            <div style="display: none" th:id="'nhaXuatBan_' + ${item.getId()}"
+                                 th:attr="data-nhaXuatBan=${item.getNhaXuatBan()}"></div>
+                            <div style="display: none" th:id="'ngayTao_' + ${item.getId()}"
+                                 th:attr="data-ngayTao=${item.getDateCreated()}"></div>
+                            <div style="display: none" th:id="'ngayCapNhat_' + ${item.getId()}"
+                                 th:attr="data-ngayCapNhat=${item.getDateUpdated()}"></div>
+                            <td class="d-flex justify-content-center">
                                 <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
+                                        th:onclick="'openModalViewBookDetail(' + ${item.getId()} + ')'">
                                     <i class="fa fa-eye text-primary"></i>
                                 </button>
                                 <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
+                                        th:onclick="'openModalUpdateBook(' + ${item.getId()} + ')'">
                                     <i class="fa fa-pen text-primary"></i>
                                 </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
+                                <button th:if="${item.getFlagDel()==0}" type="button" class="btn btn-light"
+                                        th:onclick="'openModalDeactivateBook(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-times text-primary"></i>
+                                </button>
+                                <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
+                                        th:onclick="'openModalActivateBook(' + ${item.getId()} + ')'">
                                     <i class="fa fa-times text-primary"></i>
                                 </button>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-success">Trực tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-success">Trực tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-
-
-
-
-
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal"
-                                >
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Tiger Nixon</td>
-                            <td>Bác sĩ</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td class="text-center">
-                                <div class="badge badge-custom">Ngoại tuyến</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#viewEmployeeModal">
-                                    <i class="fa fa-eye text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal"
-                                        data-target="#editEmployeeModal">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button type="button" class="btn btn-light"
-                                        data-toggle="modal" data-target="#deleteEmployeeModal">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-
-
-
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="card-footer small text-muted">Cập nhật mới nhất lúc 11:59</div>
+            <div class="card-footer small text-muted">Cập nhật mới nhất lúc <span id="time-update"></span></div>
         </div>
-        <!-- Add Modal-->
-        <div id="addEmployeeModal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form action="add" method="post">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Thêm sách</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Tên</label>
-                                <input name="name" type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Ảnh</label>
-                                <input name="image" type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Tác giả</label>
-                                <input name="price" type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Giá tiền</label>
-                                <textarea name="title" class="form-control" required></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Số lượng</label>
-                                <select name="category" class="form-select" aria-label="Default select example">
-
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-
-                                </select>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
-                            <input type="submit" class="btn btn-success" value="Thêm">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- Edit Modal HTML -->
-        <div id="editEmployeeModal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form>
-                        <div class="modal-header">
-                            <h4 class="modal-title">Chỉnh sửa thông tin</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Tên</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>CCCD</label>
-                                <input type="email" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <textarea class="form-control" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Số điện thoại</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Trạng thái</label>
-                                <select name="category" class="form-select" aria-label="Default select example">
-
-                                    <option value="1">Ngoại tuyến</option>
-                                    <option value="2">Trực tuyến</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
-                            <input type="submit" class="btn btn-info" value="Lưu">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div id="viewEmployeeModal" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form>
-                        <div class="modal-header">
-                            <h4 class="modal-title">Thông tin</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Tên</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>CCCD</label>
-                                <input type="email" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <textarea class="form-control" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Số điện thoại</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Trạng thái</label>
-                                <select name="category" class="form-select" aria-label="Default select example">
-
-                                    <option value="1">Ngoại tuyến</option>
-                                    <option value="2">Trực tuyến</option>
-
-                                </select>
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-
     </div>
     <!-- /.container-fluid -->
-
-    <!-- Sticky Footer -->
-    <footer class="sticky-footer">
-        <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-                <span>Copyright © Your Website 2019</span>
-            </div>
-        </div>
-    </footer>
-
 </div>
 <!-- /.content-wrapper -->
 
-
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Đăng xuất?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Bạn có chắc muốn đăng xuất?</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
-                <a class="btn btn-primary" href="login.html">Đăng xuất</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Delete Modal-->
-<div id="deleteEmployeeModal" class="modal fade">
+<!-- Add Modal-->
+<div id="addBookModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form>
+            <form id="add-book-form">
                 <div class="modal-header">
-                    <h4 class="modal-title"> Xóa thông tin sách</h4>
+                    <h4 class="modal-title">Thêm sách</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-danger">Bạn có chắc muốn xóa thông tin sách này?</p>
+                    <div class="form-group">
+                        <label>Ảnh</label>
+                        <input id="anh-add" type="text" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Tên sách</label>
+                        <input id="tenSach-add" type="text" class="form-control" required />
+                    </div>
 
+
+                    <div class="form-group">
+                        <label>Tác giả</label>
+                        <input id="tacGia-add" type="text" class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giá tiền</label>
+                        <input id="giaTien-add" type="text" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Số lượng</label>
+                        <input id="soLuong-add" type="text" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Nhà xuất bản</label>
+                        <input id="nhaXuatBan-add" type="text" class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <input id="moTa-add" type="text" class="form-control" required />
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
-                    <input type="submit" class="btn btn-danger" value=" Vô hiệu hóa">
+                    <input type="submit" class="btn btn-success" value="Thêm">
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- Update Modal-->
+<div id="updateBookModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="update-book-form">
+                <div class="modal-header">
+                    <h4 class="modal-title">Cập nhật sách</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Ảnh</label>
+                        <img id="anh-update" class="book-image"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên sách</label>
+                        <input id="tenSach-update" type="text" class="form-control"  />
+                    </div>
 
-</body>
 
-</html>
+                    <div class="form-group">
+                        <label>Tác giả</label>
+                        <input id="tacGia-update" type="text" class="form-control"  />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giá tiền</label>
+                        <input id="giaTien-update" type="text" class="form-control"  />
+                    </div>
+                    <div class="form-group">
+                        <label>Số lượng</label>
+                        <input id="soLuong-update" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nhà xuất bản</label>
+                        <input id="nhaXuatBan-update" type="text" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <input id="moTa-update" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Đánh giá</label>
+                        <input id="danhGia-update" type="text" class="form-control" />
+                    </div>
+                </div>
+                <input id="book-id-update" type="hidden" style="display: none;"/>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
+                    <input type="submit" class="btn btn-success" value="Cập nhật">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal-->
+<div id="detailBookModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h4 class="modal-title">Thông tin sách</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Ảnh</label>
+                        <img id="anh-detail" class="book-image"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên sách</label>
+                        <b id="tenSach-detail" type="text" class="form-control" ></b>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label>Tác giả</label>
+                        <b id="tacGia-detail" type="text" class="form-control" ></b>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giá tiền</label>
+                        <b id="giaTien-detail" type="text" class="form-control"></b>
+                    </div>
+                    <div class="form-group">
+                        <label>Số lượng</label>
+                        <b id="soLuong-detail" type="text" class="form-control"></b>
+                    </div>
+                    <div class="form-group">
+                        <label>Nhà xuất bản</label>
+                        <b id="nhaXuatBan-detail" type="text" class="form-control"></b>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <b id="moTa-detail" type="text" class="form-control"></b>
+                    </div>
+                    <div class="form-group">
+                        <label>Đánh giá</label>
+                        <b id="danhGia-detail" type="text" class="form-control"></b>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- deactivate Modal-->
+<div id="deactivateBookModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deactivate-book-form">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Ẩn sách</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Bạn có chắc muốn ẩn thông tin sách này?</p>
+                    <input id="deactivate-book-id" style="display: none;"/>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy" />
+                    <input type="submit" class="btn btn-danger" value="Ẩn" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- activate Modal-->
+<div id="activateBookModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="activate-book-form">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Hiển thị thông tin sách</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc muốn hiển thị thông tin sách này?</p>
+                    <input id="activate-book-id" style="display: none;"/>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy" />
+                    <input type="submit" class="btn btn-custom" value="Hiển thị" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="../static-admin_and_staff/js/pages/manage-book.js"></script>
+<script th:inline="javascript">
+    function openModalDeactivateBook(id) {
+        $('#deactivate-book-id').val(id);
+        $('#deactivateBookModal').modal('show');
+    }
+
+    function openModalActivateBook(id) {
+        $('#activate-book-id').val(id);
+        $('#activateBookModal').modal('show');
+    }
+
+    function openModalUpdateBook(id) {
+        let tenSach = document.getElementById('tenSach_' + id).innerText;
+        let anh = document.getElementById('anh_' + id).getAttribute('src');
+        let tacGia = document.getElementById('tacGia_' + id).innerText;
+        let giaTien = document.getElementById('giaTien_' + id).innerText;
+        let soLuong = document.getElementById('soLuong_' + id).innerText;
+        let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
+        let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
+        let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        $('#tenSach-update').val(tenSach);
+        $('#anh-update').attr('src', anh);
+        $('#tacGia-update').val(tacGia);
+        $('#giaTien-update').val(giaTien);
+        $('#soLuong-update').val(soLuong);
+        $('#book-id-update').val(id);
+        $('#moTa-update').val(moTa);
+        $('#nhaXuatBan-update').val(nhaXuatBan);
+        $('#danhGia-update').val(danhGia);
+        $('#updateBookModal').modal('show');
+    }
+
+    function openModalViewBookDetail(id) {
+        let tenSach = document.getElementById('tenSach_' + id).innerText;
+        let anh = document.getElementById('anh_' + id).getAttribute('src');
+        let tacGia = document.getElementById('tacGia_' + id).innerText;
+        let giaTien = document.getElementById('giaTien_' + id).innerText;
+        let soLuong = document.getElementById('soLuong_' + id).innerText;
+        let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
+        let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
+        let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        $('#tenSach-detail').text(tenSach);
+        $('#anh-detail').attr('src', anh);
+        $('#tacGia-detail').text(tacGia);
+        $('#giaTien-detail').text(giaTien);
+        $('#soLuong-detail').text(soLuong);
+
+        $('#moTa-detail').text(moTa);
+        $('#nhaXuatBan-detail').text(nhaXuatBan);
+        $('#danhGia-detail').text(danhGia);
+        $('#detailBookModal').modal('show');
+    }
+</script>
