@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <style>
+        .btn-custom {
+            background-color: #f07c29;
+            color: white;
+        }
+
+        .badge-custom {
+            background-color: grey;
+            color: white;
+        }
+
+        .btn-custom2 {
+            background-color: darkturquoise;
+            color: white;
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            padding: 20px;
+        }
+
+        .order-status {
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .order-status.pending {
+            background-color: #f0ad4e;
+        }
+
+        .status-label {
+            display: inline-block;
+            padding: 3px 7px;
+            border-radius: 4px;
+        }
+
+        .status-label.pending {
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .status-label.not-received {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .status-label.approved {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .status-label.rejected {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .status-label.borrowing {
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .status-label.returned {
+            background-color: #0275d8;
+            color: white;
+        }
+
+        .notification {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div id="content-wrapper">
+    <div class="container-fluid">
+        <ol class="breadcrumb d-flex justify-content-between align-items-center">
+            <li class="breadcrumb-item active">Bảng thông tin</li>
+        </ol>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fas fa-table"></i>
+                Danh sách bài viết
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Ngày đăng</th>
+                            <th>Tác giả</th>
+                            <th>Link bài viết</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${modelClass}">
+                            <td th:id="'TieuDe_' + ${item.getId()}" th:text="${item.getTieuDe()}"></td>
+                            <td th:id="'NgayTao_' + ${item.getId()}" th:text="${item.getNgayTao()}"></td>
+                            <td th:id="'TacGia_' + ${item.getId()}" th:text="${item.tacGia.getTenUser()}"></td>
+                            <td><a href="#" th:id="'NoiDung_' + ${item.getId()}" th:text="${item.getNoiDung()}"></a></td>
+                            <td class="text-center">
+                                <div th:if="${item.getFlagDel()==0 }" class="badge badge-success">Hiển thị</div>
+                                <div th:if="${item.getFlagDel()==1 ||item.getFlagDel()==2 }" class="badge badge-danger">Đã ẩn</div>
+                            </td>
+                            <div style="display: none" th:id="'ID_' + ${item.getId()}" th:attr="data-ID=${item.getId()}"></div>
+                            <div style="display: none" th:id="'TieuDe_' + ${item.getId()}" th:attr="data-TieuDe=${item.getTieuDe()}"></div>
+                            <div style="display: none" th:id="'NgayTao_' + ${item.getId()}" th:attr="data-NgayTao=${item.getNgayTao()}"></div>
+                            <div style="display: none" th:id="'TacGia_' + ${item.getId()}" th:attr="data-TacGia=${item.tacGia.getTenUser()}"></div>
+                            <div style="display: none" th:id="'NoiDung_' + ${item.getId()}" th:attr="data-NoiDung=${item.getNoiDung()}"></div>
+                            <div style="display: none" th:id="'DanhGia_' + ${item.getId()}" th:attr="data-DanhGia=${item.getDanhGia()}"></div>
+                            <td class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-light" th:onclick="'openModalViewBaiVietCanDuyetDetail(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-pen text-primary"></i>
+                                </button>
+                                <button th:if="${item.getFlagDel()==0 }" type="button" class="btn btn-light" th:onclick="'openModalDeactivateBlog(' + ${item.getId()}+ ')' ">
+                                    <i class="fa fa-times text-primary"></i>
+                                </button>
+                                <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
+                                        th:onclick="'openModalActivateBlog(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-check text-primary" ></i>
+                                </button>
+                                <button th:if="${item.getFlagDel()==2 }" type="button" class="btn btn-light" th:onclick="'openModalDeactivateBlog(' + ${item.getId()}+ ')' ">
+                                    <i class="fa fa-times text-primary"></i>
+                                </button>
+                                <button th:if="${item.getFlagDel()==2}" type="button" class="btn btn-light"
+                                        th:onclick="'openModalActivateBlog(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-check text-primary" ></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="card-footer small text-muted">Cập nhật mới nhất lúc 11:59</div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailBlogModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Thông tin bài viết cần duyệt</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>ID</label>
+                                <b id="ID" type="text" class="form-control"></b>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Tiêu đề</label>
+                                <b id="tieuDe-detail" type="text" class="form-control"></b>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Ngày tạo</label>
+                                <b id="NgayTao-detail" type="text" class="form-control"></b>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Tác Giả</label>
+                                <b id="TacGia-detail" type="text" class="form-control"></b>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Nội dung</label>
+                                <b id="NoiDung-detail" type="text" class="form-control"></b>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Đánh giá</label>
+                                <b id="DanhGia-detail" type="text" class="form-control"></b>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closeButton">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sticky Footer -->
+<footer class="sticky-footer">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright © Your Website 2019</span>
+        </div>
+    </div>
+</footer>
+
+</div>
+<!-- /.content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Đăng xuất?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Bạn có chắc muốn đăng xuất?</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                <a class="btn btn-primary" href="login.html">Đăng xuất</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- deactivate Modal-->
+<div id="deactivateBlogModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deactivate-blog-form">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Ẩn bài viết</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Bạn có chắc muốn ẩn bài viết này?</p>
+                    <input id="deactivate-blog-id" style="display: none;"/>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy" />
+                    <input type="submit" class="btn btn-danger" value="Ẩn" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- activate Modal-->
+<div id="activateBlogModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="activate-blog-form">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Bỏ ẩn bài viết</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc muốn bỏ ẩn bài viết này?</p>
+                    <input id="activate-blog-id" style="display: none;"/>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy" />
+                    <input type="submit" class="btn btn-custom" value="Bỏ ẩn" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function openModalViewBaiVietCanDuyetDetail(id) {
+        let Id = document.getElementById('ID_' + id).getAttribute('data-ID');
+        let tieuDe = document.getElementById('TieuDe_' + id).getAttribute('data-TieuDe');
+        let tacGia = document.getElementById('TacGia_' + id).getAttribute('data-TacGia');
+        let noiDung = document.getElementById('NoiDung_' + id).getAttribute('data-NoiDung');
+        let ngayTao = document.getElementById('NgayTao_' + id).getAttribute('data-NgayTao');
+        let danhGia = document.getElementById('DanhGia_' + id).getAttribute('data-DanhGia');
+
+        $('#ID').text(Id);
+        $('#tieuDe-detail').text(tieuDe);
+        $('#TacGia-detail').text(tacGia);
+        $('#NoiDung-detail').text(noiDung);
+        $('#DanhGia-detail').text(danhGia);
+        $('#NgayTao-detail').text(ngayTao);
+
+
+
+        $('#detailBlogModal').modal('show');
+    }
+    function openModalDeactivateBlog(id,button) {
+        $('#deactivate-blog-id').val(id);
+
+        $('#deactivateBlogModal').modal('show');
+
+    }
+
+    function openModalActivateBlog(id) {
+        $('#activate-blog-id').val(id);
+
+        $('#activateBlogModal').modal('show');
+
+    }
+
+</script>
+<script src="../static-admin_and_staff/js/pages/manage-blog.js"></script>
+</body>
+</html>
