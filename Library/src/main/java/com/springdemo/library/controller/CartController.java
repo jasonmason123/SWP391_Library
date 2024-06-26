@@ -5,16 +5,24 @@ import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.other.SachDuocMuon;
 import com.springdemo.library.repositories.SachRepository;
+import com.springdemo.library.repositories.UserRepository;
+import com.springdemo.library.repositories.YeuCauMuonSachRepository;
 import com.springdemo.library.security.userdetails.CustomUserDetails;
+import com.springdemo.library.services.GenerateViewService;
 import com.springdemo.library.services.JwtService;
 import com.springdemo.library.utils.Constants;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,15 +35,24 @@ import java.util.Map;
 public class CartController {
 
     private SachRepository sachRepository;
+    private UserRepository userRepository;
+    private YeuCauMuonSachRepository yeuCauMuonSachRepository;
 
     @PostMapping("/process")
     public ResponseEntity<String> getCartFromClient(
             @RequestBody Map<Integer, Integer> clientCart,
-            @RequestParam(name = "ngayMuon")Date ngayMuon,
-            @RequestParam(name = "ngayTra")Date ngayTra,
+            @RequestParam(name = "ngayMuon") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date ngayMuon,
             Authentication authentication
     ) {
-        if(isMaximumNumberOfBooksBorrowed(clientCart)) {
+        LocalDate localDate = LocalDate.now();
+        Date today = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        if(isMaximumNumberOfBooksBorrowed(clientCart) || ngayMuon.before(today)) {
+            if(isMaximumNumberOfBooksBorrowed(clientCart)) {
+                log.warn("Maximum number of books");
+            }
+            if(ngayMuon.before(new Date())) {
+                log.warn("invalid ngayMuon");
+            }
             return ResponseEntity.badRequest().build();
         }
         List<Sach> sachList = sachRepository.findAllById(clientCart.keySet());
@@ -45,18 +62,21 @@ public class CartController {
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
         if(user!=null) {
             List<SachDuocMuon> sachDuocMuonList = new ArrayList<>();
-            YeuCauMuonSach yeuCauMuonSach = new YeuCauMuonSach(ngayMuon, ngayTra, user, new Date());
-            double totalDeposit = 0;
+            Date ngayTra = new Date(ngayMuon.getTime() + Constants.A_DAY_IN_MILISECONDS*60);
+            double totalDeposit = sachList.stream().mapToDouble(sach -> sach.getGiaTien() * clientCart.get(sach.getId())).sum();
+            YeuCauMuonSach yeuCauMuonSach = new YeuCauMuonSach(ngayMuon, ngayTra, user, totalDeposit, new Date());
+            this.yeuCauMuonSachRepository.save(yeuCauMuonSach);
             for(Sach sach : sachList) {
                 SachDuocMuon sachDuocMuon = new SachDuocMuon(sach, yeuCauMuonSach, clientCart.get(sach.getId()));
                 sachDuocMuonList.add(sachDuocMuon);
                 sach.getSachDuocMuonList().add(sachDuocMuon);
-                totalDeposit += (sach.getGiaTien() * clientCart.get(sach.getId()));
+                //Số lượng sách trong kho chỉ bị trừ khi thư viện đã duyệt đơn mượn
+                this.sachRepository.save(sach);
             }
-            yeuCauMuonSach.getSachDuocMuonList().addAll(sachDuocMuonList);
-            yeuCauMuonSach.setSoTienDatCoc(totalDeposit);
+            yeuCauMuonSach.setSachDuocMuonList(sachDuocMuonList);
             return ResponseEntity.ok().build();
         }
+        log.warn("User not found");
         return ResponseEntity.badRequest().build();
     }
 

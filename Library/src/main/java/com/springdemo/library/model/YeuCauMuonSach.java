@@ -2,11 +2,10 @@ package com.springdemo.library.model;
 
 import com.springdemo.library.model.other.SachDuocMuon;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import java.util.List;
 public class YeuCauMuonSach {
     @Id
     @Setter(AccessLevel.NONE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private int Id;
     @Column(name = "NgayMuon")
@@ -39,14 +39,15 @@ public class YeuCauMuonSach {
     private Date dateUpdated;
     @Column(name = "SoTienDatCoc")
     private double soTienDatCoc;
-    @OneToMany(mappedBy = "yeuCauMuonSach", orphanRemoval = true)
+    @OneToMany(mappedBy = "yeuCauMuonSach", orphanRemoval = true, cascade = CascadeType.ALL)
     List<SachDuocMuon> sachDuocMuonList;
 
-
-    public YeuCauMuonSach(Date ngayMuon, Date ngayTra, User nguoiMuon, Date dateCreated) {
+    @Builder
+    public YeuCauMuonSach(Date ngayMuon, Date ngayTra, User nguoiMuon, double soTienDatCoc, Date dateCreated) {
         this.ngayMuon = ngayMuon;
         this.ngayTra = ngayTra;
         this.nguoiMuon = nguoiMuon;
+        this.soTienDatCoc = soTienDatCoc;
         this.quaHan = 0;
         this.boiThuong = 0;
         this.trangThai = 0;

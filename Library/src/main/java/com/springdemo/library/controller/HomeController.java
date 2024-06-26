@@ -27,6 +27,18 @@ public class HomeController {
         return generateViewService.generateCustomerView("Trang chủ", null, "home", authentication);
     }
 
+    @GetMapping("/checkout")
+    public ModelAndView checkOut(Authentication authentication) {
+        String breadCrumb = """
+            <ul>
+                <li><a href="#">Trang chủ</a></li>
+                <li><a href="#"></a>Checkout</li>
+            </ul>""";
+        ModelAndView checkOutViewModel = generateViewService.generateCustomerView("Checkout", breadCrumb, "checkout", authentication);
+        checkOutViewModel.addObject("noCart", 0);
+        return checkOutViewModel;
+    }
+
     @GetMapping("/error")
     public ModelAndView error() {
         return new ModelAndView("error-404-page");

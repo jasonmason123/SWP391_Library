@@ -1,11 +1,18 @@
 package com.springdemo.library.controller.admin;
 
+import com.springdemo.library.model.Sach;
+import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
+import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.SachDuocMuonViewDto;
+import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
+import com.springdemo.library.security.userdetails.CustomUserDetails;
+import com.springdemo.library.services.EmailService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +29,8 @@ import java.util.List;
 public class BookBorrowManagementController {
 
     private YeuCauMuonSachRepository yeuCauMuonSachRepository;
+    private SachRepository sachRepository;
+    private EmailService emailService;
 
     @GetMapping("/manageBookBorrowed")
     public ModelAndView manageBookBorrowed() {
@@ -51,7 +60,8 @@ public class BookBorrowManagementController {
     @PostMapping("/updateRequestStatus")
     public ResponseEntity<String> updateRequestStatus(
             @RequestParam("yeuCauId") int yeuCauId,
-            @RequestParam("status") int status
+            @RequestParam("status") int status,
+            Authentication authentication
     ) {
         //-1:Tu choi, 0:Chua duoc duyet, 1:Da duyet - cho muon, 2:Dang muon, 3:Da tra
         try {
@@ -65,12 +75,67 @@ public class BookBorrowManagementController {
                 log.warn("Invalid status");
                 return ResponseEntity.badRequest().body("Invalid status");
             }
+            if(status==1) {
+                yeuCauMuonSach.getSachDuocMuonList().forEach(x -> {
+                    Sach sach = x.getSach();
+                    sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() - x.getSoLuongMuon());
+                    sachRepository.save(sach);
+                });
+                sendConfirmationEmail(status, yeuCauMuonSach);
+            } else if(status==-1) {
+                if(yeuCauMuonSach.getTrangThai()==1) {
+                    yeuCauMuonSach.getSachDuocMuonList().forEach(x -> {
+                        Sach sach = x.getSach();
+                        sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() + x.getSoLuongMuon());
+                        sachRepository.save(sach);
+                    });
+                }
+                sendConfirmationEmail(status, yeuCauMuonSach);
+                yeuCauMuonSachRepository.delete(yeuCauMuonSach);
+                return ResponseEntity.ok().build();
+            }
             yeuCauMuonSach.setTrangThai(status);
             yeuCauMuonSachRepository.save(yeuCauMuonSach);
             return ResponseEntity.ok().build();
         } catch (NullPointerException e) {
-            log.error("YeuCauMuonSach with id: " + yeuCauId + " not found!");
+            log.error("Error: " + e);
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    private boolean sendConfirmationEmail(int status, YeuCauMuonSach yeuCauMuonSach) {
+        String receipientEmail = yeuCauMuonSach.getNguoiMuon().getEmail();
+        if(status==1) {
+            String subject = "Thông báo xác nhận mượn sách";
+            String messageBody = """
+                    <html>
+                    <body>
+                        <h2>Thư viện cộng đồng Therasus đã chấp thuận yêu cầu mượn sách của bạn</h2>
+                        <h4>Chi tiết</h4>
+                        <div>Số ID yêu cầu:\s""" + yeuCauMuonSach.getId() + """
+                        </div>
+                        <div>Email người mượn:\s""" + yeuCauMuonSach.getNguoiMuon().getEmail() + """
+                        </div>
+                        <div>Ngày mượn:\s""" + yeuCauMuonSach.getNgayMuon() + """
+                        </div>
+                    </body>
+                    </html>
+                    """;
+            return emailService.sendHtmlEmail(EmailDetailsDto.builder()
+                    .recipient(receipientEmail).subject(subject).messageBody(messageBody).build());
+        } else if(status==-1) {
+            String subject = "Thông báo xác nhận mượn sách";
+            String messageBody = """
+                    <html>
+                    <body>
+                        <h2>Thư viện cộng đồng Therasus đã từ chối yêu cầu mượn sách của bạn</h2>
+                        <div>Chúng tôi rất xin lỗi vì sự bất tiện này!</div>
+                    </body>
+                    </html>
+                    """;
+            return emailService.sendHtmlEmail(EmailDetailsDto.builder()
+                    .recipient(receipientEmail).subject(subject).messageBody(messageBody).build());
+        }
+        return false;
     }
 }

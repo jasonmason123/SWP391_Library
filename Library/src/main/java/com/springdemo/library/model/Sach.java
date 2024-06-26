@@ -51,7 +51,7 @@ public class Sach {
             inverseJoinColumns = @JoinColumn(name = "TheLoaiId")
     )
     private List<TheLoai> theLoaiList;
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, mappedBy = "sach", cascade = CascadeType.ALL)
     private List<SachDuocMuon> sachDuocMuonList;
 
     @Builder

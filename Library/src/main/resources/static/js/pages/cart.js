@@ -31,6 +31,7 @@ function clearCart() {
     displayCart();
 }
 
+
 function saveCart() {
     const cartObject = Object.fromEntries(cart);
     localStorage.setItem(CART_NAME, JSON.stringify(cartObject));
@@ -94,7 +95,7 @@ function displayCart() {
     if (cart.size === 0) {
         $('.cart-bottom').hide();
         $('.cart-totals').hide();
-        $('#number-of-items').hide();
+        $('.number-of-items').hide();
         cartList.append('<li class="no-items">Chưa có sách được đăng ký mượn</li>');
     } else {
         $('.cart-bottom').show();
@@ -108,7 +109,7 @@ function displayCart() {
 
             // Cart Image
             const cartImg = $('<div class="cart-img"></div>');
-            const bookLink = $('<a></a>').attr('href', `/Library/bookdetail?id=${bookId}`);
+            const bookLink = $('<a></a>').attr('href', `/Library/book?id=${bookId}`);
             const bookImg = $('<img>').attr('src', itemData.imagePath).attr('alt', itemData.bookName);
             bookLink.append(bookImg);
             cartImg.append(bookLink);
@@ -166,29 +167,8 @@ function displayCart() {
         });
 
         $('#total-price').text(totalPrice);
-        $('#number-of-items').show().text(totalItems);
+        $('.number-of-items').show().text(totalItems);
     }
-}
-
-function checkout() {
-    let checkoutCart = new Map();
-    cart.forEach((itemData, bookId) => {
-        checkoutCart.set(bookId, itemData.quantity);
-    });
-    let ngayMuon = '';
-    let ngayTra = '';
-
-    $.ajax({
-        method: 'POST',
-        url: '/Library/cart/process',
-        data: JSON.stringify(checkoutCart),
-        success: () => {
-
-        },
-        error: () => {
-
-        }
-    });
 }
 
 $(document).ready(function () {

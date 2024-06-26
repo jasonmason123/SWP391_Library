@@ -6692,23 +6692,40 @@ p.lost-password a:hover {
     margin-bottom: 30px;
     position: relative;
 }
-
+.country-select h2,
 .country-select label,
 .checkout-form-list label {
     color: #333;
     display: block;
-    font-size: 14px;
     font-weight: 600;
     margin: 0 0 5px;
     font-family: 'Rufina', serif;
     font-weight: 400;
 }
 
+.country-select label,
+.checkout-form-list label {
+    font-size: 14px;
+}
+
+.country-select h2 {
+    font-size: 18px;
+}
+
+.country-select ul li,
+.country-select label span.required,
+.checkout-form-list label span.required {
+    font-family: 'Rufina', serif;
+    font-weight: 400;
+}
+
+.country-select ul li {
+    font-size: 16px;
+}
+
 .country-select label span.required,
 .checkout-form-list label span.required {
     color: #FF1111;
-    font-family: 'Rufina', serif;
-    font-weight: 400;
 }
 
 .country-select select {

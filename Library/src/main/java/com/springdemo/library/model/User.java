@@ -44,7 +44,7 @@ public class User {
     private List<BinhLuanSach> binhLuanSachList;
     @OneToMany(orphanRemoval = true)
     private List<BinhLuanBlog> binhLuanBlogList;
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, mappedBy = "nguoiMuon", cascade = CascadeType.ALL)
     private List<YeuCauMuonSach> yeuCauMuonSachList;
     @Builder
     public User(String tenUser, String email, String avatarLink, String soDienThoai, String soCCCD, Date dateCreated) {

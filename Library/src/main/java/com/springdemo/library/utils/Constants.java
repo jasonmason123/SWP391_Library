@@ -25,4 +25,5 @@ public class Constants {
     public static final String TOKEN_USER_ID_CLAIM = "id";
     public static final String TOKEN_USERNAME_CLAIM = "name";
     public static final int MAXIMUM_NUMBER_OF_BOOKS_BORROWED = 5;
+    public static final long A_DAY_IN_MILISECONDS = 1000 * 60 * 60 * 24;
 }

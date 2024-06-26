@@ -32,23 +32,22 @@
           </div>
         </div>
         <div class="col-lg-3 col-md-3 col-12">
-          <div th:if="${isAuthenticated==0}" class="my-cart">
+          <div th:if="${isAuthenticated==0 && noCart==null}" class="my-cart" id="my-cart">
             <ul>
               <li><a href="/Library/login"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a></li>
             </ul>
           </div>
-          <div th:if="${isAuthenticated==1}" class="my-cart">
+          <div th:if="${isAuthenticated==1 && noCart==null}" class="my-cart" id="my-cart">
             <ul>
               <li><a href="#"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a>
-                <span id="number-of-items"></span> <!-- number of items -->
+                <span class="number-of-items"></span> <!-- number of items -->
                 <div class="mini-cart-sub">
                   <ul class="cart-product" id="cart"></ul>
                   <div class="cart-totals">
                     <h5>Tổng giá trị đặt cọc: <span id="total-price"></span> VNĐ</h5>
                   </div>
                   <div class="cart-bottom">
-                    <a class="view-cart" href="cart.html">view cart</a>
-                    <a href="checkout.html">Check out</a>
+                    <a href="/Library/checkout">Check out</a>
                   </div>
                 </div>
               </li>
@@ -71,19 +70,16 @@
                   <a href="/Library/home">Trang chủ</a>
                 </li>
                 <!-- <i class="fa fa-angle-down"></i> -->
-                <li><a href="/Library/book">Sách</a>
+                <li><a href="/Library/book">Sách</a></li>
+                <li><a href="/Library/blog">Blog</a></li>
+                <li th:if="${isAuthenticated==1 && noCart==null}">
+                  <a href="#my-cart">Giỏ hàng <span class="number-of-items" style="color: #f0ad4e"></span></a>
 <!--                  <div class="mega-menu">-->
 <!--                    <span>-->
 <!--                        <a href="#" class="title">Jackets</a>-->
-<!--                        <a href="/Library/book">Tops & Tees</a>-->
-<!--                        <a href="shop.html">Polo Short Sleeve</a>-->
-<!--                        <a href="shop.html">Graphic T-Shirts</a>-->
-<!--                        <a href="shop.html">Jackets & Coats</a>-->
-<!--                        <a href="shop.html">Fashion Jackets</a>-->
 <!--                    </span>-->
 <!--                  </div>-->
                 </li>
-                <li><a href="/Library/blog">Blog</a></li>
               </ul>
             </nav>
           </div>
