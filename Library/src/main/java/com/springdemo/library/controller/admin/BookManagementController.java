@@ -1,7 +1,6 @@
 package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.Sach;
-import com.springdemo.library.model.Sach;
 import com.springdemo.library.repositories.SachRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +64,7 @@ public class BookManagementController {
 
     @PostMapping("/updateBook")
     @ResponseBody
-    public ResponseEntity<String> updateStaff(
+    public ResponseEntity<String> updateBook(
             @RequestParam(name = "id") int id,
             @RequestBody Sach sachDto
     ) {
@@ -87,16 +86,14 @@ public class BookManagementController {
                 if(!newTacGia.equals(existedBook.getTacGia())) {
                     existedBook.setTacGia(newTacGia);
                 }
-                String newPrice = (sachDto.getGiaTien()!=null && !sachDto.getGiaTien().isBlank())
-                        ? sachDto.getGiaTien() : "";
+                double newPrice = sachDto.getGiaTien();
 
-                if(!newPrice.equals(existedBook.getGiaTien())) {
+                if(newPrice!=(existedBook.getGiaTien())) {
                     existedBook.setGiaTien(newPrice);
                 }
-                String newSoLuong = (sachDto.getSoLuongTrongKho()!=null && !sachDto.getSoLuongTrongKho().isBlank())
-                        ? sachDto.getSoLuongTrongKho() : "";
+                int newSoLuong = sachDto.getSoLuongTrongKho();
 
-                if(!newSoLuong.equals(existedBook.getSoLuongTrongKho())) {
+                if(newSoLuong!=(existedBook.getSoLuongTrongKho())) {
                     existedBook.setSoLuongTrongKho(newSoLuong);
                 }
                 String newNhaXuatBan = (sachDto.getNhaXuatBan()!=null && !sachDto.getNhaXuatBan().isBlank())
@@ -111,10 +108,9 @@ public class BookManagementController {
                 if(!newMoTa.equals(existedBook.getMoTa())) {
                     existedBook.setMoTa(newMoTa);
                 }
-                String newDanhGia = (sachDto.getDanhGia()!=null && !sachDto.getDanhGia().isBlank())
-                        ? sachDto.getDanhGia() : "";
+                int newDanhGia = sachDto.getDanhGia();
 
-                if(!newDanhGia.equals(existedBook.getDanhGia())) {
+                if(newDanhGia!=(existedBook.getDanhGia())) {
                     existedBook.setDanhGia(newDanhGia);
                 }
                 existedBook.setDateUpdated(new Date());

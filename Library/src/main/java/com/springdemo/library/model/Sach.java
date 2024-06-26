@@ -27,11 +27,11 @@ public class Sach {
     @Column(name = "MoTa")
     private String moTa;
     @Column(name = "DanhGia")
-    private String danhGia;
+    private int danhGia;
     @Column(name = "GiaTien")
-    private String giaTien;
+    private double giaTien;
     @Column(name = "SoLuongTrongKho")
-    private String soLuongTrongKho;
+    private int soLuongTrongKho;
     @Column(name = "LinkAnh")
     private String linkAnh;
     @Column(name = "FlagDel")
@@ -42,7 +42,7 @@ public class Sach {
     @Column(name = "DateUpdated")
     private Date dateUpdated;
 
-    @OneToMany(orphanRemoval = true,mappedBy = "sach")
+    @OneToMany(orphanRemoval = true, mappedBy = "sach")
     private List<BinhLuanSach> binhLuan;
     @ManyToMany
     @JoinTable(
@@ -51,7 +51,7 @@ public class Sach {
             inverseJoinColumns = @JoinColumn(name = "TheLoaiId")
     )
     private List<TheLoai> theLoaiList;
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, mappedBy = "sach", cascade = CascadeType.ALL)
     private List<SachDuocMuon> sachDuocMuonList;
 
     @Builder
@@ -59,9 +59,9 @@ public class Sach {
                 String tacGia,
                 String nhaXuatBan,
                 String moTa,
-                String danhGia,
-                String giaTien,
-                String soLuongTrongKho,
+                int danhGia,
+                double giaTien,
+                int soLuongTrongKho,
                 String linkAnh,
                 int flagDel,
                 Date dateCreated) {

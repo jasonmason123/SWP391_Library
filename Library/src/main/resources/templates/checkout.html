@@ -1,0 +1,165 @@
+<!-- entry-header-area-start -->
+<div class="entry-header-area">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="entry-header-title text-center">
+					<h2>Checkout</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- entry-header-area-end -->
+<!-- checkout-area-start -->
+<div class="checkout-area mb-70">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<form id="create-request-form">
+					<div class="row">
+						<div class="col-lg-6 col-md-12 col-12">
+							<div class="checkbox-form">
+								<h3>Lưu ý</h3>
+								<div class="row">
+									<div class=" col-lg-12">
+										<div class="country-select">
+											<h2><strong>I. Chính sách đặt cọc và xử phạt vi phạm</strong></h2>
+											<ul>
+												<li>1. Phí cọc sách sẽ được hoàn trả <strong>100%</strong> khi người mượn trả
+													toàn bộ sách đúng hạn và sách không bị hư hỏng</li>
+												<li>2. Mức phạt khi trả muộn: <strong>1.000đ/1 ngày</strong></li>
+												<li>3. Người mượn sẽ phải đền <strong>100%</strong> giá trị sách nếu như làm mất hoặc làm hỏng sách</li>
+											</ul>
+										</div>
+									</div>
+									<div class=" col-lg-12">
+										<div class="country-select">
+											<h2><strong>II. Nhận sách và thanh toán phí cọc</strong></h2>
+											<ul>
+												<li>1. Khi gửi yêu cầu mượn sách, thư viện sẽ gửi về email để xác nhận</li>
+                                                <li>2. Khi đến thư viện nhận sách, xuất trình email xác nhận mượn sách với nhân viên lễ tân</li>
+												<li>3. Thanh toán tiền đặt cọc tại lễ tân thư viện</li>
+                                                <li>4. Thư viện chỉ tiếp nhận mượn sách từ ngày mượn được ghi trong email</li>
+											</ul>
+										</div>
+									</div>
+									<div class=" col-lg-12">
+										<div class="country-select">
+											<h2><strong>III. Trả sách</strong></h2>
+											<ul>
+												<li>1. Vui lòng trả sách tại quầy lễ tân thư viện</li>
+												<li>2. Khi trả sách, vui lòng xuất trình email xác nhận mượn sách cho nhân viên lễ tân</li>
+												<li>3. Nhận lại tiền cọc tại lễ tân thư viện.Trong trường hợp trả sách muộn
+													hay sách bị hư hỏng, tiền phạt sẽ trừ vào tiền cọc</li>
+											</ul>
+										</div>
+									</div>
+<!--									<div class="payment-method col-lg-12">-->
+<!--										<div class="payment-accordion">-->
+<!--											<div class="collapses-group">-->
+<!--												<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">-->
+<!--													<div class="panel panel-default">-->
+<!--														<div class="panel-heading" role="tab" id="headingTwo">-->
+<!--															<h4 class="panel-title">-->
+<!--																<a class="collapsed" role="button" data-bs-toggle="collapse" data-bs-parent ="#accordion"-->
+<!--																   href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">-->
+<!--																	Thanh toán khi đến nhận sách-->
+<!--																</a>-->
+<!--															</h4>-->
+<!--														</div>-->
+<!--														<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">-->
+<!--															<div class="panel-body">-->
+<!--																<p>Thanh toán phí cọc khi đến nhận sách tại thư viện</p>-->
+<!--															</div>-->
+<!--														</div>-->
+<!--													</div>-->
+<!--													<div class="panel panel-default">-->
+<!--														<div class="panel-heading" role="tab" id="headingOne">-->
+<!--															<h4 class="panel-title">-->
+<!--																<a class="collapsed" role="button" data-bs-toggle="collapse" data-bs-parent ="#accordion"-->
+<!--																   href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">-->
+<!--																	Chuyển khoản ngân hàng-->
+<!--																</a>-->
+<!--															</h4>-->
+<!--														</div>-->
+<!--														<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">-->
+<!--															<div class="panel-body">-->
+<!--																<p>Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>-->
+<!--															</div>-->
+<!--														</div>-->
+<!--													</div>-->
+<!--												</div>-->
+<!--											</div>-->
+<!--										</div>-->
+<!--									</div>-->
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6 col-md-12 col-12">
+							<div class="your-order">
+								<h3>Yêu cầu mượn sách</h3>
+								<div class="your-order-table table-responsive">
+									<table>
+										<thead>
+										<tr>
+											<th class="product-name">Sách</th>
+											<th class="product-total">Tổng</th>
+										</tr>
+										</thead>
+										<tbody>
+										</tbody>
+										<tfoot>
+										<tr class="cart-subtotal">
+											<th>Tổng phí cọc sách</th>
+											<td><span class="amount"></span></td>
+										</tr>
+										<tr class="shipping">
+											<th>Thời gian mượn sách</th>
+											<td>
+												<div class="container">
+													<div class="row">
+														<!-- Date Inputs Column -->
+														<div class="col-md-12">
+															<!-- Borrow Date Input -->
+															<div class="form-group">
+																<label for="borrowDate">Ngày mượn</label><br/>
+																<input type="date" id="borrowDate" class="mt-3" required/>
+															</div>
+															<!-- Return Date Message -->
+															<div class="form-group mt-3">
+																<p id="returnDateMessage" class="text-muted mt-3" style="display: none">
+																	<span style="color: #ec4445">*</span>
+																	<i>Thời gian mượn sách sẽ kéo dài đến ngày
+																		<strong id="returnDate"></strong>
+																	</i>
+																</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+										<tr class="order-total">
+											<th>Tổng cộng</th>
+											<td><strong><span class="amount"></span></strong>
+											</td>
+										</tr>
+										</tfoot>
+									</table>
+								</div>
+								<div class="payment-method">
+									<div class="order-button-payment">
+										<input type="submit" value="Gửi yêu cầu">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- checkout-area-end -->
+<script src="js/pages/checkout.js"></script>
