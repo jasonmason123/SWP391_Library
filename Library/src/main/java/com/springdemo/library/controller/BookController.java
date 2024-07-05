@@ -125,6 +125,7 @@ public class BookController {
                 Map<String, Object> modelClass = new HashMap<>();
                 modelClass.put("sach", sach);
                 modelClass.put("listOfRelatedBooks", listOfRelatedBooks);
+                modelClass.put("soLuotDanhGia", sach.getBinhLuan().size());
                 bookDetailViewModel.addObject("modelClass", modelClass);
                 return bookDetailViewModel;
             }

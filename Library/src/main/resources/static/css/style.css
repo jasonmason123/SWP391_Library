@@ -1493,7 +1493,11 @@ body {
 
 .product-rating ul li a {
     color: #f07c29;
-    font-size: 12px;
+    font-size: 14px;
+}
+
+.product-rating ul li a .fa .fa-star-o {
+    color: grey;
 }
 
 .product-details h4 {
@@ -4129,6 +4133,7 @@ nav.menu .cr-dropdown ul {
     border-bottom: 0;
 }
 
+.blog-side-menu .blogTacGiaList li a,
 .left-menu .theLoaiList li a {
     color: #808080;
     font-size: 12px;
@@ -5094,6 +5099,7 @@ nav.menu .cr-dropdown ul {
     position: relative;
 }
 
+.side-form .search-container button,
 .side-form .search-container a {
     color: #333;
     font-size: 16px;
@@ -5101,6 +5107,11 @@ nav.menu .cr-dropdown ul {
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.side-form .search-container button {
+    background-color: white;
+    border: none;
 }
 
 .side-form .search-container input {
@@ -5305,6 +5316,28 @@ nav.menu .cr-dropdown ul {
     font-weight: 400;
 }
 
+.single-blog-content .single-blog-title .draft a h5 {
+    color: #3f3f3f;
+    font-size: 20px;
+    font-weight: 500;
+    transition: .3s;
+    text-decoration: none;
+    font-family: 'Rufina', serif;
+    font-weight: 400;
+}
+
+.single-blog-content .single-blog-title .draft a p {
+    color: #626262;
+    font-size: 12px;
+    transition: .3s;
+    text-decoration: none;
+}
+
+.single-blog-content .single-blog-title .draft {
+    border-bottom: 1px solid grey;
+}
+
+.single-blog-content .single-blog-title .draft a h5:hover,
 .single-blog-content .single-blog-title h3 a:hover {
     color: #F07C29;
 }
@@ -5312,6 +5345,12 @@ nav.menu .cr-dropdown ul {
 .single-blog-content .blog-single-content p {
     font-size: 16px;
     font-family: 'Rufina', serif;
+    font-weight: 400;
+    color: #333;
+}
+
+.single-blog-content .blog-single-content .note {
+    font-size: 14px;
     font-weight: 400;
     color: #333;
 }
@@ -5663,6 +5702,7 @@ nav.menu .cr-dropdown ul {
     font-weight: 400;
 }
 
+.single-labeled-input div textarea,
 .single-labeled-input div input {
     background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
     border: 1px solid #B4B4B4;

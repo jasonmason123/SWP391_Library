@@ -100,7 +100,6 @@ $(document).ready(function () {
 
     $('#deactivate-staff-form').on('submit', function (e) {
         e.preventDefault();
-        console.log("Reached deactivate");
         $.ajax({
             url: '/Library/management/deactivateStaff?id=' + $('#deactivate-staff-id').val(),
             method: 'POST',

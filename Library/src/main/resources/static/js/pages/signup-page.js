@@ -1,3 +1,6 @@
+function back() {
+    history.back();
+}
 document.addEventListener('DOMContentLoaded', () => {
     let userName="", soCCCD="", email="", soDienThoai="", matKhau="";
 

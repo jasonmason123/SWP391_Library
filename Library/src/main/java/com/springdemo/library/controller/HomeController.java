@@ -20,11 +20,31 @@ public class HomeController {
 
     @GetMapping("/home")
     public ModelAndView home(Authentication authentication) {
-//        String breadCrumb = """
-//            <ul>
-//                <li><a href="#">Trang chủ</a></li>
-//            </ul>""";
-        return generateViewService.generateCustomerView("Trang chủ", null, "home", authentication);
+        String breadCrumb = """
+            <ul>
+                <li><a href="#">Trang chủ</a></li>
+            </ul>""";
+        return generateViewService.generateCustomerView("Trang chủ", breadCrumb, "home", authentication);
+    }
+
+    @GetMapping("/aboutus")
+    public ModelAndView aboutUs(Authentication authentication) {
+        String breadCrumb = """
+            <ul>
+                <li><a href="#">Trang chủ</a></li>
+                <li><a href="#">Về chúng tôi</a></li>
+            </ul>""";
+        return generateViewService.generateCustomerView("Về chúng tôi", breadCrumb, "AboutUs", authentication);
+    }
+
+    @GetMapping("/rule")
+    public ModelAndView rule(Authentication authentication) {
+        String breadCrumb = """
+            <ul>
+                <li><a href="#">Trang chủ</a></li>
+                <li><a href="#">Nội quy thư viện</a></li>
+            </ul>""";
+        return generateViewService.generateCustomerView("Nội quy thư viện", breadCrumb, "Rule", authentication);
     }
 
     @GetMapping("/checkout")

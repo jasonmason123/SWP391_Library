@@ -8,6 +8,7 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
     let trangThai = document.getElementById('TrangThai_' + id).getAttribute("data-TrangThai");
     let ngayTao = document.getElementById('NgayTao_' + id).innerText;
     let ngayCapNhat = document.getElementById('NgayCapNhat_' + id).getAttribute('data-NgayCapNhat');
+    let soTienDatCoc = document.getElementById('SoTienDatCoc_' + id).getAttribute('data-SoTienDatCoc');
 
     $('#ID-yeucau').text(Id);
     $('#tenNguoiMuon-detail').text(tenNguoiMuon);
@@ -18,6 +19,7 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
     $('#statusOptions').val(trangThai);
     $('#NgayTao-detail').text(ngayTao);
     $('#NgayCapNhat-detail').text(ngayCapNhat);
+    $('#totalDeposit').text(soTienDatCoc);
 
     const sachDuocMuonTableBody = $('#sachDuocMuonTableBody');
     sachDuocMuonTableBody.empty();

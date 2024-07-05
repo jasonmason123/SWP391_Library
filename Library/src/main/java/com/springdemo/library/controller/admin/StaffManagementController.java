@@ -1,7 +1,9 @@
 package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.NhanVien;
+import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.repositories.NhanVienRepository;
+import com.springdemo.library.services.EmailService;
 import com.springdemo.library.utils.Common;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.List;
 public class StaffManagementController {
 
     private NhanVienRepository nhanVienRepository;
+    private EmailService emailService;
     @GetMapping("/staff")
     public ModelAndView viewStaff() {
         List<NhanVien> nhanVienList = nhanVienRepository.findAll();
@@ -49,8 +52,27 @@ public class StaffManagementController {
                                 .diaChi(nhanVienDto.getDiaChi())
                                 .vaiTro(nhanVienDto.getVaiTro())
                                 .dateCreated(new Date()).build()
-                ); //Add sdt and diachi to front-end
-                log.warn("added");
+                );
+                StringBuilder emailBody = new StringBuilder();
+                emailBody.append("<html><body>")
+                        .append("<p>Gửi anh/chị <strong>")
+                        .append(nhanVienDto.getTenNhanVien())
+                        .append("</strong>,</p><p>Ban quản lý thư viện Therasus đã cấp cho anh/chị tài khoản nhân viên với vai trò <strong>")
+                        .append(nhanVienDto.getVaiTro().equals("0") ? "Quản trị viên" : "Thủ thư")
+                        .append("<p>Anh/Chị vui lòng đăng nhập vào hệ thống bằng đường link dưới đây:</p>")
+                        .append("<a href=\"localhost:8080/Library/management/login\">localhost:8080/Library/management/login</a>")
+                        .append("</strong><p>Với email đăng nhập: <strong>")
+                        .append(nhanVienDto.getEmail())
+                        .append("</strong></p><p>Và mật khẩu: <strong>")
+                        .append(nhanVienDto.getMatKhau())
+                        .append("</strong></p><p>Và thực hiện đổi mật khẩu để đảm bảo bảo mật</p>")
+                        .append("<p><strong>Ban quản lý thư viện Therasus xin chân thành cảm ơn sự hợp tác của anh/chị</strong></p></body></html>");
+                EmailDetailsDto emailDetailsDto = EmailDetailsDto.builder()
+                        .recipient(nhanVienDto.getEmail())
+                        .subject("[Therasus] Thông báo tạo tài khoản nhân viên cho anh/chị " + nhanVienDto.getTenNhanVien())
+                        .recipient(emailBody.toString())
+                        .build();
+                emailService.sendHtmlEmail(emailDetailsDto);
                 return ResponseEntity.ok().build();
             }
         } catch (DataIntegrityViolationException e) {

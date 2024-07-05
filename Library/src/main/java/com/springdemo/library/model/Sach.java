@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.OptionalDouble;
 
 @Getter
 @Setter
@@ -59,7 +60,6 @@ public class Sach {
                 String tacGia,
                 String nhaXuatBan,
                 String moTa,
-                int danhGia,
                 double giaTien,
                 int soLuongTrongKho,
                 String linkAnh,
@@ -69,11 +69,21 @@ public class Sach {
         this.tacGia = tacGia;
         this.nhaXuatBan = nhaXuatBan;
         this.moTa = moTa;
-        this.danhGia = danhGia;
+        this.danhGia = calculateDanhGia();
         this.giaTien = giaTien;
         this.soLuongTrongKho = soLuongTrongKho;
         this.linkAnh = linkAnh;
         this.flagDel = flagDel;
         this.dateCreated = dateCreated;
+    }
+
+    private int calculateDanhGia() {
+        if(binhLuan==null || binhLuan.isEmpty()) {
+            return 0;
+        }
+        double averageDanhGia = binhLuan.stream()
+                .mapToInt(BinhLuanSach::getDanhGia)
+                .average().orElse(0);
+        return (int) Math.round(averageDanhGia);
     }
 }

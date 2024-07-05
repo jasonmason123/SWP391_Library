@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            overflow: hidden;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0;
+        }
+        nav ul li a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        nav ul li a:hover {
+            background-color: #555;
+        }
+        main {
+            padding: 20px;
+        }
+        section {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div id="content-wrapper">
+    <section id="new-post">
+        <h2 class="text-center" th:text="${modelClass.getTieuDe()}"></h2>
+        <p class="text-center">Viết bởi <strong th:text="${modelClass.getTacGia().getTenUser()}"></strong></p>
+        <div class="form-container">
+            <div th:utext="${modelClass.getNoiDung()}"></div>
+        </div>
+    </section>
+
+    <!-- /.container-fluid -->
+
+    <!-- Sticky Footer -->
+    <footer class="sticky-footer">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>Copyright © Your Website 2019</span>
+            </div>
+        </div>
+    </footer>
+
+</div>
+<!-- /.content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+</body>
+</html>

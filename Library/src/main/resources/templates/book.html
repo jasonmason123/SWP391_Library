@@ -50,7 +50,7 @@
                                                 modelClass.get('chosenTacGiaList').contains(tacGia)}"
                                        type="checkbox" name="tacGia" th:value="${tacGia}" th:id="${tacGia}" checked/>
                                 <input th:unless="${modelClass.get('chosenTacGiaList')!=null &&
-                                                    modelClass.get('chosenTacGiaList').contains(tacGia)}"
+                                                    modelClass.get('chosenTacGiaList').contains(zz)}"
                                        type="checkbox" name="tacGia" th:value="${tacGia}" th:id="${tacGia}"/>
                                 <label th:for="${tacGia}" th:text="${tacGia}"></label>
                             </li>
@@ -144,11 +144,11 @@
                                     <div class="product-details mb-3 text-center">
                                         <div class="product-rating">
                                             <ul>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                                <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                    <a href="#">
+                                                        <i th:class="${i <= sach.getDanhGia() ? 'fa fa-star' : 'fa fa-star-o'}"></i>
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                         <h4><a th:id="'bookName_' + ${sach.getId()}"
@@ -172,7 +172,11 @@
                                         </div>
                                         <div class="add-to-link">
                                             <ul>
-                                                <li><a th:href="@{/book(bookId=${sach.getId()})}" title="Xem chi tiết"><i class="fa fa-external-link"></i></a></li>
+                                                <li>
+                                                    <a th:href="@{/book(bookId=${sach.getId()})}" title="Xem chi tiết">
+                                                        <i class="fa fa-external-link"></i>
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -544,13 +548,8 @@
     </div>
 </div>
 <!-- Modal end -->
+<script src="js/pages/book.js"></script>
 <script>
-    $(document).ready(function() {
-        $('input[name="tacGia"], input[name="nhaXuatBan"]').change(function(e) {
-            e.preventDefault();
-            $('#filterForm').submit();
-        });
-    });
     function addToCart(id) {
         updateCart(id, 'ADD');
     }
