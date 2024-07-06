@@ -481,23 +481,22 @@
 </script>
 <script>
     const categoriesWithGenres = {
-        'Thơ': ['Nôm','Thơ mới', 'Thơ thời chiến','Hiện đại'],
+        'Thơ': ['Nôm', 'Thơ mới', 'Thơ thời chiến', 'Hiện đại'],
         'Truyện/Tiểu thuyết': ['Truyện ngụ ngôn', 'Truyện ngắn', 'Truyện cười', 'Truyện tranh', 'Thần thoại', 'Trinh thám', 'Khoa học viễn tưởng', 'Lãng mạn', 'Tâm lý'],
+        'Sách giáo khoa': ['Toán học', 'Vật lý', 'Hóa học', 'Văn học', 'Kinh tế', 'Chính trị/Xã hội', 'Thiên văn học', 'Khoa học máy tính'],
+        'Báo/Tạp chí': ['Tuổi trẻ', 'VNExpress', 'Thanh Niên', 'New York Times', 'The Washington Post'],
+        'Nghiên cứu khoa học': ['Toán học', 'Vật lý', 'Hóa học', 'Văn học', 'Kinh tế', 'Chính trị/Xã hội', 'Thiên văn học', 'Khoa học máy tính']
 
-        'Sách giáo khoa': ['Toán học', 'Vật lý', 'Hóa học', 'Văn học', 'Kinh tế', 'Chính trị/Xã hội', 'Thiên văn học', 'Khoa học máy tính']
     };
-
 
     function updateGenres() {
         const categorySelect = document.getElementById('searchCategory');
         const genreSelect = document.getElementById('searchGenre');
         const selectedCategory = categorySelect.value;
 
-
         genreSelect.innerHTML = '<option value="all">Tất cả thể loại</option>';
 
         if (selectedCategory === 'all') {
-
             const allGenres = Object.values(categoriesWithGenres).flat();
             allGenres.forEach(function(genre) {
                 const option = document.createElement('option');
@@ -506,7 +505,6 @@
                 genreSelect.appendChild(option);
             });
         } else if (categoriesWithGenres[selectedCategory]) {
-
             categoriesWithGenres[selectedCategory].forEach(function(genre) {
                 const option = document.createElement('option');
                 option.value = genre;
