@@ -1,26 +1,39 @@
+
 <style>
     .btn-custom {
         background-color: #f07c29; /* Mã màu cam tùy chỉnh */
         color: white;
     }
-    .badge-custom{
-        background-color: grey;
-        color: white;
+
+
+      img {
+         width: 100px;
+         height: auto;
+          display: block;
+         margin: 0 auto;
+}
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff;
+
+        color: black;
     }
-    .badge-danger{
-        background-color: red;
-        color: white;
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: black;
     }
-    .btn-custom2 {
-        background-color:darkturquoise; /* Mã màu cam tùy chỉnh */
-        color: white;
+
+    .select2-container .select2-selection--multiple {
+        height: auto !important;
     }
-    img {
-        width: 100px;
-        height: auto;
-        display: block;
-        margin: 0 auto;
+
+    .select2-container .select2-selection--multiple .select2-search__field {
+        width: 100% !important;
     }
+
+    .select2-dropdown {
+        z-index: 9999;
+    }
+
 </style>
 
 <div id="content-wrapper">
@@ -32,6 +45,37 @@
                 <a href="#addBookModal" class="btn btn-custom" data-toggle="modal"><span>Thêm </span><i class="fa fa-plus"></i></a>
             </div>
         </ol>
+
+
+        <!-- Search Form -->
+        <form action="/Library/management/searchBook" method="get" onsubmit="saveSelections()">
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-6">
+                    <label for="searchCategory">Tìm kiếm theo danh mục:</label>
+                    <select id="searchCategory" name="category" class="form-control" onchange="updateGenres()">
+                        <option value="all">Tất cả danh mục</option>
+                        <option th:each="category : ${categories}" th:value="${category.getTenDanhMuc()}" th:text="${category.getTenDanhMuc()}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6" id="genreContainer">
+                    <label for="searchGenre">Tìm kiếm theo thể loại:</label>
+                    <select id="searchGenre" name="genre" class="form-control">
+                        <option value="all">Tất cả thể loại</option>
+                        <option th:each="genre : ${genres}" th:value="${genre.getTenTheLoai()}" th:text="${genre.getTenTheLoai()}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-12 text-right">
+                    <button type="submit" class="btn btn-custom">Tìm kiếm</button>
+                </div>
+            </div>
+        </form>
+
+
+
+
+
+
+
 
         <!-- DataTables Example -->
         <div class="card mb-3">
@@ -72,6 +116,8 @@
                                  th:attr="data-danhGia=${item.getDanhGia()}"></div>
                             <div style="display: none" th:id="'nhaXuatBan_' + ${item.getId()}"
                                  th:attr="data-nhaXuatBan=${item.getNhaXuatBan()}"></div>
+                            <div style="display: none" th:id="'theLoai_' + ${item.getId()}"
+                                 th:attr="data-theLoai=${item.getTenTheLoai()}"></div>
                             <div style="display: none" th:id="'ngayTao_' + ${item.getId()}"
                                  th:attr="data-ngayTao=${item.getDateCreated()}"></div>
                             <div style="display: none" th:id="'ngayCapNhat_' + ${item.getId()}"
@@ -91,7 +137,7 @@
                                 </button>
                                 <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
                                         th:onclick="'openModalActivateBook(' + ${item.getId()} + ')'">
-                                    <i class="fa fa-times text-primary"></i>
+                                    <i class="fa fa-check text-primary"></i>
                                 </button>
                             </td>
                         </tr>
@@ -124,13 +170,16 @@
                         <label>Tên sách</label>
                         <input id="tenSach-add" type="text" class="form-control" required />
                     </div>
-
-
                     <div class="form-group">
                         <label>Tác giả</label>
                         <input id="tacGia-add" type="text" class="form-control" required />
                     </div>
-
+                    <div class="form-group">
+                        <label>Thể loại</label>
+                        <select id="theLoai-add" class="form-control select2" multiple="multiple" required>
+                            <option th:each="genre : ${genres}" th:value="${genre.getId()}" th:text="${genre.getTenTheLoai()}"></option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Giá tiền</label>
                         <input id="giaTien-add" type="text" class="form-control" required />
@@ -143,11 +192,11 @@
                         <label>Nhà xuất bản</label>
                         <input id="nhaXuatBan-add" type="text" class="form-control" required />
                     </div>
-
                     <div class="form-group">
                         <label>Mô tả</label>
                         <input id="moTa-add" type="text" class="form-control" required />
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
@@ -157,6 +206,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Update Modal-->
 <div id="updateBookModal" class="modal fade">
@@ -182,7 +232,19 @@
                         <label>Tác giả</label>
                         <input id="tacGia-update" type="text" class="form-control"  />
                     </div>
+                    <div class="form-group">
+                        <label>Thể loại</label>
 
+                        <select id="theLoai-update" class="form-control select2" multiple="multiple" required>
+
+                            <option th:each="genre : ${genres}"
+                                    th:value="${genre.id}"
+                                    th:text="${genre.tenTheLoai}">
+                            </option>
+                        </select>
+
+
+                    </div>
                     <div class="form-group">
                         <label>Giá tiền</label>
                         <input id="giaTien-update" type="text" class="form-control"  />
@@ -191,6 +253,7 @@
                         <label>Số lượng</label>
                         <input id="soLuong-update" type="text" class="form-control" />
                     </div>
+
                     <div class="form-group">
                         <label>Nhà xuất bản</label>
                         <input id="nhaXuatBan-update" type="text" class="form-control" />
@@ -238,6 +301,10 @@
                     <div class="form-group">
                         <label>Tác giả</label>
                         <b id="tacGia-detail" type="text" class="form-control" ></b>
+                    </div>
+                    <div class="form-group">
+                        <label>Thể loại</label>
+                        <b id="theLoai-detail" type="text" class="form-control" ></b>
                     </div>
 
                     <div class="form-group">
@@ -333,6 +400,7 @@
         let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
         let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
         let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        let theLoai = document.getElementById('theLoai_' + id).getAttribute('data-theLoai');
         $('#tenSach-update').val(tenSach);
         $('#anh-update').attr('src', anh);
         $('#tacGia-update').val(tacGia);
@@ -342,6 +410,8 @@
         $('#moTa-update').val(moTa);
         $('#nhaXuatBan-update').val(nhaXuatBan);
         $('#danhGia-update').val(danhGia);
+        $('#theLoai-update').val(theLoai);
+       
         $('#updateBookModal').modal('show');
     }
 
@@ -354,15 +424,95 @@
         let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
         let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
         let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        let theLoai = document.getElementById('theLoai_' + id).getAttribute('data-theLoai');
         $('#tenSach-detail').text(tenSach);
         $('#anh-detail').attr('src', anh);
         $('#tacGia-detail').text(tacGia);
         $('#giaTien-detail').text(giaTien);
         $('#soLuong-detail').text(soLuong);
-
+        $('#theLoai-detail').text(theLoai);
         $('#moTa-detail').text(moTa);
         $('#nhaXuatBan-detail').text(nhaXuatBan);
         $('#danhGia-detail').text(danhGia);
         $('#detailBookModal').modal('show');
+    }
+</script>
+<script>
+    // Function to save selected category and genre to localStorage
+    function saveSelections() {
+        var category = document.getElementById('searchCategory').value;
+        var genre = document.getElementById('searchGenre').value;
+        localStorage.setItem('selectedCategory', category);
+        localStorage.setItem('selectedGenre', genre);
+    }
+
+    // Function to load saved category and genre from localStorage
+    function loadSelections() {
+        var savedCategory = localStorage.getItem('selectedCategory');
+        var savedGenre = localStorage.getItem('selectedGenre');
+
+        if (savedCategory) {
+            document.getElementById('searchCategory').value = savedCategory;
+        }
+        if (savedGenre) {
+            document.getElementById('searchGenre').value = savedGenre;
+        }
+    }
+
+    // Call loadSelections on page load
+    window.onload = loadSelections;
+</script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $('#theLoai-add').select2({
+        dropdownParent: $('#addBookModal'),
+        allowClear: true,
+        width: '100%'
+
+    });
+    $('#theLoai-update').select2({
+        dropdownParent: $('#updateBookModal'),
+        allowClear: true,
+        width: '100%'
+
+    });
+</script>
+<script>
+    const categoriesWithGenres = {
+        'Thơ': ['Nôm','Thơ mới', 'Thơ thời chiến','Hiện đại'],
+        'Truyện/Tiểu thuyết': ['Truyện ngụ ngôn', 'Truyện ngắn', 'Truyện cười', 'Truyện tranh', 'Thần thoại', 'Trinh thám', 'Khoa học viễn tưởng', 'Lãng mạn', 'Tâm lý'],
+
+        'Sách giáo khoa': ['Toán học', 'Vật lý', 'Hóa học', 'Văn học', 'Kinh tế', 'Chính trị/Xã hội', 'Thiên văn học', 'Khoa học máy tính']
+    };
+
+
+    function updateGenres() {
+        const categorySelect = document.getElementById('searchCategory');
+        const genreSelect = document.getElementById('searchGenre');
+        const selectedCategory = categorySelect.value;
+
+
+        genreSelect.innerHTML = '<option value="all">Tất cả thể loại</option>';
+
+        if (selectedCategory === 'all') {
+
+            const allGenres = Object.values(categoriesWithGenres).flat();
+            allGenres.forEach(function(genre) {
+                const option = document.createElement('option');
+                option.value = genre;
+                option.text = genre;
+                genreSelect.appendChild(option);
+            });
+        } else if (categoriesWithGenres[selectedCategory]) {
+
+            categoriesWithGenres[selectedCategory].forEach(function(genre) {
+                const option = document.createElement('option');
+                option.value = genre;
+                option.text = genre;
+                genreSelect.appendChild(option);
+            });
+        }
     }
 </script>

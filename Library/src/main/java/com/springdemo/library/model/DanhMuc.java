@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "DanhMuc")
@@ -23,7 +24,7 @@ public class DanhMuc {
     @Column(name = "DateUpdated")
     private Date dateUpdated;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true,mappedBy = "danhMuc")
     private List<TheLoai> theLoaiList;
 
     @Builder

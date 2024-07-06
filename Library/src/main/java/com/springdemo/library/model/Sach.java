@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -49,7 +50,10 @@ public class Sach {
             name = "TagTheLoai",
             joinColumns = @JoinColumn(name = "SachId"),
             inverseJoinColumns = @JoinColumn(name = "TheLoaiId")
+
+
     )
+
     private List<TheLoai> theLoaiList;
     @OneToMany(orphanRemoval = true)
     private List<SachDuocMuon> sachDuocMuonList;
@@ -64,7 +68,8 @@ public class Sach {
                 String soLuongTrongKho,
                 String linkAnh,
                 int flagDel,
-                Date dateCreated) {
+                Date dateCreated
+               ) {
         this.tenSach = tenSach;
         this.tacGia = tacGia;
         this.nhaXuatBan = nhaXuatBan;
@@ -75,5 +80,12 @@ public class Sach {
         this.linkAnh = linkAnh;
         this.flagDel = flagDel;
         this.dateCreated = dateCreated;
+
+    }
+
+    public String getTenTheLoai() {
+        return theLoaiList.stream()
+                .map(TheLoai::getTenTheLoai)
+                .collect(Collectors.joining(", "));
     }
 }
