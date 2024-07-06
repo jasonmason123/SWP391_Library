@@ -1,19 +1,20 @@
 package com.springdemo.library.controller;
 
-import com.springdemo.library.model.DanhMuc;
-import com.springdemo.library.model.Sach;
-import com.springdemo.library.model.TheLoai;
+import com.springdemo.library.model.*;
 import com.springdemo.library.repositories.DanhMucRepository;
 import com.springdemo.library.repositories.SachRepository;
+import com.springdemo.library.security.userdetails.CustomUserDetails;
 import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -134,4 +135,31 @@ public class BookController {
             return new ModelAndView("redirect:/error");
         }
     }
+
+//    @PostMapping("/book/submitComment")
+//    public ResponseEntity<String> addComment(
+//            @RequestParam("bookId") int bookId,
+//            @RequestParam("newComment") String noiDung,
+//            @RequestParam("rating") int danhGia,
+//            Authentication authentication
+//    ) {
+//        Sach sach = sachRepository.findById(bookId).orElse(null);
+//        User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
+//
+//        BinhLuanSach binhLuanSach =
+//
+//        BinhLuanSachDTO binhLuanSachDTO = new BinhLuanSachDTO();
+//        binhLuanSachDTO.setSachId(bookId);
+//        binhLuanSachDTO.setUserId(userId); // Use the extracted userId
+//        binhLuanSachDTO.setNoiDung(noiDung);
+//        binhLuanSachDTO.setDanhGia(danhGia);
+//
+//        binhLuanSachService.addComment(binhLuanSachDTO);
+//
+//        Sach sach = sachRepository.findById(bookId).orElse(null);
+//        if (sach == null) {
+//            return new ModelAndView("redirect:/book");
+//        }
+//        return new ModelAndView("redirect:/book?bookId=" + bookId);
+//    }
 }

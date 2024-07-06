@@ -29,4 +29,12 @@ public class BinhLuanSach {
     private String noiDung;
     @Column(name = "NgayTao")
     private Date ngayTao;
+
+    public BinhLuanSach(Sach sach, User user, int danhGia, String noiDung, Date ngayTao) {
+        this.sach = sach;
+        this.user = user;
+        this.danhGia = danhGia;
+        this.noiDung = noiDung;
+        this.ngayTao = ngayTao;
+    }
 }
