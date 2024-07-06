@@ -32,7 +32,7 @@ public abstract class AbstractAuthenticationController {
     protected EmailService emailService;
 
     public abstract ModelAndView login(Authentication authentication);
-    public abstract String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response);
+    public abstract String logout(SecurityContextLogoutHandler securityContextLogoutHandler, Authentication authentication, HttpServletRequest request, HttpServletResponse response);
     public abstract ModelAndView forgotPassword();
     public abstract ModelAndView changePassword(String auth);
     public abstract ResponseEntity<String> processLogin(SigninDataDto signinDataDto, HttpServletResponse response);
@@ -56,16 +56,17 @@ public abstract class AbstractAuthenticationController {
         return ResponseEntity.badRequest().build();
     }
 
-    protected void customLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+    protected void customLogout(SecurityContextLogoutHandler securityContextLogoutHandler, Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         Cookie tokenCookie = Common.getCookie(request, Constants.JWT_COOKIE_NAME);
         if(tokenCookie != null) {
             tokenCookie.setMaxAge(0);
             tokenCookie.setPath("/");
             response.addCookie(tokenCookie);
+            log.warn("Token cookie deleted");
         }
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, authentication);
         SecurityContextHolder.clearContext();
+        log.warn("Security context cleared");
     }
 
     public ResponseEntity<String> sendOtp(

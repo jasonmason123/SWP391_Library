@@ -1,0 +1,121 @@
+<style>
+    .back-to-drafts {
+        color: #ff4500; /* Set link color to light orange */
+        font-size: 14px;
+        display: inline-block;
+    }
+    #content {
+        width: 100%;
+        padding: 10px;
+        height: 30%;
+    }
+    #tags {
+        width: 100%;
+    }
+</style>
+<script src="select2/dist/js/select2.min.js"></script>
+<div class="user-login-area mb-70" id="edit-section">
+    <div class="container">
+        <div class="row">
+            <div class="offset-lg-2 col-lg-8 col-md-12 col-12">
+                <form class="billing-fields" id="blog-submit-form"
+                      th:data-blogid="${modelClass.get('blog')!=null ? modelClass.get('blog').getId() : ''}">
+                    <div class="row">
+                        <div class="single-labeled-input">
+                            <div>
+                                <label>Tiêu đề bài viết</label>
+                                <input th:if="${modelClass.get('blog')!=null}"
+                                       th:value="${modelClass.get('blog').getTieuDe()}"
+                                       type="text" id="tieu-de" required/>
+                                <input th:if="${modelClass.get('blog')==null}" type="text" id="tieu-de" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="single-labeled-input">
+                            <div>
+                                <label>Nội dung</label>
+                                <textarea th:if="${modelClass.get('blog')!=null}"
+                                          th:data-noidung="${modelClass.get('blog').getNoiDung()}"
+                                          id="content" name="content" rows="10"></textarea>
+                                <textarea th:if="${modelClass.get('blog')==null}" data-noidung=""
+                                          id="content" name="content" rows="10"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="single-labeled-input">
+                            <div>
+                                <label>Tag</label>
+                                <select id="tags" name="tags" multiple="multiple">
+                                    <option th:if="${modelClass.get('blog')==null}"
+                                            th:each="tag : ${modelClass.get('tagList')}"
+                                            th:value="${tag.getId()}"
+                                            th:text="${tag.getTenTag()}"></option>
+                                    <option th:if="${modelClass.get('blog')!=null}"
+                                            th:each="tag : ${modelClass.get('tagList')}"
+                                            th:value="${tag.getId()}"
+                                            th:text="${tag.getTenTag()}"
+                                            th:selected="${modelClass.get('blogTagIds').contains(tag.getId())}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single-labeled-input d-flex justify-content-around">
+                        <button id="submit-blog" type="button"><i class="fa fa-check"></i>&nbsp;Gửi bài viết</button>
+                        <button id="save-draft" type="button"><i class="fa fa-file"></i>&nbsp;Lưu bản nháp</button>
+                        <button id="preview-btn" type="button"><i class="fa fa-eye"></i>&nbsp;Xem trước bài viết</button>
+                    </div>
+                    <a th:if="${modelClass.get('blog')==null}" href="/Library/drafts" class="back-to-drafts">
+                        <?xml version="1.0" encoding="UTF-8"?>
+                        <svg width="12" height="12" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.79889 24H41.7989" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17.7988 36L5.79883 24L17.7988 12" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Danh sách bản nháp của bạn
+                    </a>
+                    <div th:if="${modelClass.get('blog')!=null}" class="row d-flex justify-content-between">
+                        <div class="col-lg-4 col-md-4">
+                            <a href="/Library/drafts" class="back-to-drafts">
+                                <?xml version="1.0" encoding="UTF-8"?>
+                                <svg width="12" height="12" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.79889 24H41.7989" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M17.7988 36L5.79883 24L17.7988 12" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Danh sách bản nháp của bạn
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <p>Lần cập nhật gần nhất:</p>
+                            <strong th:if="${modelClass.get('blog').getNgayCapNhat()!=null}"
+                                    th:text="${modelClass.get('blog').getNgayCapNhat()}"></strong>
+                            <strong th:if="${modelClass.get('blog').getNgayCapNhat()==null}"
+                                    th:text="${modelClass.get('blog').getNgayTao()}"></strong>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="user-login-area mb-70 d-none" id="preview-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="login-title text-center mb-30">
+                    <h2 id="preview-title"></h2>
+                    <p style="color: #626262;" class="author">Bởi <strong th:text="${modelClass.get('tacGia')}"></strong></p>
+                </div>
+            </div>
+            <div class="offset-lg-2 col-lg-8 col-md-12 col-12">
+                <div id="preview-content"></div>
+                <button type="button" class="btn btn-warning mt-3" id="edit-btn">Chỉnh sửa bài viết</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rich text js -->
+<script src="js/pages/blog-editing.js"></script>
+<script src="tinymce/tinymce.min.js" referrerpolicy="origin"></script>

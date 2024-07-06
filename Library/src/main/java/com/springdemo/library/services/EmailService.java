@@ -51,7 +51,7 @@ public class EmailService implements IMessageService<EmailDetailsDto> {
         try {
             MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
-            mimeMessage.setContent(emailDetailsDto.getMessageBody(), "text/html");
+            mimeMessage.setContent(emailDetailsDto.getMessageBody(), "text/html; charset=utf-8");
             mimeMessageHelper.setTo(emailDetailsDto.getRecipient());
             mimeMessageHelper.setFrom(this.sender);
             mimeMessageHelper.setSubject(emailDetailsDto.getSubject());

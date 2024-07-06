@@ -28,11 +28,11 @@ public class Sach {
     @Column(name = "MoTa")
     private String moTa;
     @Column(name = "DanhGia")
-    private String danhGia;
+    private int danhGia;
     @Column(name = "GiaTien")
-    private String giaTien;
+    private double giaTien;
     @Column(name = "SoLuongTrongKho")
-    private String soLuongTrongKho;
+    private int soLuongTrongKho;
     @Column(name = "LinkAnh")
     private String linkAnh;
     @Column(name = "FlagDel")
@@ -43,7 +43,7 @@ public class Sach {
     @Column(name = "DateUpdated")
     private Date dateUpdated;
 
-    @OneToMany(orphanRemoval = true,mappedBy = "sach")
+    @OneToMany(orphanRemoval = true, mappedBy = "sach")
     private List<BinhLuanSach> binhLuan;
     @ManyToMany
     @JoinTable(
@@ -55,7 +55,7 @@ public class Sach {
     )
 
     private List<TheLoai> theLoaiList;
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, mappedBy = "sach", cascade = CascadeType.ALL)
     private List<SachDuocMuon> sachDuocMuonList;
 
     @Builder
@@ -63,9 +63,8 @@ public class Sach {
                 String tacGia,
                 String nhaXuatBan,
                 String moTa,
-                String danhGia,
-                String giaTien,
-                String soLuongTrongKho,
+                double giaTien,
+                int soLuongTrongKho,
                 String linkAnh,
                 int flagDel,
                 Date dateCreated
@@ -74,7 +73,7 @@ public class Sach {
         this.tacGia = tacGia;
         this.nhaXuatBan = nhaXuatBan;
         this.moTa = moTa;
-        this.danhGia = danhGia;
+        this.danhGia = calculateDanhGia();
         this.giaTien = giaTien;
         this.soLuongTrongKho = soLuongTrongKho;
         this.linkAnh = linkAnh;
@@ -87,5 +86,15 @@ public class Sach {
         return theLoaiList.stream()
                 .map(TheLoai::getTenTheLoai)
                 .collect(Collectors.joining(", "));
+    }
+
+    private int calculateDanhGia() {
+        if(binhLuan==null || binhLuan.isEmpty()) {
+            return 0;
+        }
+        double averageDanhGia = binhLuan.stream()
+                .mapToInt(BinhLuanSach::getDanhGia)
+                .average().orElse(0);
+        return (int) Math.round(averageDanhGia);
     }
 }

@@ -7,7 +7,6 @@ import com.springdemo.library.utils.Constants;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class JwtService implements IAuthTokenService<CustomUserDetails> {
     public String generateToken(NhanVienUserDetails nhanVienDetails) {
         Map<String, Object> allClaims = new HashMap<>();
         allClaims.put(Constants.TOKEN_USER_ID_CLAIM, String.valueOf(nhanVienDetails.getNhanVien().getId()));
-        allClaims.put(Constants.TOKEN_USERNAME_CLAIM, nhanVienDetails.getNhanVien().getTenNhanVien());
+        allClaims.put(Constants.TOKEN_USERNAME_CLAIM, nhanVienDetails.getNhanVien().getEmail());
         return generateToken(allClaims, Constants.JWT_EXPIRATION);
     }
 
@@ -49,7 +48,6 @@ public class JwtService implements IAuthTokenService<CustomUserDetails> {
         return Jwts.parser().setSigningKey(Constants.JWT_SECRET).parseClaimsJws(token).getBody();
     }
 
-    //get userId from token
     public String getSubjectFromJWT(String token) {
         Claims claims = getClaimsFromJWT(token);
         return claims.getSubject();

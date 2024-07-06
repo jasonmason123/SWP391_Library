@@ -23,6 +23,8 @@ public class BinhLuanSach {
     @ManyToOne
     @JoinColumn(name = "UserId")
     private User user;
+    @Column(name = "DanhGia")
+    private int danhGia;
     @Column(name = "NoiDung")
     private String noiDung;
     @Column(name = "NgayTao")

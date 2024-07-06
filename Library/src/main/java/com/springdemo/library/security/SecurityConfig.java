@@ -36,14 +36,15 @@ public class SecurityConfig {
                                         "/signup", "/processsignup", "/auth", "/changepassword",
                                         "/forgotpassword", "/processforgotpassword",
                                         "/isvalidemail", "/isvalidsodienthoai",
-                                        "/isvalidsocccd", "/isvalidtenuser",
+                                        "/isvalidsocccd", "/isvalidtenuser", "/aboutus", "/rule",
                                         "/home", "/book/**", "/blog/**").permitAll()
                                 .requestMatchers("/management/**").permitAll()
-                                .requestMatchers("/management/manageBookBorrowed").permitAll()
-                                //0:Admin, 1:Staff, 2:Customer
+                                //.requestMatchers("/cart/**").permitAll()
+                                //0:Admin, 1:Staff
                                 //.requestMatchers("/").hasRole("ROLE_0")
                                 //.requestMatchers("/").hasRole("ROLE_1")
                                 //.requestMatchers("/").hasRole("ROLE_CUSTOMER")
+                                //.requestMatchers("/").hasRole("ROLE_COLLABORATOR")
                                 .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/Library/logout").permitAll()
@@ -56,20 +57,9 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    protected SecurityFilterChain otpFilterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeRequests(authorizeRequests ->
-//                        authorizeRequests
-//                                .requestMatchers("/processsignup", "/auth").authenticated()
-//                                .anyRequest().permitAll()
-//                );
-//        http.addFilterAfter(otpAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/static-admin_and_staff/**");
+        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**",
+                "/static-admin_and_staff/**", "/tinymce/**", "/select2/**");
     }
 }

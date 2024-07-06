@@ -131,6 +131,36 @@ public class BookManagementController {
                     sachService.updateTheLoaiForSach(existedBook, sachDto.getTheLoaiId());
                 }
 
+                if(!newTacGia.equals(existedBook.getTacGia())) {
+                    existedBook.setTacGia(newTacGia);
+                }
+                double newPrice = sachDto.getGiaTien();
+
+                if(newPrice!=(existedBook.getGiaTien())) {
+                    existedBook.setGiaTien(newPrice);
+                }
+                int newSoLuong = sachDto.getSoLuongTrongKho();
+
+                if(newSoLuong!=(existedBook.getSoLuongTrongKho())) {
+                    existedBook.setSoLuongTrongKho(newSoLuong);
+                }
+                String newNhaXuatBan = (sachDto.getNhaXuatBan()!=null && !sachDto.getNhaXuatBan().isBlank())
+                        ? sachDto.getNhaXuatBan() : "";
+
+                if(!newNhaXuatBan.equals(existedBook.getNhaXuatBan())) {
+                    existedBook.setNhaXuatBan(newNhaXuatBan);
+                }
+                String newMoTa = (sachDto.getMoTa()!=null && !sachDto.getMoTa().isBlank())
+                        ? sachDto.getMoTa() : "";
+
+                if(!newMoTa.equals(existedBook.getMoTa())) {
+                    existedBook.setMoTa(newMoTa);
+                }
+                int newDanhGia = sachDto.getDanhGia();
+
+                if(newDanhGia!=(existedBook.getDanhGia())) {
+                    existedBook.setDanhGia(newDanhGia);
+                }
                 existedBook.setDateUpdated(new Date());
                 SachRepository.save(existedBook);
                 return ResponseEntity.ok("Book updated successfully");

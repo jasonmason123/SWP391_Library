@@ -15,6 +15,7 @@ public class DanhMuc {
     @Id
     @Column(name = "Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private int Id;
     @Column(name = "TenDanhMuc")
     private String tenDanhMuc;
@@ -24,7 +25,7 @@ public class DanhMuc {
     @Column(name = "DateUpdated")
     private Date dateUpdated;
 
-    @OneToMany(orphanRemoval = true,mappedBy = "danhMuc")
+    @OneToMany(orphanRemoval = true, mappedBy = "danhMuc")
     private List<TheLoai> theLoaiList;
 
     @Builder
