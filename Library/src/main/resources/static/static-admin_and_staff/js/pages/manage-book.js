@@ -41,19 +41,16 @@ $(document).ready(function () {
 
     $('#add-book-form').on('submit', function (e) {
         e.preventDefault();
-
-
-
-
-                    modifyStaff(JSON.stringify({
+        modifyBook(JSON.stringify({
                             tenSach: $("#tenSach-add").val(),
                             linkAnh: $("#anh-add").val(),
                             tacGia:  $("#tacGia-add").val(),
                             giaTien: $("#giaTien-add").val(),
                             soLuongTrongKho: $("#soLuong-add").val(),
-                        nhaXuatBan:  $('#nhaXuatBan-add').val(),
-                            moTa: $('#moTa-add').val()
-                        }),'/Library/management/addBook'
+                            nhaXuatBan:  $('#nhaXuatBan-add').val(),
+                            moTa: $('#moTa-add').val(),
+                            theLoaiId:$('#theLoai-add').val()
+            }),'/Library/management/addBook'
                     );
 
 
@@ -64,7 +61,7 @@ $(document).ready(function () {
     $('#update-book-form').on('submit', function (e) {
         e.preventDefault();
 
-                modifyStaff(JSON.stringify({
+                modifyBook(JSON.stringify({
                     tenSach: $("#tenSach-update").val(),
                     linkAnh: $("#anh-update").val(),
                     tacGia:  $("#tacGia-update").val(),
@@ -72,13 +69,14 @@ $(document).ready(function () {
                     soLuongTrongKho: $("#soLuong-update").val(),
                     nhaXuatBan:  $('#nhaXuatBan-update').val(),
                     moTa: $('#moTa-update').val(),
-                    danhGia: $('#danhGia-update').val()
+                    danhGia: $('#danhGia-update').val(),
+                    theLoaiId:$('#theLoai-update').val()
                 }),'/Library/management/updateBook?id=' + $('#book-id-update').val()
                 );
 
     });
 
-    function modifyStaff(data, url) {
+    function modifyBook(data, url) {
         $.ajax({
             url: url,
             method: 'POST',
@@ -104,5 +102,46 @@ $(document).ready(function () {
         let seconds = date.getSeconds().toString().padStart(2, '0');
 
         return `${hours}:${minutes}:${seconds} ngày ${year}/${month}/${day}`;
+    }
+    $('#searchButton').on('click', function () {
+        const category = $('#searchCategory').val();
+        $.ajax({
+            url: '/Library/management/searchBookByCategory?category=' + category,
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+                // Cập nhật bảng hiển thị sách với kết quả tìm kiếm
+                updateBookTable(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.warn('Error:', textStatus, errorThrown);
+                alert("Có lỗi");
+            }
+        });
+    });
+
+    function updateBookTable(books) {
+        // Cập nhật bảng thông tin sách
+        const tableBody = $('#dataTable tbody');
+        tableBody.empty();
+        books.forEach(book => {
+            tableBody.append(`
+                <tr>
+                    <td>${book.tenSach}</td>
+                    <td><img src="${book.linkAnh}" /></td>
+                    <td>${book.tacGia}</td>
+                    <td>${book.giaTien}</td>
+                    <td>${book.soLuongTrongKho}</td>
+                    <td class="text-center">
+                        ${book.flagDel === 0 ? '<div class="badge badge-success">Hiển thị</div>' : '<div class="badge badge-danger">Bị ẩn</div>'}
+                    </td>
+                    <td class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-light" onclick="openModalViewBookDetail(${book.id})"><i class="fa fa-eye text-primary"></i></button>
+                        <button type="button" class="btn btn-light" onclick="openModalUpdateBook(${book.id})"><i class="fa fa-pen text-primary"></i></button>
+                        ${book.flagDel === 0 ? `<button type="button" class="btn btn-light" onclick="openModalDeactivateBook(${book.id})"><i class="fa fa-times text-primary"></i></button>` : `<button type="button" class="btn btn-light" onclick="openModalActivateBook(${book.id})"><i class="fa fa-check text-primary"></i></button>`}
+                    </td>
+                </tr>
+            `);
+        });
     }
 });
