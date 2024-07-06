@@ -56,7 +56,7 @@
                         <tbody>
                         <tr th:each="item : ${modelClass}">
                             <td th:id="'tenSach_' + ${item.getId()}" th:text="${item.getTenSach()}"></td>
-                            <td > <img th:id="'anh_' + ${item.getId()}" th:src="@{${item.getLinkAnh()}}"/></td>
+                            <td > <img th:id="'anh_' + ${item.getId()}" th:src="@{'../' + ${item.getLinkAnh()}}"/></td>
                             <td th:id="'tacGia_' + ${item.getId()}" th:text="${item.getTacGia()}">
 
                             </td>

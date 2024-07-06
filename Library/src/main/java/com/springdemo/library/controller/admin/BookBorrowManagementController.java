@@ -5,6 +5,7 @@ import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.SachDuocMuonViewDto;
+import com.springdemo.library.model.other.SachDuocMuon;
 import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
 import com.springdemo.library.security.userdetails.CustomUserDetails;
@@ -107,22 +108,30 @@ public class BookBorrowManagementController {
         String receipientEmail = yeuCauMuonSach.getNguoiMuon().getEmail();
         if(status==1) {
             String subject = "Thông báo xác nhận mượn sách";
-            String messageBody = """
-                    <html>
-                    <body>
-                        <h2>Thư viện cộng đồng Therasus đã chấp thuận yêu cầu mượn sách của bạn</h2>
-                        <h4>Chi tiết</h4>
-                        <div>Số ID yêu cầu:\s""" + yeuCauMuonSach.getId() + """
-                        </div>
-                        <div>Email người mượn:\s""" + yeuCauMuonSach.getNguoiMuon().getEmail() + """
-                        </div>
-                        <div>Ngày mượn:\s""" + yeuCauMuonSach.getNgayMuon() + """
-                        </div>
-                    </body>
-                    </html>
-                    """;
+            StringBuilder messageBodyBuilder = new StringBuilder();
+            messageBodyBuilder.append("""
+                    <html><body>
+                    <h2>Thư viện cộng đồng Therasus đã chấp thuận yêu cầu mượn sách của bạn</h2>
+                        <h4>Chi tiết</h4><p>Số ID yêu cầu: <strong>""")
+                    .append(yeuCauMuonSach.getId())
+                    .append("</strong></p><p>Email người mượn: <strong>")
+                    .append(yeuCauMuonSach.getNguoiMuon().getEmail())
+                    .append("</strong></p><p>Ngày mượn: <strong>")
+                    .append(yeuCauMuonSach.getNgayMuon())
+                    .append("</strong></p><div><p>Danh sách sách đăng ký mượn:</p><ul>");
+            for(SachDuocMuon sachDuocMuon : yeuCauMuonSach.getSachDuocMuonList()) {
+                messageBodyBuilder.append("<li><strong>")
+                    .append(sachDuocMuon.getSach().getTenSach())
+                    .append("</strong> | <span>Số lượng: <strong>")
+                    .append(sachDuocMuon.getSoLuongMuon())
+                    .append("</strong></span></li>");
+            }
+            messageBodyBuilder.append("</ul></div>");
+            messageBodyBuilder.append("<p>Số tiền cần đặt cọc: <strong>");
+            messageBodyBuilder.append(yeuCauMuonSach.getSoTienDatCoc());
+            messageBodyBuilder.append("</strong></p><p>Vui lòng thanh toán tiền đặt cọc tại lễ tân thư viện khi đến nhận sách</p></body></html>");
             return emailService.sendHtmlEmail(EmailDetailsDto.builder()
-                    .recipient(receipientEmail).subject(subject).messageBody(messageBody).build());
+                    .recipient(receipientEmail).subject(subject).messageBody(messageBodyBuilder.toString()).build());
         } else if(status==-1) {
             String subject = "Thông báo xác nhận mượn sách";
             String messageBody = """

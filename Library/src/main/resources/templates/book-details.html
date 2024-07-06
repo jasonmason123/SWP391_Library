@@ -23,14 +23,12 @@
 								</div>
 								<div class="product-reviews-summary">
 									<div class="rating-summary">
-										<a href="#"><i class="fa fa-star"></i></a>
-										<a href="#"><i class="fa fa-star"></i></a>
-										<a href="#"><i class="fa fa-star"></i></a>
-										<a href="#"><i class="fa fa-star"></i></a>
-										<a href="#"><i class="fa fa-star"></i></a>
+										<a href="#" th:each="i : ${#numbers.sequence(1, 5)}">
+											<i th:class="${i <= modelClass.get('sach').getDanhGia() ? 'fa fa-star' : 'fa fa-star-o'}"></i>
+										</a>
 									</div>
 									<div class="reviews-actions">
-										<a href="#">3 Đánh giá</a>
+										<a href="#" th:text="${modelClass.get('soLuotDanhGia') + ' Đánh giá'}"></a>
 									</div>
 								</div>
 								<div th:if="${modelClass.get('sach').getSoLuongTrongKho()>0}" class="product-add-form">
@@ -42,11 +40,11 @@
 									<div class="disabled">Đã hết sách</div>
 								</div>
 								<div class="product-social-links">
-									<div class="product-addto-links">
-										<a href="#"><i class="fa fa-heart"></i></a>
-										<a href="#"><i class="fa fa-pie-chart"></i></a>
-										<a href="#"><i class="fa fa-envelope-o"></i></a>
-									</div>
+<!--									<div class="product-addto-links">-->
+<!--										<a href="#"><i class="fa fa-heart"></i></a>-->
+<!--										<a href="#"><i class="fa fa-pie-chart"></i></a>-->
+<!--										<a href="#"><i class="fa fa-envelope-o"></i></a>-->
+<!--									</div>-->
 									<div class="product-addto-links-text">
 										<p th:text="${modelClass.get('sach').getMoTa}"></p>
 									</div>

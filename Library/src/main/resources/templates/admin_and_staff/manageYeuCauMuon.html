@@ -92,6 +92,7 @@
                                 <div style="display: none" th:id="'QuaHan_' + ${item.getId()}" th:attr="data-QuaHan=${item.getQuaHan()}"></div>
                                 <div style="display: none" th:id="'BoiThuong_' + ${item.getId()}" th:attr="data-BoiThuong=${item.getBoiThuong()}"></div>
                                 <div style="display: none" th:id="'NgayCapNhat_' + ${item.getId()}" th:attr="data-NgayCapNhat=${item.getDateUpdated()}"></div>
+                                <div style="display: none" th:id="'SoTienDatCoc_' + ${item.getId()}" th:attr="data-SoTienDatCoc=${item.getSoTienDatCoc()}"></div>
                                 <td class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-light" th:onclick="'getSachDuocMuonFromYeuCauMuonSach(' + ${item.getId()} + ')'">
                                         <i class="fa fa-pen text-primary"></i>
@@ -144,7 +145,7 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label>Bồi thường</label>
-                                        <b id="BoiThuong-detail" type="text" class="form-control text-center"></b>
+                                        <b id="BoiThuong-detail" type="text" class="form-control"></b>
                                     </div>
                                 </div>
                                 <div class="form-row">
@@ -184,6 +185,7 @@
                                     </thead>
                                     <tbody id="sachDuocMuonTableBody"></tbody>
                                 </table>
+                                <p>Tổng số tiền phải cọc: <strong id="totalDeposit"></strong></p>
                             </div>
                         </div>
                         <div class="modal-footer">

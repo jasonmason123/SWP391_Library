@@ -80,6 +80,7 @@
 <!--                    </span>-->
 <!--                  </div>-->
                 </li>
+                <li><a href="/Library/drafts" th:if="${isAuthenticated==1}">Bản nháp của bạn</a></li>
               </ul>
             </nav>
           </div>
@@ -99,6 +100,7 @@
                 <li><a href="/Library/home">Trang chủ</a></li>
                 <li><a href="/Library/book">Sách</a></li>
                 <li><a href="/Library/blog">Blog</a></li>
+                <li><a href="/Library/drafts" th:if="${isAuthenticated==0 || isAuthenticated==null}">Viết blog</a></li>
               </ul>
             </nav>
           </div>

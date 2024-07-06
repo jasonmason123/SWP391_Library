@@ -108,7 +108,8 @@
                             <td th:id="'TieuDe_' + ${item.getId()}" th:text="${item.getTieuDe()}"></td>
                             <td th:id="'NgayTao_' + ${item.getId()}" th:text="${item.getNgayTao()}"></td>
                             <td th:id="'TacGia_' + ${item.getId()}" th:text="${item.tacGia.getTenUser()}"></td>
-                            <td><a href="#" th:id="'NoiDung_' + ${item.getId()}" th:text="${item.getNoiDung()}"></a></td>
+                            <td><a th:href="@{/management/previewblog(blog=${item.getId()})}" target="_blank"
+                                   th:id="'NoiDung_' + ${item.getId()}">Xem tại đây</a></td>
                             <td class="text-center">
                                 <div th:if="${item.getFlagDel()==0}" class="badge badge-success">Phê duyệt</div>
                                 <div th:if="${item.getFlagDel()==1}" class="badge badge-danger">Từ chối</div>
