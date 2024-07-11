@@ -27,7 +27,7 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
         sachDuocMuonList.forEach(sachDuocMuon => {
             const $row = $("<tr></tr>");
             $row.append(`<td class="text-center">${sachDuocMuon.tenSach}</td>`);
-            $row.append(`<td class="text-center">${sachDuocMuon.soLuong}</td>`);
+            $row.append(`<td class="text-center">${sachDuocMuon.soTienDatCoc} đ</td>`);
             sachDuocMuonTableBody.append($row);
         });
     }

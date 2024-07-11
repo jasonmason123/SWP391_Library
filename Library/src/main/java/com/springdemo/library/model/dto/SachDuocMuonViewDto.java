@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 public class SachDuocMuonViewDto {
     private String tenSach;
-    private int soLuong;
+    private double soTienDatCoc;
 
     public SachDuocMuonViewDto(SachDuocMuon sachDuocMuon) {
         tenSach = sachDuocMuon.getSach().getTenSach();
-        soLuong = sachDuocMuon.getSoLuongMuon();
+        soTienDatCoc = sachDuocMuon.getSoTienDatCoc();
     }
 }

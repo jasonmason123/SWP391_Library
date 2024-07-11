@@ -10,18 +10,16 @@ function displayCartTable() {
         let totalPrice = 0;
         cart.forEach((itemData, bookId) => {
             const itemRow = $('<tr class="cart_item"></tr>');
-            const itemName = $('<td class="product-name"></td>').html(`${itemData.bookName} <strong class="product-quantity"> × ${itemData.quantity}</strong>`);
-            const itemTotal = $('<td class="product-total"></td>').html(`<span class="amount">${(itemData.price * itemData.quantity).toFixed(2)} VNĐ</span>`);
+            const itemName = $('<td class="product-name"></td>').html(`${itemData.bookName} <strong class="product-quantity"></strong>`);
+            const itemTotal = $('<td class="product-total"></td>').html(`<span class="amount">${(+itemData.price).toFixed(2)} VNĐ</span>`);
             itemRow.append(itemName, itemTotal);
             cartTableBody.append(itemRow);
 
-            totalPrice += itemData.price * itemData.quantity;
+            totalPrice += +itemData.price;
         });
 
         // Update the totals
-        const finalTotal = totalPrice;
-        $('.cart-subtotal .amount').text(`${totalPrice.toFixed(2)} VNĐ`);
-        $('.order-total .amount').text(`${finalTotal.toFixed(2)} VNĐ`);
+        $('.order-total .amount').text(`${totalPrice.toFixed(2)} VNĐ`);
     }
 }
 
@@ -30,6 +28,7 @@ $(document).ready(function () {
     displayCartTable();
 
     const borrowDate = $('#borrowDate');
+    const returnDate = $('#returnDate');
     const today = new Date();
     const year = today.getFullYear();
     const month = ('0' + (today.getMonth() + 1)).slice(-2); // Month is zero-based
@@ -43,14 +42,16 @@ $(document).ready(function () {
         if (borrowDateValue) {
             let borrowDate = new Date(borrowDateValue);
 
-            borrowDate.setDate(borrowDate.getDate() + 60);
+            borrowDate.setDate(borrowDate.getDate() + 1);
+            const returnYear = borrowDate.getFullYear();
+            const returnMonth = ('0' + (borrowDate.getMonth() + 1)).slice(-2); // Month is zero-based
+            const returnDay = ('0' + borrowDate.getDate()).slice(-2);
+            const formattedMinReturnDate = `${returnYear}-${returnMonth}-${returnDay}`;
 
-            let day = borrowDate.getDate();
-            let month = borrowDate.getMonth() + 1; // Months are zero-based
-            let year = borrowDate.getFullYear();
-            let formattedReturnDate = `${day < 10 ? '0' + day : day}/${month < 10 ? '0' + month : month}/${year}`;
-
-            $('#returnDate').text(formattedReturnDate);
+            returnDate.attr('min', formattedMinReturnDate);
+            if(returnDate.val() !== null && borrowDateValue > returnDate.val()) {
+                returnDate.val(formattedMinReturnDate);
+            }
             $('#returnDateMessage').show();
         } else {
             $('#returnDateMessage').hide();
@@ -61,11 +62,11 @@ $(document).ready(function () {
          e.preventDefault();
          let cartData = new Map();
          cart.forEach((itemData, bookId) => {
-             cartData.set(bookId, itemData.quantity);
+             cartData.set(bookId, itemData.price);
          });
          $.ajax({
             method: 'POST',
-            url:'/Library/cart/process?ngayMuon=' + $('#borrowDate').val(),
+            url:'/Library/cart/process?ngayMuon=' + $('#borrowDate').val() + '&ngayTra=' + $('#returnDate').val(),
              contentType: 'application/json',
              data: JSON.stringify(Object.fromEntries(cartData)),
              success: function () {

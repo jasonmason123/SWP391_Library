@@ -40,38 +40,6 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="left-title mb-20">
-                        <h4>Tác giả</h4>
-                    </div>
-                    <div class="left-menu mb-30">
-                        <ul>
-                            <li th:each="tacGia : ${modelClass.get('tacGiaList')}">
-                                <input th:if="${modelClass.get('chosenTacGiaList')!=null &&
-                                                modelClass.get('chosenTacGiaList').contains(tacGia)}"
-                                       type="checkbox" name="tacGia" th:value="${tacGia}" th:id="${tacGia}" checked/>
-                                <input th:unless="${modelClass.get('chosenTacGiaList')!=null &&
-                                                    modelClass.get('chosenTacGiaList').contains(tacGia)}"
-                                       type="checkbox" name="tacGia" th:value="${tacGia}" th:id="${tacGia}"/>
-                                <label th:for="${tacGia}" th:text="${tacGia}"></label>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="left-title mb-20">
-                        <h4>Nhà xuất bản</h4>
-                    </div>
-                    <div class="left-menu mb-30">
-                        <ul>
-                            <li th:each="nxb : ${modelClass.get('nhaXuatBanList')}">
-                                <input th:if="${modelClass.get('chosenNhaXuatBanList')!=null &&
-                                                modelClass.get('chosenNhaXuatBanList').contains(nxb)}"
-                                       type="checkbox" name="nhaXuatBan" th:value="${nxb}" th:id="${nxb}" checked/>
-                                <input th:unless="${modelClass.get('chosenNhaXuatBanList')!=null &&
-                                                    modelClass.get('chosenNhaXuatBanList').contains(nxb)}"
-                                       type="checkbox" name="nhaXuatBan" th:value="${nxb}" th:id="${nxb}"/>
-                                <label th:for="${nxb}" th:text="${nxb}"></label>
-                            </li>
-                        </ul>
-                    </div>
                 </form>
             </div>
             <div class="col-lg-9 col-md-12 col-12 order-lg-2 order-1">
@@ -85,8 +53,8 @@
                     <div class="shop-tab">
                         <div class="tab-3">
                             <ul class="nav">
-                                <li><a class="active" href="#th" data-bs-toggle="tab"><i class="fa fa-th-large"></i>Grid</a></li>
-                                <li><a href="#list" data-bs-toggle="tab"><i class="fa fa-bars"></i>List</a></li>
+                                <li><a class="active" href="#th" data-bs-toggle="tab"><i class="fa fa-th-large"></i></a></li>
+                                <li><a href="#list" data-bs-toggle="tab"><i class="fa fa-bars"></i></a></li>
                             </ul>
                         </div>
                         <div class="list-page"></div>

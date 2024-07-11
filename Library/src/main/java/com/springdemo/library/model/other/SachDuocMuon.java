@@ -15,11 +15,7 @@ import org.hibernate.annotations.Cascade;
 @NoArgsConstructor
 @Entity
 @Table(name = "SachDuocMuon")
-
 @IdClass(SachDuocMuonCompositeKey.class)
-
-
-
 public class SachDuocMuon {
     @Id
     @ManyToOne
@@ -33,13 +29,13 @@ public class SachDuocMuon {
     @JoinColumn(name = "YeuCauId")
     @Setter(AccessLevel.NONE)
     private YeuCauMuonSach yeuCauMuonSach;
-    @Column(name = "SoLuong")
-    private int soLuongMuon;
+    @Column(name = "SoTienDatCoc")
+    private double soTienDatCoc;
 
     @Builder
-    public SachDuocMuon(Sach sach, YeuCauMuonSach yeuCauMuonSach, int soLuongMuon) {
+    public SachDuocMuon(Sach sach, YeuCauMuonSach yeuCauMuonSach, double soTienDatCoc) {
         this.sach = sach;
         this.yeuCauMuonSach = yeuCauMuonSach;
-        this.soLuongMuon = soLuongMuon;
+        this.soTienDatCoc = soTienDatCoc;
     }
 }

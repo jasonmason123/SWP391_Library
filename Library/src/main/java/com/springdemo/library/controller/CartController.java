@@ -39,30 +39,30 @@ public class CartController {
 
     @PostMapping("/process")
     public ResponseEntity<String> getCartFromClient(
-            @RequestBody Map<Integer, Integer> clientCart,
+            @RequestBody Map<Integer, Double> clientCart,
             @RequestParam(name = "ngayMuon") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date ngayMuon,
+            @RequestParam(name = "ngayTra") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date ngayTra,
             Authentication authentication
     ) {
         LocalDate localDate = LocalDate.now();
         Date today = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        if(isMaximumNumberOfBooksBorrowed(clientCart) || ngayMuon.before(today)) {
-            if(isMaximumNumberOfBooksBorrowed(clientCart)) {
+        if(clientCart.size() > 5 || ngayMuon.before(today) || ngayTra.before(today) || ngayTra.before(ngayMuon)) {
+            if(clientCart.size() > 5) {
                 log.warn("Maximum number of books");
             }
-            if(ngayMuon.before(new Date())) {
-                log.warn("invalid ngayMuon");
+            if(ngayMuon.before(today) || ngayTra.before(today) || ngayTra.before(ngayMuon)) {
+                log.warn("invalid ngayMuon and/or ngayTra");
             }
             return ResponseEntity.badRequest().build();
         }
         List<Sach> sachList = sachRepository.findAllById(clientCart.keySet());
-        if(!validateQuantities(sachList, clientCart)) {
+        if(!validateQuantities(sachList)) {
             return ResponseEntity.badRequest().build();
         }
         User user = ((CustomUserDetails) authentication.getPrincipal()).getUser();
         if(user!=null) {
             List<SachDuocMuon> sachDuocMuonList = new ArrayList<>();
-            Date ngayTra = new Date(ngayMuon.getTime() + Constants.A_DAY_IN_MILISECONDS*60);
-            double totalDeposit = sachList.stream().mapToDouble(sach -> sach.getGiaTien() * clientCart.get(sach.getId())).sum();
+            double totalDeposit = sachList.stream().mapToDouble(Sach::getGiaTien).sum();
             YeuCauMuonSach yeuCauMuonSach = new YeuCauMuonSach(ngayMuon, ngayTra, user, totalDeposit, new Date());
             this.yeuCauMuonSachRepository.save(yeuCauMuonSach);
             for(Sach sach : sachList) {
@@ -79,10 +79,9 @@ public class CartController {
         return ResponseEntity.badRequest().build();
     }
 
-    private boolean validateQuantities(List<Sach> sachList, Map<Integer, Integer> clientCart) {
-        for (Sach sach : sachList) {
-            int requestedQuantity = clientCart.get(sach.getId());
-            if (sach.getSoLuongTrongKho() < requestedQuantity || requestedQuantity <= 0) {
+    private boolean validateQuantities(List<Sach> sachListInCart) {
+        for (Sach sach : sachListInCart) {
+            if (sach.getSoLuongTrongKho() <= 0) {
                 log.warn("Insufficient quantity for book ID: " + sach.getId());
                 return false;
             }
@@ -90,17 +89,4 @@ public class CartController {
         return true;
     }
 
-    private boolean isMaximumNumberOfBooksBorrowed(Map<Integer, Integer> cart) {
-        if(cart.isEmpty()) {
-            return false;
-        }
-        int totalQuantityInCart = 0;
-        for(int quantity : cart.values()) {
-            if (quantity > 3) {
-                return true;
-            }
-            totalQuantityInCart += quantity;
-        }
-        return totalQuantityInCart == Constants.MAXIMUM_NUMBER_OF_BOOKS_BORROWED;
-    }
 }

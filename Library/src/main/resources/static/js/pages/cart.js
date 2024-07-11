@@ -1,12 +1,3 @@
-/*
-    key: bookId
-    value: itemData: {
-        bookName
-        imagePath
-        price
-        quantity
-    }
- */
 const cart = new Map();
 const CART_NAME = 'cart';
 const CART_ADD = 'ADD';
@@ -31,23 +22,22 @@ function clearCart() {
     displayCart();
 }
 
-
 function saveCart() {
     const cartObject = Object.fromEntries(cart);
     localStorage.setItem(CART_NAME, JSON.stringify(cartObject));
 }
 
 function updateCartWithIdPrefix(id, idPrefix='', action) {
-    if((getCartSize()>=5 && action===CART_ADD) || (getCartSize()<=0 && action===CART_MINUS)) {
+    if((cart.size>=5 && action===CART_ADD) || (cart.size<=0 && action===CART_MINUS)) {
         console.warn('Cannot update cart');
     } else {
         if(cart.has(id)) {
             let comparableQuantity = cart.get(id).quantity;
             let quantityInStock = $('#quantityInStock_' + idPrefix + '' + id).data('quantityinstock');
-            if(action===CART_ADD && comparableQuantity<=quantityInStock && comparableQuantity<3) {
+            if(action===CART_ADD && comparableQuantity<=quantityInStock && comparableQuantity<1) {
                 cart.get(id).quantity += 1;
             } else if(action===CART_MINUS) {
-                if(comparableQuantity <= 1) {
+                if (comparableQuantity <= 1) {
                     removeFromCart(id);
                 } else {
                     cart.get(id).quantity -= 1;
@@ -82,14 +72,6 @@ function removeFromCart(id) {
     displayCart();
 }
 
-function getCartSize() {
-    let size=0;
-    cart.forEach((itemData, bookId) => {
-        size += itemData.quantity;
-    });
-    return size;
-}
-
 function displayCart(idPrefix='') {
     const cartList = $('#cart');
     cartList.empty(); // Clear any existing items
@@ -103,7 +85,6 @@ function displayCart(idPrefix='') {
         $('.cart-bottom').show();
         $('.cart-totals').show();
         let totalPrice = 0;
-        let totalItems = 0;
 
         cart.forEach((itemData, bookId) => {
             // Create the HTML structure
@@ -120,27 +101,7 @@ function displayCart(idPrefix='') {
             const cartInfo = $('<div class="cart-info"></div>');
             const bookName = $('<h5></h5>').append($('<a></a>').attr('href', `/Library/book?book=${bookId}`).text(itemData.bookName));
 
-            // Quantity with Plus and Minus Buttons
-            const quantityWrapper = $('<div class="quantity-wrapper"></div>');
-            const minusButton = $('<button class="quantity-minus">-</button>');
-            const quantity = $('<p class="quantity"></p>').text(itemData.quantity);
-            const plusButton = $('<button class="quantity-plus">+</button>');
-
-            // Event handler for minus button
-            minusButton.click(function(event) {
-                event.preventDefault();
-                updateCart(bookId, 'MINUS');
-            });
-
-            // Event handler for plus button
-            plusButton.click(function(event) {
-                event.preventDefault();
-                updateCartWithIdPrefix(bookId, idPrefix, 'ADD');
-            });
-
-            quantityWrapper.append(minusButton, quantity, plusButton);
-
-            const price = $('<p class="price"></p>').text(`${itemData.quantity} x ${itemData.price} VND`);
+            const price = $('<p class="price"></p>').text(`${itemData.price} đ`);
 
             // Cart Icon for removing item
             const cartIcon = $('<div class="cart-icon"></div>');
@@ -157,16 +118,15 @@ function displayCart(idPrefix='') {
             });
 
             // Append all elements to item
-            cartInfo.append(bookName, quantityWrapper, price);
+            cartInfo.append(bookName, price);
             item.append(cartImg, cartInfo, cartIcon);
             cartList.append(item); // Add the item to the cart list
 
-            totalPrice += itemData.quantity * itemData.price;
-            totalItems += itemData.quantity;
+            totalPrice += parseFloat(itemData.price);
         });
 
         $('#total-price').text(totalPrice);
-        $('.number-of-items').show().text(totalItems);
+        $('.number-of-items').show().text(cart.size);
     }
 }
 
