@@ -35,14 +35,17 @@ public class SecurityConfig {
                                 .requestMatchers("/login", "/processlogin", "/sendotp",
                                         "/signup", "/processsignup", "/auth", "/changepassword",
                                         "/forgotpassword", "/processforgotpassword",
-                                        "/isvalidemail", "/isvalidsodienthoai",
+                                        "/isvalidemail", "/isvalidsodienthoai", "/gallery", "/slogan",
                                         "/isvalidsocccd", "/isvalidtenuser", "/aboutus", "/rule",
                                         "/home", "/book/**", "/blog/**").permitAll()
-                                .requestMatchers("/management/**").permitAll()
+                                .requestMatchers("/management/login", "/management/processlogin",
+                                        "/management/forgotpassword", "/management/processforgotpassword",
+                                        "/management/sendotp", "/management/auth", "/management/changepassword",
+                                        "/management/isvalidemail", "/management/changepassword").permitAll()
+                                .requestMatchers("/management/staff/**", "/management/customers/**").hasRole("ADMIN")
+                                .requestMatchers("/management/manageBookBorrowed/**", "/management/manageBaiVietCanDuyet/**").hasRole("STAFF")
+                                .requestMatchers("/management/**").hasAnyRole("ADMIN", "STAFF")
                                 //.requestMatchers("/cart/**").permitAll()
-                                //0:Admin, 1:Staff
-                                //.requestMatchers("/").hasRole("ROLE_0")
-                                //.requestMatchers("/").hasRole("ROLE_1")
                                 //.requestMatchers("/").hasRole("ROLE_CUSTOMER")
                                 //.requestMatchers("/").hasRole("ROLE_COLLABORATOR")
                                 .anyRequest().authenticated()
@@ -51,7 +54,6 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID", Constants.JWT_COOKIE_NAME)
                         .clearAuthentication(true)
                 );
-                //.formLogin(formLogin -> formLogin.loginPage("/login").permitAll());
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(otpAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

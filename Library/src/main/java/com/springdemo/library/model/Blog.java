@@ -24,7 +24,7 @@ public class Blog {
     @Column(name = "NoiDung")
     private String noiDung;
     @Column(name = "DanhGia")
-    private int danhGia;
+    private float danhGia;
     @Column(name = "SoLuotDanhGia")
     private int soLuotDanhGia;
     @Column(name = "NgayTao")

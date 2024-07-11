@@ -1,0 +1,182 @@
+<style>
+    .btn-custom {
+        background-color: #f07c29; /* Mã màu cam tùy chỉnh */
+        color: white;
+    }
+    .badge-custom{
+        background-color: grey;
+        color: white;
+    }
+    .badge-danger{
+        background-color: red;
+        color: white;
+    }
+    .btn-custom2 {
+        background-color:darkturquoise; /* Mã màu cam tùy chỉnh */
+        color: white;
+    }
+    img {
+        width: 100px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<div id="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb d-flex justify-content-between align-items-center">
+            <li class="breadcrumb-item active">Bảng thông tin</li>
+            <div class="text-right">
+                <a href="#addTheLoaiModal" class="btn btn-custom" data-toggle="modal"><span>Thêm </span><i class="fa fa-plus"></i></a>
+            </div>
+        </ol>
+        <!-- DataTables Example -->
+        <div class="card mb=3">
+            <div class="card-header">
+                <i class="fas fa-table"></i>
+                Bảng thông tin thể loại
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên thể loại</th>
+                            <th>Tên danh mục</th>
+                            <th>Ngày tạo</th>
+                            <th>Ngày cập nhật</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${modelClass}" th:id="'row_' + ${item.getId()}">
+                            <td th:id="'ID_' + ${item.getId()}" th:text="${item.getId()}"></td>
+                            <td th:id="'tenTheLoai_' + ${item.getId()}" th:text="${item.getTenTheLoai()}"></td>
+                            <td th:id="'tenDanhMuc_' + ${item.getId()}" th:text="${item.danhMuc.getTenDanhMuc()}" th:data-id="${item.danhMuc.getId()}"></td> <!-- Thêm data-id tại đây -->
+                            <td th:id="'NgayTao_' + ${item.getId()}" th:text="${item.getDateCreated()}"></td>
+                            <td th:id="'NgayCapNhat_' + ${item.getId()}" th:text="${item.getDateUpdated()}"></td>
+
+                            <td class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-light" th:onclick="'openModalUpdateTheLoai(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-pen text-primary"></i>
+                                </button>
+                                <button type="button" class="btn btn-light" th:onclick="'openModalDeactivateTheLoai(' + ${item.getId()} + ')'">
+                                    <i class="fa fa-times text-primary"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Cập nhật mới nhất lúc <span id="time-update"></span></div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-wrapper -->
+
+<!-- Add Modal-->
+<div id="addTheLoaiModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="add-theLoai-form">
+                <div class="modal-header">
+                    <h4 class="modal-title">Thêm thể loại</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tên Thể loại</label>
+                        <input id="tenTheLoai-add" type="text" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Chọn danh mục</label>
+                        <select id="tenDanhMuc-add" name="genre" class="form-control" >
+                            <option th:each="category : ${categories}" th:value="${category.getId()}" th:text="${category.getTenDanhMuc()}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
+                    <input type="submit" class="btn btn-success" value="Thêm">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal-->
+<div id="updateTheLoaiModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="update-theLoai-form">
+                <div class="modal-header">
+                    <h4 class="modal-title">Cập nhật thể loại</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tên thể loại</label>
+                        <input id="tenTheLoai-update" type="text" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Chọn danh mục</label>
+                        <select id="tenDanhMuc-update" name="genre" class="form-control" >
+
+                            <option th:each="category : ${categories}" th:value="${category.getId()}" th:text="${category.getTenDanhMuc()}"></option>
+                        </select>
+                    </div>
+                </div>
+                <input id="theLoai-id-update" type="hidden" style="display: none;" />
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
+                    <input type="submit" class="btn btn-success" value="Cập nhật">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Deactivate Modal-->
+<div id="deactivateTheLoaiModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="deactivate-theLoai-form">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Xóa</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger">Bạn có chắc muốn xóa thể loại này?</p>
+                    <input id="deactivate-theLoai-id" type="hidden" style="display: none;" />
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
+                    <input type="submit" class="btn btn-danger" value="Xóa">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="../static-admin_and_staff/js/pages/manage-theLoai.js"></script>
+<script th:inline="javascript">
+    function openModalDeactivateTheLoai(id) {
+        $('#deactivate-theLoai-id').val(id);
+        $('#deactivateTheLoaiModal').modal('show');
+    }
+
+    function openModalUpdateTheLoai(id) {
+        let tenDanhMucId = document.getElementById('tenDanhMuc_' + id).getAttribute('data-id'); // Lấy ID danh mục từ data-id
+        let tenTheLoai = document.getElementById('tenTheLoai_' + id).innerText;
+        $('#tenDanhMuc-update').val(tenDanhMucId);
+        $('#tenTheLoai-update').val(tenTheLoai);
+        $('#theLoai-id-update').val(id);
+        $('#updateTheLoaiModal').modal('show');
+    }
+</script>

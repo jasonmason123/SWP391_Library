@@ -4,11 +4,13 @@ import com.springdemo.library.model.NhanVien;
 import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.repositories.NhanVienRepository;
 import com.springdemo.library.services.EmailService;
+import com.springdemo.library.services.GenerateViewService;
 import com.springdemo.library.utils.Common;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,18 +21,17 @@ import java.util.List;
 @Controller
 @Slf4j
 @AllArgsConstructor
-@RequestMapping("/management")
+@RequestMapping("/management/staff")
 
 public class StaffManagementController {
 
     private NhanVienRepository nhanVienRepository;
+    private GenerateViewService generateViewService;
     private EmailService emailService;
-    @GetMapping("/staff")
-    public ModelAndView viewStaff() {
+    @GetMapping
+    public ModelAndView viewStaff(Authentication authentication) {
         List<NhanVien> nhanVienList = nhanVienRepository.findAll();
-        ModelAndView manageStaffViewModel = new ModelAndView("admin_and_staff/Layout");
-        manageStaffViewModel.addObject("includedPage","admin_and_staff/manageStaff");
-        manageStaffViewModel.addObject("title","Quản lí Nhân viên");
+        ModelAndView manageStaffViewModel = generateViewService.generateStaffView("Quản lí Nhân viên", "admin_and_staff/manageStaff", authentication);
         manageStaffViewModel.addObject("modelClass", nhanVienList);
         return manageStaffViewModel;
     } //first Spring Boot Code of TMinh
@@ -43,34 +44,30 @@ public class StaffManagementController {
         try {
             NhanVien existedNhanVien = nhanVienRepository.findNhanVienByEmail(nhanVienDto.getEmail()).orElse(null);
             if (existedNhanVien == null) {
-                log.warn("adding");
                 nhanVienRepository.save(
                         NhanVien.builder().tenNhanVien(nhanVienDto.getTenNhanVien())
                                 .matKhau(Common.sha256Hash(nhanVienDto.getMatKhau()))
                                 .email(nhanVienDto.getEmail())
                                 .soDienThoai(nhanVienDto.getSoDienThoai())
                                 .diaChi(nhanVienDto.getDiaChi())
-                                .vaiTro(nhanVienDto.getVaiTro())
+                                .vaiTro(nhanVienDto.getVaiTro().equals("0") ? "ROLE_ADMIN" : nhanVienDto.getVaiTro().equals("1") ? "ROLE_STAFF" : "")
                                 .dateCreated(new Date()).build()
                 );
                 StringBuilder emailBody = new StringBuilder();
                 emailBody.append("<html><body>")
-                        .append("<p>Gửi anh/chị <strong>")
-                        .append(nhanVienDto.getTenNhanVien())
+                        .append("<p>Gửi anh/chị <strong>").append(nhanVienDto.getTenNhanVien())
                         .append("</strong>,</p><p>Ban quản lý thư viện Therasus đã cấp cho anh/chị tài khoản nhân viên với vai trò <strong>")
                         .append(nhanVienDto.getVaiTro().equals("0") ? "Quản trị viên" : "Thủ thư")
-                        .append("<p>Anh/Chị vui lòng đăng nhập vào hệ thống bằng đường link dưới đây:</p>")
+                        .append("</strong><p>Anh/Chị vui lòng đăng nhập vào hệ thống bằng đường link dưới đây:</p>")
                         .append("<a href=\"localhost:8080/Library/management/login\">localhost:8080/Library/management/login</a>")
-                        .append("</strong><p>Với email đăng nhập: <strong>")
-                        .append(nhanVienDto.getEmail())
-                        .append("</strong></p><p>Và mật khẩu: <strong>")
-                        .append(nhanVienDto.getMatKhau())
+                        .append("</strong><p>Với email đăng nhập: <strong>").append(nhanVienDto.getEmail())
+                        .append("</strong></p><p>Và mật khẩu: <strong>").append(nhanVienDto.getMatKhau())
                         .append("</strong></p><p>Và thực hiện đổi mật khẩu để đảm bảo bảo mật</p>")
                         .append("<p><strong>Ban quản lý thư viện Therasus xin chân thành cảm ơn sự hợp tác của anh/chị</strong></p></body></html>");
                 EmailDetailsDto emailDetailsDto = EmailDetailsDto.builder()
                         .recipient(nhanVienDto.getEmail())
                         .subject("[Therasus] Thông báo tạo tài khoản nhân viên cho anh/chị " + nhanVienDto.getTenNhanVien())
-                        .recipient(emailBody.toString())
+                        .messageBody(emailBody.toString())
                         .build();
                 emailService.sendHtmlEmail(emailDetailsDto);
                 return ResponseEntity.ok().build();
@@ -99,6 +96,7 @@ public class StaffManagementController {
                         ? Common.sha256Hash(nhanVienDto.getMatKhau()) : "";
                 String newVaiTro = (nhanVienDto.getVaiTro()!=null && !nhanVienDto.getVaiTro().isBlank())
                         ? nhanVienDto.getVaiTro() : "";
+                newVaiTro = newVaiTro.equals("0") ? "ROLE_ADMIN" : newVaiTro.equals("1") ? "ROLE_STAFF" : "";
                 if(!newMatKhau.equals(existedNhanVien.getMatKhau())) {
                     existedNhanVien.setMatKhau(newMatKhau);
                 }

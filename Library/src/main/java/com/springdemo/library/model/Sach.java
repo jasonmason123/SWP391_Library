@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -27,11 +28,13 @@ public class Sach {
     @Column(name = "MoTa")
     private String moTa;
     @Column(name = "DanhGia")
-    private int danhGia;
+    private float danhGia;
     @Column(name = "GiaTien")
     private double giaTien;
     @Column(name = "SoLuongTrongKho")
     private int soLuongTrongKho;
+    @Column(name = "SoLuotDanhGia")
+    private int soLuotDanhGia;
     @Column(name = "LinkAnh")
     private String linkAnh;
     @Column(name = "FlagDel")
@@ -63,26 +66,20 @@ public class Sach {
                 int soLuongTrongKho,
                 String linkAnh,
                 int flagDel,
-                Date dateCreated) {
+                Date dateCreated
+               ) {
         this.tenSach = tenSach;
         this.tacGia = tacGia;
         this.nhaXuatBan = nhaXuatBan;
         this.moTa = moTa;
-        this.danhGia = calculateDanhGia();
+        this.danhGia = 0;
         this.giaTien = giaTien;
         this.soLuongTrongKho = soLuongTrongKho;
+        this.soLuotDanhGia = 0;
         this.linkAnh = linkAnh;
         this.flagDel = flagDel;
         this.dateCreated = dateCreated;
+
     }
 
-    private int calculateDanhGia() {
-        if(binhLuan==null || binhLuan.isEmpty()) {
-            return 0;
-        }
-        double averageDanhGia = binhLuan.stream()
-                .mapToInt(BinhLuanSach::getDanhGia)
-                .average().orElse(0);
-        return (int) Math.round(averageDanhGia);
-    }
 }

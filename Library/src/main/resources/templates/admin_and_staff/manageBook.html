@@ -1,26 +1,38 @@
+
 <style>
     .btn-custom {
         background-color: #f07c29; /* Mã màu cam tùy chỉnh */
         color: white;
     }
-    .badge-custom{
-        background-color: grey;
-        color: white;
+
+      img {
+         width: 100px;
+         height: auto;
+          display: block;
+         margin: 0 auto;
+}
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff;
+
+        color: black;
     }
-    .badge-danger{
-        background-color: red;
-        color: white;
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: black;
     }
-    .btn-custom2 {
-        background-color:darkturquoise; /* Mã màu cam tùy chỉnh */
-        color: white;
+
+    .select2-container .select2-selection--multiple {
+        height: auto !important;
     }
-    img {
-        width: 100px;
-        height: auto;
-        display: block;
-        margin: 0 auto;
+
+    .select2-container .select2-selection--multiple .select2-search__field {
+        width: 100% !important;
     }
+
+    .select2-dropdown {
+        z-index: 9999;
+    }
+
 </style>
 
 <div id="content-wrapper">
@@ -32,7 +44,27 @@
                 <a href="#addBookModal" class="btn btn-custom" data-toggle="modal"><span>Thêm </span><i class="fa fa-plus"></i></a>
             </div>
         </ol>
-
+        <!-- Search Form -->
+        <form action="/Library/management/book" id="searchForm">
+            <div class="form-row align-items-end">
+                <div class="form-group col-md-6">
+                    <label for="searchCategory">Tìm kiếm theo danh mục:</label>
+                    <select id="searchCategory" name="category" class="form-control">
+                        <option value="">Tất cả danh mục</option>
+                        <option th:each="category : ${modelClass.get('categories')}" th:text="${category.getTenDanhMuc()}"
+                                th:selected="${category.getId()==modelClass.get('chosenDanhMuc')}" th:value="${category.getId()}"></option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6" id="genreContainer">
+                    <label for="searchGenre">Tìm kiếm theo thể loại:</label>
+                    <select id="searchGenre" name="genre" class="form-control">
+                        <option value="">Tất cả thể loại</option>
+                        <option th:each="genre : ${modelClass.get('genres')}" th:text="${genre.getTenTheLoai()}"
+                                th:selected="${genre.getId()==modelClass.get('chosenTheLoai')}" th:value="${genre.getId()}"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
         <!-- DataTables Example -->
         <div class="card mb-3">
             <div class="card-header">
@@ -52,14 +84,11 @@
                             <th></th>
                         </tr>
                         </thead>
-
                         <tbody>
-                        <tr th:each="item : ${modelClass}">
+                        <tr th:each="item : ${modelClass.get('sachList')}">
                             <td th:id="'tenSach_' + ${item.getId()}" th:text="${item.getTenSach()}"></td>
                             <td > <img th:id="'anh_' + ${item.getId()}" th:src="@{'../' + ${item.getLinkAnh()}}"/></td>
-                            <td th:id="'tacGia_' + ${item.getId()}" th:text="${item.getTacGia()}">
-
-                            </td>
+                            <td th:id="'tacGia_' + ${item.getId()}" th:text="${item.getTacGia()}"></td>
                             <td th:id="'giaTien_' + ${item.getId()}" th:text="${item.getGiaTien()}"></td>
                             <td th:id="'soLuong_' + ${item.getId()}" th:text="${item.getSoLuongTrongKho()}"></td>
                             <td class="text-center">
@@ -72,6 +101,8 @@
                                  th:attr="data-danhGia=${item.getDanhGia()}"></div>
                             <div style="display: none" th:id="'nhaXuatBan_' + ${item.getId()}"
                                  th:attr="data-nhaXuatBan=${item.getNhaXuatBan()}"></div>
+                            <div style="display: none" th:id="'theLoai_' + ${item.getId()}"
+                                 th:attr="data-theLoai=${item.getTheLoaiList()}"></div>
                             <div style="display: none" th:id="'ngayTao_' + ${item.getId()}"
                                  th:attr="data-ngayTao=${item.getDateCreated()}"></div>
                             <div style="display: none" th:id="'ngayCapNhat_' + ${item.getId()}"
@@ -91,7 +122,7 @@
                                 </button>
                                 <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
                                         th:onclick="'openModalActivateBook(' + ${item.getId()} + ')'">
-                                    <i class="fa fa-times text-primary"></i>
+                                    <i class="fa fa-check text-primary"></i>
                                 </button>
                             </td>
                         </tr>
@@ -124,13 +155,17 @@
                         <label>Tên sách</label>
                         <input id="tenSach-add" type="text" class="form-control" required />
                     </div>
-
-
                     <div class="form-group">
                         <label>Tác giả</label>
                         <input id="tacGia-add" type="text" class="form-control" required />
                     </div>
-
+                    <div class="form-group">
+                        <label>Thể loại</label>
+                        <select id="theLoai-add" class="form-control select2" multiple="multiple" required>
+                            <option th:each="genre : ${modelClass.get('genresAddUpdate')}" th:value="${genre.getId()}"
+                                    th:text="${genre.getTenTheLoai()}"></option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Giá tiền</label>
                         <input id="giaTien-add" type="text" class="form-control" required />
@@ -143,7 +178,6 @@
                         <label>Nhà xuất bản</label>
                         <input id="nhaXuatBan-add" type="text" class="form-control" required />
                     </div>
-
                     <div class="form-group">
                         <label>Mô tả</label>
                         <input id="moTa-add" type="text" class="form-control" required />
@@ -176,13 +210,18 @@
                         <label>Tên sách</label>
                         <input id="tenSach-update" type="text" class="form-control"  />
                     </div>
-
-
                     <div class="form-group">
                         <label>Tác giả</label>
                         <input id="tacGia-update" type="text" class="form-control"  />
                     </div>
-
+                    <div class="form-group">
+                        <label>Thể loại</label>
+                        <select id="theLoai-update" class="form-control select2" multiple="multiple" required>
+                            <option th:each="genre : ${modelClass.get('genresAddUpdate')}"
+                                    th:value="${genre.getId()}" th:text="${genre.getTenTheLoai()}">
+                            </option>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Giá tiền</label>
                         <input id="giaTien-update" type="text" class="form-control"  />
@@ -191,11 +230,11 @@
                         <label>Số lượng</label>
                         <input id="soLuong-update" type="text" class="form-control" />
                     </div>
+
                     <div class="form-group">
                         <label>Nhà xuất bản</label>
                         <input id="nhaXuatBan-update" type="text" class="form-control" />
                     </div>
-
                     <div class="form-group">
                         <label>Mô tả</label>
                         <input id="moTa-update" type="text" class="form-control" />
@@ -233,13 +272,14 @@
                         <label>Tên sách</label>
                         <b id="tenSach-detail" type="text" class="form-control" ></b>
                     </div>
-
-
                     <div class="form-group">
                         <label>Tác giả</label>
                         <b id="tacGia-detail" type="text" class="form-control" ></b>
                     </div>
-
+                    <div class="form-group">
+                        <label>Thể loại</label>
+                        <b id="theLoai-detail" type="text" class="form-control" ></b>
+                    </div>
                     <div class="form-group">
                         <label>Giá tiền</label>
                         <b id="giaTien-detail" type="text" class="form-control"></b>
@@ -252,7 +292,6 @@
                         <label>Nhà xuất bản</label>
                         <b id="nhaXuatBan-detail" type="text" class="form-control"></b>
                     </div>
-
                     <div class="form-group">
                         <label>Mô tả</label>
                         <b id="moTa-detail" type="text" class="form-control"></b>
@@ -262,7 +301,6 @@
                         <b id="danhGia-detail" type="text" class="form-control"></b>
                     </div>
                 </div>
-
             </form>
         </div>
     </div>
@@ -313,6 +351,7 @@
 </div>
 
 <script src="../static-admin_and_staff/js/pages/manage-book.js"></script>
+<script src="../select2/dist/js/select2.min.js"></script>
 <script th:inline="javascript">
     function openModalDeactivateBook(id) {
         $('#deactivate-book-id').val(id);
@@ -333,6 +372,7 @@
         let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
         let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
         let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        let theLoai = document.getElementById('theLoai_' + id).getAttribute('data-theLoai');
         $('#tenSach-update').val(tenSach);
         $('#anh-update').attr('src', anh);
         $('#tacGia-update').val(tacGia);
@@ -342,6 +382,8 @@
         $('#moTa-update').val(moTa);
         $('#nhaXuatBan-update').val(nhaXuatBan);
         $('#danhGia-update').val(danhGia);
+        $('#theLoai-update').val(theLoai);
+       
         $('#updateBookModal').modal('show');
     }
 
@@ -354,15 +396,30 @@
         let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
         let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
         let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        let theLoai = document.getElementById('theLoai_' + id).getAttribute('data-theLoai');
         $('#tenSach-detail').text(tenSach);
         $('#anh-detail').attr('src', anh);
         $('#tacGia-detail').text(tacGia);
         $('#giaTien-detail').text(giaTien);
         $('#soLuong-detail').text(soLuong);
-
+        $('#theLoai-detail').text(theLoai);
         $('#moTa-detail').text(moTa);
         $('#nhaXuatBan-detail').text(nhaXuatBan);
         $('#danhGia-detail').text(danhGia);
         $('#detailBookModal').modal('show');
     }
+</script>
+<script>
+    $('#searchCategory').select2();
+    $('#searchGenre').select2();
+    $('#theLoai-add').select2({
+        dropdownParent: $('#addBookModal'),
+        allowClear: true,
+        width: '100%'
+    });
+    $('#theLoai-update').select2({
+        dropdownParent: $('#updateBookModal'),
+        allowClear: true,
+        width: '100%'
+    });
 </script>

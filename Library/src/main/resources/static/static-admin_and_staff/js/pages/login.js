@@ -12,7 +12,7 @@ $('document').ready(function () {
             }),
             success: function () {
                 console.log('Success');
-                window.location.replace("/Library/manage/manageStaff");
+                window.location.replace("/Library/management/book");
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.warn('Error:', textStatus, errorThrown);

@@ -21,13 +21,12 @@ public class TheLoai {
     private String tenTheLoai;
     @ManyToOne
     @JoinColumn(name = "DanhMucId")
-    private DanhMuc danhMuc;
+    public DanhMuc danhMuc;
     @Setter(AccessLevel.NONE)
     @Column(name = "DateCreated")
     private Date dateCreated;
     @Column(name = "DateUpdated")
     private Date dateUpdated;
-
     @ManyToMany(mappedBy = "theLoaiList")
     private List<Sach> sachList;
 
@@ -36,5 +35,8 @@ public class TheLoai {
         this.tenTheLoai = tenTheLoai;
         this.danhMuc = danhMuc;
         this.dateCreated = dateCreated;
+
     }
+
+
 }

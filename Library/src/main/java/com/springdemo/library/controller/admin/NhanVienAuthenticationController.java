@@ -2,6 +2,7 @@ package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.controller.AbstractAuthenticationController;
 import com.springdemo.library.model.NhanVien;
+import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.SigninDataDto;
 import com.springdemo.library.repositories.NhanVienRepository;
 import com.springdemo.library.security.userdetails.NhanVienUserDetails;
@@ -41,7 +42,7 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
     public ModelAndView login(Authentication authentication) {
         if(Common.isAuthenticated(authentication)
             && authentication.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_0") || role.getAuthority().equals("ROLE_1"))
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || role.getAuthority().equals("ROLE_STAFF"))
         ) {
             return new ModelAndView("redirect:/management/home");
         }
@@ -96,13 +97,12 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
         }
     }
 
-    @Override
     @PostMapping("/auth")
     @ResponseBody
     public ResponseEntity<String> sendChangePasswordEmail(
         @RequestParam(name = "email") String email
     ) {
-        return super.sendChangePasswordEmail(email);
+        return super.sendChangePasswordEmail(email, true);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
 
     @Override
     @PostMapping("/processforgotpassword")
-    public ModelAndView processForgotPassword(
+    public ResponseEntity<String> processForgotPassword(
             @RequestParam(name = "auth") String auth,
             @RequestParam(name = "new") String newPassword
     ) {
@@ -149,11 +149,18 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
             if(foundNhanVien!=null) {
                 foundNhanVien.setMatKhau(Common.sha256Hash(newPassword));
                 nhanVienRepository.save(foundNhanVien);
-                return new ModelAndView("redirect:/management/login");
+                StringBuilder messageBody = new StringBuilder();
+                messageBody.append("<p>Tài khoản của bạn: ").append(foundNhanVien.getEmail()).append(" đã được đổi mật khẩu</p>")
+                        .append("<p>Nếu đó không phải là bạn, <strong>vui lòng lập tức</strong> liên hệ với ban quản lí thư viện để có những biện pháp xử lí kịp thời</p>")
+                        .append("<p>Email thư viện cộng đồng Therasus: <strong>therasuslibrary@gmail.com</strong></p>");
+                emailService.sendHtmlEmail(EmailDetailsDto.builder().recipient(email)
+                        .subject("[Therasus] Tài khoản " + foundNhanVien.getEmail() + " đã được đổi mật khẩu")
+                        .messageBody(messageBody.toString()).build());
+                return ResponseEntity.ok().build();
             }
         }
         log.error("email not found or invalid");
-        return new ModelAndView("redirect:/error");
+        return ResponseEntity.badRequest().build();
     }
 
     @Override

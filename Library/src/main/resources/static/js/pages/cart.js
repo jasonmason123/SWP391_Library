@@ -37,14 +37,13 @@ function saveCart() {
     localStorage.setItem(CART_NAME, JSON.stringify(cartObject));
 }
 
-function updateCart(id, action) {
+function updateCartWithIdPrefix(id, idPrefix='', action) {
     if((getCartSize()>=5 && action===CART_ADD) || (getCartSize()<=0 && action===CART_MINUS)) {
         console.warn('Cannot update cart');
     } else {
         if(cart.has(id)) {
             let comparableQuantity = cart.get(id).quantity;
-            let quantityInStock = $('#quantityInStock_' + id).data('quantityinstock');
-            console.log(comparableQuantity);
+            let quantityInStock = $('#quantityInStock_' + idPrefix + '' + id).data('quantityinstock');
             if(action===CART_ADD && comparableQuantity<=quantityInStock && comparableQuantity<3) {
                 cart.get(id).quantity += 1;
             } else if(action===CART_MINUS) {
@@ -58,16 +57,19 @@ function updateCart(id, action) {
             }
         } else {
             cart.set(id, {
-                bookName: $('#bookName_' + id).text(),
-                imagePath: $('#imagePath_' + id).attr('src'),
-                price: $('#price_' + id).data('price'),
+                bookName: $('#bookName_' + idPrefix + '' + id).text(),
+                imagePath: $('#imagePath_' + idPrefix + '' + id).attr('src'),
+                price: $('#price_' + idPrefix + '' + id).data('price'),
                 quantity: 1
             });
         }
     }
-    console.log(cart);
     saveCart();
-    displayCart();
+    displayCart(idPrefix);
+}
+
+function updateCart(id, action) {
+    updateCartWithIdPrefix(id, '', action);
 }
 
 function removeFromCart(id) {
@@ -88,7 +90,7 @@ function getCartSize() {
     return size;
 }
 
-function displayCart() {
+function displayCart(idPrefix='') {
     const cartList = $('#cart');
     cartList.empty(); // Clear any existing items
 
@@ -109,14 +111,14 @@ function displayCart() {
 
             // Cart Image
             const cartImg = $('<div class="cart-img"></div>');
-            const bookLink = $('<a></a>').attr('href', `/Library/book?id=${bookId}`);
+            const bookLink = $('<a></a>').attr('href', `/Library/book?book=${bookId}`);
             const bookImg = $('<img>').attr('src', itemData.imagePath).attr('alt', itemData.bookName);
             bookLink.append(bookImg);
             cartImg.append(bookLink);
 
             // Cart Info
             const cartInfo = $('<div class="cart-info"></div>');
-            const bookName = $('<h5></h5>').append($('<a></a>').attr('href', `/Library/bookdetail?id=${bookId}`).text(itemData.bookName));
+            const bookName = $('<h5></h5>').append($('<a></a>').attr('href', `/Library/book?book=${bookId}`).text(itemData.bookName));
 
             // Quantity with Plus and Minus Buttons
             const quantityWrapper = $('<div class="quantity-wrapper"></div>');
@@ -128,14 +130,12 @@ function displayCart() {
             minusButton.click(function(event) {
                 event.preventDefault();
                 updateCart(bookId, 'MINUS');
-                displayCart();
             });
 
             // Event handler for plus button
             plusButton.click(function(event) {
                 event.preventDefault();
-                updateCart(bookId, 'ADD');
-                displayCart();
+                updateCartWithIdPrefix(bookId, idPrefix, 'ADD');
             });
 
             quantityWrapper.append(minusButton, quantity, plusButton);
@@ -154,7 +154,6 @@ function displayCart() {
             removeLink.click(function(event) {
                 event.preventDefault(); // Prevent default anchor click behavior
                 removeFromCart(bookId);
-                displayCart(); // Refresh the cart display
             });
 
             // Append all elements to item
@@ -175,8 +174,3 @@ $(document).ready(function () {
     getCart();
     displayCart();
 });
-
-/*
-Save cart data on localstorage as a map, with key including bookId, bookName, imagePath and price as key, and value as quantity
-When sending cart data to back-end, use a map that only includes bookId as key and value as quantity
- */

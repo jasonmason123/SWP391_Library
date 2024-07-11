@@ -29,7 +29,7 @@ public class NhanVien {
     @Column(name = "FlagDel")
     private int flagDel;
     @Column(name = "VaiTro")
-    private String vaiTro; //0: admin, 1: staff
+    private String vaiTro; //ADMIN, 0: admin; STAFF, 1: staff
     @Setter(AccessLevel.NONE)
     @Column(name = "DateCreated")
     private Date dateCreated;

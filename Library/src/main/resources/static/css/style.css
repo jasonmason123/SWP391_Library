@@ -1563,7 +1563,6 @@ body {
     bottom: 0px;
     left: 0;
     overflow: hidden;
-    padding-bottom: 8px;
     position: absolute;
     right: 0;
     width: 100%;
@@ -2795,6 +2794,10 @@ a#scrollUp:hover {
 .category-area h3 a i {
     float: right;
     margin-top: 16px;
+}
+
+.category-area img {
+    border: 1px solid #f0ad4e;
 }
 
 .category-menu {
@@ -4737,9 +4740,11 @@ nav.menu .cr-dropdown ul {
 }
 
 .review-field-ratings .single-control .review-control-vote {
-    display: inline-block;
+    display: flex;
     float: left;
     padding-left: 15px;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
 }
 
 .review-field-ratings .single-control .review-control-vote a {
@@ -4917,7 +4922,7 @@ nav.menu .cr-dropdown ul {
     width: 70px;
     padding: 0 10px;
 }
-
+.product-add-form form button,
 .product-add-form form a {
     background: #333 none repeat scroll 0 0;
     border: 0 none;
@@ -4955,6 +4960,7 @@ nav.menu .cr-dropdown ul {
     margin-right: 10px;
 }
 
+.product-add-form form button,
 .product-add-form form a {
     float: left;
 }
@@ -5554,6 +5560,7 @@ nav.menu .cr-dropdown ul {
     width: 100%;
 }
 
+.single-post-button button,
 .single-post-button a {
     background: #333 none repeat scroll 0 0;
     border: 1px solid #333;
@@ -5566,6 +5573,7 @@ nav.menu .cr-dropdown ul {
     display: inline-block;
 }
 
+.single-post-button button:hover,
 .single-post-button a:hover {
     background: #F07C29 none repeat scroll 0 0;
     border: 1px solid #F07C29;
