@@ -1,6 +1,7 @@
 package com.springdemo.library.controller;
 
 import com.springdemo.library.model.User;
+import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.SigninDataDto;
 import com.springdemo.library.model.dto.SignupDataDto;
 import com.springdemo.library.repositories.UserRepository;
@@ -16,9 +17,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -70,8 +71,8 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
 
     @Override
     @GetMapping("/logout")
-    public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        customLogout(authentication, request, response);
+    public String logout(SecurityContextLogoutHandler securityContextLogoutHandler, Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        customLogout(securityContextLogoutHandler, authentication, request, response);
         return "redirect:/login";
     }
 
@@ -153,7 +154,7 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
     @Override
     @PostMapping("/processforgotpassword")
     @ResponseBody
-    public ModelAndView processForgotPassword(
+    public ResponseEntity<String> processForgotPassword(
         @RequestParam(name = "auth") String auth,
         @RequestParam(name = "new") String newPassword)
      {
@@ -163,22 +164,28 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
             if(foundUser!=null) {
                 foundUser.setMatKhau(Common.sha256Hash(newPassword));
                 userRepository.save(foundUser);
-                return new ModelAndView("redirect:/login");
+                StringBuilder messageBody = new StringBuilder();
+                messageBody.append("<p>Tài khoản của bạn: ").append(foundUser.getTenUser()).append(" đã được đổi mật khẩu</p>")
+                        .append("<p>Nếu đó không phải là bạn, <strong>vui lòng lập tức</strong> liên hệ với ban quản lí thư viện để có những biện pháp xử lí kịp thời</p>")
+                        .append("<p>Email thư viện cộng đồng Therasus: <strong>therasuslibrary@gmail.com</strong></p>");
+                emailService.sendHtmlEmail(EmailDetailsDto.builder().recipient(email)
+                        .subject("[Therasus] Tài khoản " + foundUser.getTenUser() + " đã được đổi mật khẩu")
+                        .messageBody(messageBody.toString()).build());
+                return ResponseEntity.ok().build();
             }
         }
         log.error("email not found or invalid");
-        return new ModelAndView("redirect:/error");
+        return ResponseEntity.badRequest().build();
     }
 
 //Utils_________________________________________________________________________________________________________________
 
-    @Override
     @PostMapping("/auth")
     @ResponseBody
     public ResponseEntity<String> sendChangePasswordEmail(
             @RequestParam(name = "email") String email)
     {
-        return super.sendChangePasswordEmail(email);
+        return super.sendChangePasswordEmail(email, false);
     }
 
     @Override

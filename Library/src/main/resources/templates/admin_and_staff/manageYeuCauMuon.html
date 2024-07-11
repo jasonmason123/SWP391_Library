@@ -1,89 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    .btn-custom {
+        background-color: #f07c29;
+        color: white;
+    }
 
-<head>
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 20px;
+    }
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    .order-status {
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
 
-    <title>${title}</title>
+    .order-status.pending {
+        background-color: #f0ad4e;
+    }
 
-    <style>
-        .btn-custom {
-            background-color: #f07c29;
-            color: white;
-        }
+    #status-detail {
+        text-align: center;
+        color: white;
+    }
+</style>
 
-        .badge-custom {
-            background-color: grey;
-            color: white;
-        }
-
-        .btn-custom2 {
-            background-color: darkturquoise;
-            color: white;
-        }
-
-        .modal-header,
-        .modal-body,
-        .modal-footer {
-            padding: 20px;
-        }
-
-        .order-status {
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .order-status.pending {
-            background-color: #f0ad4e;
-        }
-
-        .status-label {
-            display: inline-block;
-            padding: 3px 7px;
-            border-radius: 4px;
-        }
-
-        .status-label.pending {
-            background-color: #f0ad4e;
-            color: white;
-        }
-
-        .status-label.not-received {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .status-label.approved {
-            background-color: #5cb85c;
-            color: white;
-        }
-
-        .status-label.rejected {
-            background-color: #d9534f;
-            color: white;
-        }
-
-        .status-label.borrowing {
-            background-color: #f0ad4e;
-            color: white;
-        }
-
-        .status-label.returned {
-            background-color: #0275d8;
-            color: white;
-        }
-    </style>
-
-
-</head>
-
-<body id="page-top">
+<div id="page-top">
 
 <div id="wrapper">
 
@@ -107,8 +50,9 @@
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>ID người mượn</th>
+                                <th>ID yêu cầu</th>
+                                <th>Tên người mượn</th>
+                                <th>Ngày tạo</th>
                                 <th>Ngày mượn</th>
                                 <th>Ngày trả</th>
                                 <th>Trạng thái</th>
@@ -119,10 +63,11 @@
                             <tbody>
                             <tr th:each="item : ${modelClass}">
                                 <td th:id="'ID_' + ${item.getId()}" th:text="${item.getId()}"></td>
-                                <td th:id="'IdNguoiMuon_' + ${item.nguoiMuon.getId()}" th:text="${item.nguoiMuon.getId()}"></td>
+                                <td th:id="'IdNguoiMuon_' + ${item.nguoiMuon.getId()}" th:text="${item.nguoiMuon.getTenUser()}"></td>
+                                <td th:id="'NgayTao_' + ${item.getId()}" th:text="${item.getDateCreated()}"></td>
                                 <td th:id="'NgayMuon_' + ${item.getId()}" th:text="${item.getNgayMuon()}"></td>
                                 <td th:id="'NgayTra_' + ${item.getId()}" th:text="${item.getNgayTra()}"></td>
-                                <td th:id="'TrangThai_' + ${item.getId()}">
+                                <td th:id="'TrangThai_' + ${item.getId()}" th:attr="data-TrangThai=${item.getTrangThai()}">
                                     <span th:if="${item.getTrangThai()==0}" class="badge badge-danger" th:text="'Chưa được duyệt'"></span>
                                     <span th:if="${item.getTrangThai()==1}" class="badge badge-success" th:text="'Đã được duyệt'"></span>
                                     <span th:if="${item.getTrangThai()==2}" class="badge badge-warning" th:text="'Đang mượn'"></span>
@@ -131,10 +76,10 @@
                                 <div style="display: none" th:id="'TenNguoiMuon_' + ${item.getId()}" th:attr="data-TenNguoiMuon=${item.nguoiMuon.getTenUser()}"></div>
                                 <div style="display: none" th:id="'QuaHan_' + ${item.getId()}" th:attr="data-QuaHan=${item.getQuaHan()}"></div>
                                 <div style="display: none" th:id="'BoiThuong_' + ${item.getId()}" th:attr="data-BoiThuong=${item.getBoiThuong()}"></div>
-                                <div style="display: none" th:id="'NgayTao_' + ${item.getId()}" th:attr="data-NgayTao=${item.getDateCreated()}"></div>
                                 <div style="display: none" th:id="'NgayCapNhat_' + ${item.getId()}" th:attr="data-NgayCapNhat=${item.getDateUpdated()}"></div>
+                                <div style="display: none" th:id="'SoTienDatCoc_' + ${item.getId()}" th:attr="data-SoTienDatCoc=${item.getSoTienDatCoc()}"></div>
                                 <td class="d-flex justify-content-center">
-                                    <button type="button" class="btn btn-light" th:onclick="'openModalViewRequestDetail(' + ${item.getId()} + ')'">
+                                    <button type="button" class="btn btn-light" th:onclick="'getSachDuocMuonFromYeuCauMuonSach(' + ${item.getId()} + ')'">
                                         <i class="fa fa-pen text-primary"></i>
                                     </button>
                                 </td>
@@ -146,17 +91,18 @@
                 <div class="card-footer small text-muted">Cập nhật mới nhất lúc 11:59</div>
             </div>
 
-            <div class="modal fade" id="detailRequestModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+            <div class="modal fade" id="detailRequestModal" tabindex="-1" role="dialog" data-backdrop="static"
+                 aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
+                    <form class="modal-content" id="yeuCauMuonSachDetails">
                         <div class="modal-header">
                             <h5 class="modal-title" id="orderDetailsModalLabel">Thông tin yêu cầu mượn sách</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeModalButton">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form>
+                            <div>
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label>ID yêu cầu</label>
@@ -193,7 +139,7 @@
                                         <b id="NgayTao-detail" type="text" class="form-control"></b>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label>Ngày cập nhật</label>
+                                        <label>Ngày cập nhật gần nhất</label>
                                         <b id="NgayCapNhat-detail" type="text" class="form-control"></b>
                                     </div>
                                 </div>
@@ -205,41 +151,33 @@
                                     <div class="form-group col-md-6">
                                         <label>Phê duyệt</label>
                                         <div>
-                                            <button type="button" class="btn btn-success" id="approveButton">Phê duyệt</button>
-                                            <button type="button" class="btn btn-danger" id="rejectButton">Từ chối</button>
+                                            <select id="statusOptions" class="form-control">
+                                                <option value="-1">Từ chối</option>
+                                                <option value="0">Chờ duyệt</option>
+                                                <option value="1">Đã duyệt, chờ mượn</option>
+                                                <option value="2">Đang mượn</option>
+                                                <option value="3">Đã trả</option>
+                                            </select>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="form-row" id="statusOptionsContainer" style="display: none;">
-                                    <div class="form-group col-md-6">
-
-                                        <select id="statusOptions" class="form-control">
-                                            <option value="Đang mượn">Đang mượn</option>
-                                            <option value="Đã trả">Đã trả</option>
-                                        </select>
                                     </div>
                                 </div>
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th scope="col">Tên sách</th>
-                                        <th scope="col">Số lượng</th>
+                                        <th scope="col" class="text-center">Tên sách</th>
+                                        <th scope="col" class="text-center">Số lượng mượn</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <tr th:each="item : ${modelBook}">
-                                        <td th:text="${item.sach.getTenSach()}"></td>
-                                        <td th:text="${item.soLuongMuon}"></td>
-                                    </tr>
-                                    </tbody>
+                                    <tbody id="sachDuocMuonTableBody"></tbody>
                                 </table>
-                            </form>
+                                <p>Tổng số tiền phải cọc: <strong id="totalDeposit"></strong></p>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-custom" data-dismiss="modal" id="closeButton">Lưu</button>
+                            <button type="submit" class="btn btn-custom" id="saveButton">Lưu</button>
                             <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="cancelButton">Đóng</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -283,124 +221,21 @@
         </div>
     </div>
 </div>
+</div>
 
+<script src="../static-admin_and_staff/js/pages/manage-yeuCauMuonSach.js"></script>
 <script th:inline="javascript">
-    let originalState = {};
-
-    function openModalViewRequestDetail(id) {
-        let Id = document.getElementById('ID_' + id).innerText;
-        let tenNguoiMuon = document.getElementById('TenNguoiMuon_' + id).getAttribute('data-TenNguoiMuon');
-        let ngayMuon = document.getElementById('NgayMuon_' + id).innerText;
-        let ngayTra = document.getElementById('NgayTra_' + id).innerText;
-        let quaHan = document.getElementById('QuaHan_' + id).getAttribute('data-QuaHan');
-        let boiThuong = document.getElementById('BoiThuong_' + id).getAttribute('data-BoiThuong');
-        let trangThai = document.querySelector('#TrangThai_' + id + ' span').innerText;
-        let ngayTao = document.getElementById('NgayTao_' + id).getAttribute('data-NgayTao');
-        let ngayCapNhat = document.getElementById('NgayCapNhat_' + id).getAttribute('data-NgayCapNhat');
-
-        // Save original state
-        originalState = {
-            Id,
-            tenNguoiMuon,
-            ngayMuon,
-            ngayTra,
-            quaHan,
-            boiThuong,
-            trangThai,
-            ngayTao,
-            ngayCapNhat
-        };
-
-        $('#ID-yeucau').text(Id);
-        $('#tenNguoiMuon-detail').text(tenNguoiMuon);
-        $('#NgayMuon-detail').text(ngayMuon);
-        $('#NgayTra-detail').text(ngayTra);
-        $('#QuaHan-detail').text(quaHan);
-        $('#BoiThuong-detail').text(boiThuong);
-        $('#status-detail').text(trangThai);
-        $('#NgayTao-detail').text(ngayTao);
-        $('#NgayCapNhat-detail').text(ngayCapNhat);
-        $('#detailRequestModal').modal('show');
-
-        // Store the current item ID for later use
-        document.getElementById('detailRequestModal').setAttribute('data-current-id', id);
+    function getSachDuocMuonFromYeuCauMuonSach(id) {
+        $.ajax({
+            method: 'GET',
+            url: '/Library/management/manageBookBorrowed/findBorrowedBooks?yeuCauId=' + id,
+            success: (sachDuocMuonList) => {
+                openModalViewRequestDetail(id, sachDuocMuonList);
+            },
+            error: () => {
+                console.error('Request Id not found: ' + id);
+            }
+        });
     }
 
-    document.getElementById('approveButton').addEventListener('click', function() {
-        // Update the status to "Đã được duyệt"
-        document.getElementById('status-detail').innerText = 'Đã được duyệt';
-        document.getElementById('status-detail').className = 'form-control status-label approved';
-
-        // Show the status options
-        document.getElementById('statusOptionsContainer').style.display = 'block';
-    });
-
-    document.getElementById('rejectButton').addEventListener('click', function() {
-        // Update the status to "Từ chối"
-        document.getElementById('status-detail').innerText = 'Từ chối';
-        document.getElementById('status-detail').className = 'form-control status-label rejected';
-
-        // Hide the status options
-        document.getElementById('statusOptionsContainer').style.display = 'none';
-    });
-
-    document.getElementById('statusOptions').addEventListener('change', function() {
-        let newStatus = this.value;
-        let statusDetailElement = document.getElementById('status-detail');
-        // Update the status to the selected option
-        statusDetailElement.innerText = newStatus;
-        if (newStatus === 'Đang mượn') {
-            statusDetailElement.className = 'form-control status-label borrowing';
-        } else if (newStatus === 'Đã trả') {
-            statusDetailElement.className = 'form-control status-label returned';
-        }
-    });
-
-    document.getElementById('closeButton').addEventListener('click', function() {
-        let currentId = document.getElementById('detailRequestModal').getAttribute('data-current-id');
-        let updatedStatus = document.getElementById('status-detail').innerText;
-        let statusElement = document.querySelector('#TrangThai_' + currentId + ' span');
-
-        if (updatedStatus === 'Đã được duyệt') {
-            statusElement.className = 'btn btn-success';
-        } else if (updatedStatus === 'Đang mượn') {
-            statusElement.className = 'order-status pending';
-        } else if (updatedStatus === 'Đã trả') {
-            statusElement.className = 'btn btn-primary';
-        } else {
-            statusElement.className = 'btn btn-danger';
-        }
-        statusElement.innerText = updatedStatus;
-    });
-
-    document.getElementById('cancelButton').addEventListener('click', function() {
-        // Reset the modal to its original state
-        $('#ID-yeucau').text(originalState.Id);
-        $('#tenNguoiMuon-detail').text(originalState.tenNguoiMuon);
-        $('#NgayMuon-detail').text(originalState.ngayMuon);
-        $('#NgayTra-detail').text(originalState.ngayTra);
-        $('#QuaHan-detail').text(originalState.quaHan);
-        $('#BoiThuong-detail').text(originalState.boiThuong);
-        $('#status-detail').text(originalState.trangThai);
-        $('#NgayTao-detail').text(originalState.ngayTao);
-        $('#NgayCapNhat-detail').text(originalState.ngayCapNhat);
-
-        // Reset the status detail class
-        if (originalState.trangThai === 'Đã được duyệt') {
-            document.getElementById('status-detail').className = 'form-control status-label approved';
-        } else if (originalState.trangThai === 'Đang mượn') {
-            document.getElementById('status-detail').className = 'form-control status-label borrowing';
-        } else if (originalState.trangThai === 'Đã trả') {
-            document.getElementById('status-detail').className = 'form-control status-label returned';
-        } else {
-            document.getElementById('status-detail').className = 'form-control status-label rejected';
-        }
-
-        // Hide the status options container
-        document.getElementById('statusOptionsContainer').style.display = 'none';
-    });
 </script>
-
-
-</body>
-</html>

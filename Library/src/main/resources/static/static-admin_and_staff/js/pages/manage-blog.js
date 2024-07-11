@@ -1,11 +1,9 @@
 $(document).ready(function () {
-
-
     $('#deactivate-blog-form').on('submit', function (e) {
         e.preventDefault();
         console.log("Reached deactivate");
         $.ajax({
-            url: '/Library/management/hideBlog?id=' + $('#deactivate-blog-id').val(),
+            url: '/Library/management/manageDanhSachBaiViet/hideBlog?id=' + $('#deactivate-blog-id').val(),
             method: 'POST',
             contentType: 'application/json',
             success: function () {
@@ -24,7 +22,7 @@ $(document).ready(function () {
         e.preventDefault();
         console.log("Reached deactivate");
         $.ajax({
-            url: '/Library/management/showBlog?id=' + $('#activate-blog-id').val(),
+            url: '/Library/management/manageDanhSachBaiViet/showBlog?id=' + $('#activate-blog-id').val(),
             method: 'POST',
             contentType: 'application/json',
             success: function () {
@@ -38,6 +36,4 @@ $(document).ready(function () {
             }
         });
     });
-
-
 });

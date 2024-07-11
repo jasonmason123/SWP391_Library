@@ -3,10 +3,12 @@ package com.springdemo.library.controller.admin;
 import com.springdemo.library.model.Blog;
 import com.springdemo.library.model.NhanVien;
 import com.springdemo.library.repositories.BlogRepository;
+import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,23 +18,16 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/management")
+@RequestMapping("/management/manageDanhSachBaiViet")
 public class DanhSachBaiVietController {
-    BlogRepository blogRepository;
+    private BlogRepository blogRepository;
+    private GenerateViewService generateViewService;
 
-
-    @GetMapping("/manageDanhSachBaiViet")
-    public ModelAndView manageBookBorrowed() {
-        ModelAndView manageBlogViewModel = new ModelAndView("admin_and_staff/Layout");
+    @GetMapping
+    public ModelAndView manageBookBorrowed(Authentication authentication) {
+        ModelAndView manageBlogViewModel = generateViewService.generateStaffView("Quản lí Blog", "admin_and_staff/manageDanhSachBaiViet", authentication);
         List<Blog> list = blogRepository.findByFlagDelIn(List.of(0, 1));
-
-
-
-        manageBlogViewModel.addObject("includedPage","admin_and_staff/manageDanhSachBaiViet");
-        manageBlogViewModel.addObject("title","Quản lí Blog");
         manageBlogViewModel.addObject("modelClass",list);
-
-
         return manageBlogViewModel;
 
     }
@@ -45,7 +40,6 @@ public class DanhSachBaiVietController {
             Blog existedBlog = blogRepository.findById(id).orElse(null);
             if(existedBlog!=null) {
                 existedBlog.setFlagDel(0);
-
                 blogRepository.save(existedBlog);
                 return ResponseEntity.ok().build();
             }

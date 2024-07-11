@@ -32,9 +32,6 @@
                 <a href="#addTheLoaiModal" class="btn btn-custom" data-toggle="modal"><span>Thêm </span><i class="fa fa-plus"></i></a>
             </div>
         </ol>
-
-
-
         <!-- DataTables Example -->
         <div class="card mb=3">
             <div class="card-header">
@@ -100,7 +97,6 @@
                     <div class="form-group">
                         <label>Chọn danh mục</label>
                         <select id="tenDanhMuc-add" name="genre" class="form-control" >
-
                             <option th:each="category : ${categories}" th:value="${category.getId()}" th:text="${category.getTenDanhMuc()}"></option>
                         </select>
                     </div>
@@ -183,24 +179,4 @@
         $('#theLoai-id-update').val(id);
         $('#updateTheLoaiModal').modal('show');
     }
-</script>
-<script>
-    $('#deactivate-theLoai-form').on('submit', function (e) {
-        e.preventDefault();
-        let theLoaiId = $('#deactivate-theLoai-id').val();
-        $.ajax({
-            url: '/Library/management/deleteGenre?id=' + theLoaiId,
-            method: 'POST',
-            contentType: 'application/json',
-            success: function () {
-                $('#row_' + theLoaiId).remove();
-                alert('Đã xóa thể loại');
-                $('#deactivateTheLoaiModal').modal('hide');
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.warn('Error:', textStatus, errorThrown);
-                alert("Có lỗi");
-            }
-        });
-    });
 </script>

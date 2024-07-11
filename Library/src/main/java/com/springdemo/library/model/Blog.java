@@ -24,16 +24,19 @@ public class Blog {
     @Column(name = "NoiDung")
     private String noiDung;
     @Column(name = "DanhGia")
-    private int danhGia;
-    @Setter(AccessLevel.NONE)
+    private float danhGia;
+    @Column(name = "SoLuotDanhGia")
+    private int soLuotDanhGia;
     @Column(name = "NgayTao")
     private Date ngayTao;
+    @Column(name = "NgayCapNhat")
+    private Date ngayCapNhat;
     @Column(name = "FlagDel")
-    private int flagDel;
+    private int flagDel; //-1: Nháp, 0: Hiện, 1: Ẩn, 2: Chờ duyệt
 
     @OneToMany(orphanRemoval = true, mappedBy = "blog")
     private List<BinhLuanBlog> binhLuanBlogList;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "BlogTag",
             joinColumns = @JoinColumn(name = "BlogId"),
@@ -42,12 +45,13 @@ public class Blog {
     private List<Tag> tags;
 
     @Builder
-    public Blog(User tacGia, String tieuDe, String noiDung, int danhGia, Date ngayTao) {
+    public Blog(User tacGia, String tieuDe, String noiDung, Date ngayTao, int flagDel) {
         this.tacGia = tacGia;
         this.tieuDe = tieuDe;
         this.noiDung = noiDung;
-        this.danhGia = danhGia;
+        this.danhGia = 0;
+        this.soLuotDanhGia = 0;
         this.ngayTao = ngayTao;
-        this.flagDel = 1;
+        this.flagDel = flagDel;
     }
 }

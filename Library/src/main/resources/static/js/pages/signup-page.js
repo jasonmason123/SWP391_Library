@@ -1,3 +1,6 @@
+function back() {
+    history.back();
+}
 document.addEventListener('DOMContentLoaded', () => {
     let userName="", soCCCD="", email="", soDienThoai="", matKhau="";
 
@@ -101,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('#missing-information-message').text('');
                 $('#otpModal').modal('show');
             } else {
-                $('#missing-information-message').text('Vui lòng điền đầy đủ những thông tin bên trên');
+                $('#missing-information-message').text('Vui lòng điền đầy đủ những thông tin bên trên, hoặc kiểm tra lại tính hợp lệ của thông tin nhập vào');
             }
         } else {
             $('#password-not-match').text('Vui lòng nhập lại mật khẩu');

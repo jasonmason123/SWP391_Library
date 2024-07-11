@@ -169,23 +169,3 @@
         $('#updateDanhMucModal').modal('show');
     }
 </script>
-<script>
-    $('#deactivate-danhMuc-form').on('submit', function (e) {
-        e.preventDefault();
-        let danhMucId = $('#deactivate-danhMuc-id').val();
-        $.ajax({
-            url: '/Library/management/deleteCategory?id=' + danhMucId,
-            method: 'POST',
-            contentType: 'application/json',
-            success: function () {
-                $('#row_' + danhMucId).remove();
-                alert('Đã xóa danh mục');
-                $('#deactivateDanhMucModal').modal('hide');
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.warn('Error:', textStatus, errorThrown);
-                alert("Có lỗi");
-            }
-        });
-    });
-</script>

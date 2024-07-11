@@ -4,20 +4,7 @@
     <meta charset="UTF-8">
     <title>${title}</title>
     <style>
-        .btn-custom {
-            background-color: #f07c29; /* Mã màu cam tùy chỉnh */
-            color: white;
-        }
-        .badge-custom{
-            background-color: grey;
-            color: white;
-        }
-        .btn-custom2 {
-            background-color:darkturquoise; /* Mã màu cam tùy chỉnh */
-            color: white;
-        }
         body {
-
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -96,31 +83,6 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .form-container label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-container input[type="text"],
-        .form-container textarea,
-        .form-container input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .form-container input[type="file"] {
-            padding: 3px;
-        }
-        .thumbnail {
-            width: 100px;
-            height: auto;
-        }
-        .post-image {
-            width: 100%;
-            height: auto;
-        }
     </style>
 </head>
 <body>
@@ -128,21 +90,7 @@
     <section id="new-post">
         <h2>Thêm Bài Viết Mới</h2>
         <div class="form-container">
-            <form>
-                <label for="title">Tiêu Đề:</label>
-                <input type="text" id="title" name="title" required>
 
-                <label for="author">Tác Giả:</label>
-                <input type="text" id="author" name="author" required>
-
-                <label for="content">Nội Dung:</label>
-                <textarea id="content" name="content" rows="10" required></textarea>
-
-                <label for="image">Hình Ảnh:</label>
-                <input type="file" id="image" name="image">
-
-                <button type="submit">Đăng Bài</button>
-            </form>
         </div>
     </section>
 
@@ -186,5 +134,20 @@
         </div>
     </div>
 </div>
+
+<!-- Rich text editor: TinyMCE -->
+<script src="../tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '#content',
+        plugins: 'image media link code',
+        toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+        image_title: true,
+        automatic_uploads: true,
+        file_picker_types: 'image'
+        // images_upload_handler: ,
+        // file_picker_callback:
+    });
+</script>
 </body>
 </html>

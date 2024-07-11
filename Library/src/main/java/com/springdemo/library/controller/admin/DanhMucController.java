@@ -7,10 +7,12 @@ import com.springdemo.library.model.Sach;
 import com.springdemo.library.repositories.DanhMucRepository;
 import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.TheLoaiRepository;
+import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,22 +24,19 @@ import java.util.List;
 @Controller
 @Slf4j
 @AllArgsConstructor
-@RequestMapping("/management")
+@RequestMapping("/management/category")
 
 public class DanhMucController {
 
 
     private DanhMucRepository DanhMucRepository;
+    private GenerateViewService generateViewService;
 
-    @GetMapping("/category")
-    public ModelAndView viewCategory() {
+    @GetMapping
+    public ModelAndView viewCategory(Authentication authentication) {
         List<DanhMuc> danhMucList = DanhMucRepository.findAll();
-        ModelAndView manageBookViewModel = new ModelAndView("admin_and_staff/Layout");
-        manageBookViewModel.addObject("includedPage", "admin_and_staff/danhMuc");
-        manageBookViewModel.addObject("title", "Quản lí Danh Mục");
+        ModelAndView manageBookViewModel = generateViewService.generateStaffView("Quản lí Danh Mục", "admin_and_staff/danhMuc", authentication);
         manageBookViewModel.addObject("modelClass", danhMucList);
-
-
         return manageBookViewModel;
     }
     @PostMapping("/deleteCategory")
@@ -48,10 +47,7 @@ public class DanhMucController {
         try {
             DanhMuc existedCategory = DanhMucRepository.findById(id).orElse(null);
             if(existedCategory!=null) {
-
-                DanhMucRepository.save(existedCategory);
                 DanhMucRepository.deleteById(id);
-
                 return ResponseEntity.ok().build();
             }
         } catch (DataIntegrityViolationException e) {
