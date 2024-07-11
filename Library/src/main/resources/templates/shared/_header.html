@@ -34,17 +34,17 @@
         <div class="col-lg-3 col-md-3 col-12">
           <div th:if="${isAuthenticated==0 && noCart==null}" class="my-cart" id="my-cart">
             <ul>
-              <li><a href="/Library/login"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a></li>
+              <li><a href="/Library/login"><i class="fa fa-shopping-cart"></i>Giỏ sách</a></li>
             </ul>
           </div>
           <div th:if="${isAuthenticated==1 && noCart==null}" class="my-cart" id="my-cart">
             <ul>
-              <li><a href="#"><i class="fa fa-shopping-cart"></i>Giỏ hàng</a>
+              <li><a href="#"><i class="fa fa-shopping-cart"></i>Giỏ sách</a>
                 <span class="number-of-items"></span> <!-- number of items -->
                 <div class="mini-cart-sub">
                   <ul class="cart-product" id="cart"></ul>
                   <div class="cart-totals">
-                    <h5>Tổng giá trị đặt cọc: <span id="total-price"></span> VNĐ</h5>
+                    <h5>Tổng giá trị đặt cọc: <strong id="total-price"></strong> VNĐ</h5>
                   </div>
                   <div class="cart-bottom">
                     <a href="/Library/checkout">Check out</a>
@@ -73,14 +73,14 @@
                 <li><a href="/Library/book">Sách</a></li>
                 <li><a href="/Library/blog">Blog</a></li>
                 <li th:if="${isAuthenticated==1 && noCart==null}">
-                  <a href="#my-cart">Giỏ hàng <span class="number-of-items" style="color: #f0ad4e"></span></a>
+                  <a href="#my-cart">Giỏ sách <span class="number-of-items" style="color: #f0ad4e"></span></a>
 <!--                  <div class="mega-menu">-->
 <!--                    <span>-->
 <!--                        <a href="#" class="title">Jackets</a>-->
 <!--                    </span>-->
 <!--                  </div>-->
                 </li>
-                <li><a href="/Library/drafts" th:if="${isAuthenticated==1}">Bản nháp của bạn</a></li>
+                <li><a href="/Library/drafts" th:if="${isAuthenticated==1}">Blog cá nhân</a></li>
               </ul>
             </nav>
           </div>
@@ -100,7 +100,7 @@
                 <li><a href="/Library/home">Trang chủ</a></li>
                 <li><a href="/Library/book">Sách</a></li>
                 <li><a href="/Library/blog">Blog</a></li>
-                <li><a href="/Library/drafts" th:if="${isAuthenticated==0 || isAuthenticated==null}">Viết blog</a></li>
+                <li><a href="/Library/drafts" th:if="${isAuthenticated==0 || isAuthenticated==null}">Blog cá nhân</a></li>
               </ul>
             </nav>
           </div>

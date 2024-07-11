@@ -14,7 +14,7 @@ public interface SachRepository extends JpaRepository<Sach, Integer> {
             SELECT s FROM Sach s JOIN s.sachDuocMuonList sd
             GROUP BY s.Id, s.tenSach, s.danhGia, s.tacGia, s.nhaXuatBan, s.soLuotDanhGia,
             s.soLuongTrongKho, s.dateCreated, s.dateUpdated, s.flagDel, s.giaTien, s.linkAnh, s.moTa
-            ORDER BY SUM(sd.soLuongMuon) DESC""")
+            ORDER BY COUNT(sd) DESC""")
     List<Sach> findTopMostBorrowedBooks();
 
     @Query(value = "SELECT TOP 10 s.* FROM Sach s ORDER BY s.DateCreated DESC", nativeQuery = true)

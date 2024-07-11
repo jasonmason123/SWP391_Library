@@ -94,6 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    $('#matKhau').on('change', function () {
+        let matKhauUnchecked = $('#matKhau').val();
+        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+        if(regex.test(matKhauUnchecked)) {
+            matKhau = matKhauUnchecked;
+            $('#password-invalid').text('');
+        } else {
+            $('#password-invalid').text('Mật khẩu chưa đáp ứng đúng yêu cầu! Vui lòng nhập lại.');
+        }
+    });
+
     $('#signup-form').on('submit', function (e) {
         e.preventDefault();
         let matKhauUnchecked = $('#matKhau').val();

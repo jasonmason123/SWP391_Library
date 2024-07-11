@@ -135,13 +135,15 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
             String email = signupDataDto.getEmail().trim();
             String soDienThoai = signupDataDto.getSoDienThoai().trim();
             String soCCCD = signupDataDto.getSoCCCD().trim();
+            String matKhau = signupDataDto.getMatKhau();
             if(Constants.VALID_USERNAME_REGEX.matcher(tenUser).matches() &&
                     Constants.VALID_EMAIL_ADDRESS_REGEX.matcher(email).matches() &&
                     Constants.VALID_SODIENTHOAI_REGEX.matcher(soDienThoai).matches() &&
-                    Constants.VALID_SOCCCD_REGEX.matcher(soCCCD).matches()
+                    Constants.VALID_SOCCCD_REGEX.matcher(soCCCD).matches() &&
+                    Constants.VALID_PASSWORD_REGEX.matcher(matKhau).matches()
             ) {
                 User newUser = new User(tenUser, email, null, soDienThoai, soCCCD, new Date());
-                newUser.setMatKhau(Common.sha256Hash(signupDataDto.getMatKhau()));
+                newUser.setMatKhau(Common.sha256Hash(matKhau));
                 userRepository.save(newUser);
                 return this.processLogin(new SigninDataDto(tenUser, signupDataDto.getMatKhau(), false), response);
             }

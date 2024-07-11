@@ -37,8 +37,6 @@ public class BookController {
             @RequestParam(name = "search", required = false) String searchString,
             @RequestParam(name = "page", required = false) Integer pageNumberParam,
             @RequestParam(name = "theLoai", required = false) Integer theLoaiIdParam,
-            @RequestParam(name = "tacGia", required = false) List<String> tacGiaParams,
-            @RequestParam(name = "nhaXuatBan", required = false) List<String> nhaXuatBanParams,
             Authentication authentication
     ) {
         try {
@@ -72,16 +70,6 @@ public class BookController {
                     } else {
                         filteredSachList = sachRepository.findSachByTheLoaiId(theLoaiIdParam);
                         modelClass.put("chosenTheLoaiId", theLoaiIdParam);
-                    }
-                    if (tacGiaParams != null && !tacGiaParams.isEmpty()) {
-                        filteredSachList = filteredSachList.stream()
-                                .filter(book -> tacGiaParams.contains(book.getTacGia())).toList();
-                        modelClass.put("chosenTacGiaList", tacGiaParams);
-                    }
-                    if (nhaXuatBanParams != null && !nhaXuatBanParams.isEmpty()) {
-                        filteredSachList = filteredSachList.stream()
-                                .filter(book -> nhaXuatBanParams.contains(book.getNhaXuatBan())).toList();
-                        modelClass.put("chosenNhaXuatBanList", nhaXuatBanParams);
                     }
                 }
                 Pageable pageable = PageRequest.of(pageNumber, pageSize);

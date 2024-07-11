@@ -1,6 +1,7 @@
 package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.Sach;
+import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.SachDuocMuonViewDto;
@@ -9,9 +10,11 @@ import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
 import com.springdemo.library.services.EmailService;
 import com.springdemo.library.services.GenerateViewService;
+import com.springdemo.library.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Controller
 @Slf4j
@@ -76,15 +80,23 @@ public class BookBorrowManagementController {
             if(status==1) {
                 yeuCauMuonSach.getSachDuocMuonList().forEach(x -> {
                     Sach sach = x.getSach();
-                    sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() - x.getSoLuongMuon());
+                    sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() - 1);
                     sachRepository.save(sach);
                 });
+                //Nếu yêu cầu được chấp thuận sau ngày mà người mượn đăng ký mượn, ngày mượn sẽ được
+                //set lại thành ngày chấp thuận và ngày trả sẽ là 2 tháng kể từ ngày mượn mới
+                if(new Date().after(yeuCauMuonSach.getNgayMuon())) {
+                    Date newNgayMuon = new Date();
+                    yeuCauMuonSach.setNgayMuon(newNgayMuon);
+                    yeuCauMuonSach.setNgayTra(new Date(newNgayMuon.getTime() + Constants.A_DAY_IN_MILISECONDS*60));
+                    yeuCauMuonSachRepository.save(yeuCauMuonSach);
+                }
                 sendConfirmationEmail(status, yeuCauMuonSach);
             } else if(status==-1) {
                 if(yeuCauMuonSach.getTrangThai()==1) {
                     yeuCauMuonSach.getSachDuocMuonList().forEach(x -> {
                         Sach sach = x.getSach();
-                        sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() + x.getSoLuongMuon());
+                        sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() + 1);
                         sachRepository.save(sach);
                     });
                 }
@@ -107,26 +119,20 @@ public class BookBorrowManagementController {
             String subject = "Thông báo xác nhận mượn sách";
             StringBuilder messageBodyBuilder = new StringBuilder();
             messageBodyBuilder.append("""
-                    <html><body>
-                    <h2>Thư viện cộng đồng Therasus đã chấp thuận yêu cầu mượn sách của bạn</h2>
-                        <h4>Chi tiết</h4><p>Số ID yêu cầu: <strong>""")
-                    .append(yeuCauMuonSach.getId())
-                    .append("</strong></p><p>Email người mượn: <strong>")
-                    .append(yeuCauMuonSach.getNguoiMuon().getEmail())
-                    .append("</strong></p><p>Ngày mượn: <strong>")
-                    .append(yeuCauMuonSach.getNgayMuon())
+                    <html><body><h2>Thư viện cộng đồng Therasus đã chấp thuận yêu cầu mượn sách của bạn</h2>
+                        <h4>Chi tiết</h4><p>Số ID yêu cầu: <strong>""").append(yeuCauMuonSach.getId())
+                    .append("</strong></p><p>Email người mượn: <strong>").append(yeuCauMuonSach.getNguoiMuon().getEmail())
+                    .append("</strong></p><p>Ngày mượn: <strong>").append(yeuCauMuonSach.getNgayMuon())
+                    .append("</strong></p><p>Ngày trả: <strong>").append(yeuCauMuonSach.getNgayTra())
                     .append("</strong></p><div><p>Danh sách sách đăng ký mượn:</p><ul>");
             for(SachDuocMuon sachDuocMuon : yeuCauMuonSach.getSachDuocMuonList()) {
                 messageBodyBuilder.append("<li><strong>")
-                    .append(sachDuocMuon.getSach().getTenSach())
-                    .append("</strong> | <span>Số lượng: <strong>")
-                    .append(sachDuocMuon.getSoLuongMuon())
-                    .append("</strong></span></li>");
+                    .append(sachDuocMuon.getSach().getTenSach()).append("</strong>: <span>Đặt cọc: ")
+                    .append(sachDuocMuon.getSoTienDatCoc()).append(" đ</span></li>");
             }
-            messageBodyBuilder.append("</ul></div>");
-            messageBodyBuilder.append("<p>Số tiền cần đặt cọc: <strong>");
-            messageBodyBuilder.append(yeuCauMuonSach.getSoTienDatCoc());
-            messageBodyBuilder.append("</strong></p><p>Vui lòng thanh toán tiền đặt cọc tại lễ tân thư viện khi đến nhận sách</p></body></html>");
+            messageBodyBuilder.append("</ul></div>").append("<p>Số tiền cần đặt cọc: <strong>").append(yeuCauMuonSach.getSoTienDatCoc())
+                    .append(" đ").append("</strong></p><p>Vui lòng thanh toán tiền đặt cọc tại lễ tân thư viện khi đến nhận sách.</p>")
+                    .append("<h4>*Vui lòng không xóa email này. Email này sẽ được dùng để xác nhận khi bạn trả sách.</h4></body></html>");
             emailService.sendHtmlEmail(EmailDetailsDto.builder()
                     .recipient(receipientEmail).subject(subject).messageBody(messageBodyBuilder.toString()).build());
         } else if(status==-1) {
@@ -134,7 +140,7 @@ public class BookBorrowManagementController {
             String messageBody = """
                     <html>
                     <body>
-                        <h2>Thư viện cộng đồng Therasus đã từ chối yêu cầu mượn sách của bạn</h2>
+                        <h2>Thư viện cộng đồng Therasus đã từ chối yêu cầu mượn sách của bạn.</h2>
                         <div>Chúng tôi rất xin lỗi vì sự bất tiện này!</div>
                     </body>
                     </html>
@@ -142,5 +148,66 @@ public class BookBorrowManagementController {
             emailService.sendHtmlEmail(EmailDetailsDto.builder()
                     .recipient(receipientEmail).subject(subject).messageBody(messageBody).build());
         }
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Run daily at midnight
+    public void notifyUsersOfDueDateIn3Days() {
+        List<YeuCauMuonSach> allRequests = yeuCauMuonSachRepository.findYeuCauWhereDueDateIsIn3Days();
+        for (YeuCauMuonSach request : allRequests) {
+            sendDueDateNotification(request, false);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Run daily at midnight
+    public void notifyUsersOfDueDate() {
+        List<YeuCauMuonSach> allRequests = yeuCauMuonSachRepository.findYeuCauWhereDueDateIsToday();
+        for (YeuCauMuonSach request : allRequests) {
+            sendDueDateNotification(request, true);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Run daily at midnight
+    public void applyPenaltyOnOverdue() {
+        List<YeuCauMuonSach> allRequests = yeuCauMuonSachRepository.findAllOverdueYeuCau();
+        for (YeuCauMuonSach request : allRequests) {
+            double soTienDatCoc = request.getSoTienDatCoc();
+            double boiThuong = request.getBoiThuong();
+            if(soTienDatCoc > 0) {
+                request.setQuaHan(request.getQuaHan() + 1);
+                if(soTienDatCoc - 1000 < 0) {
+                    request.setSoTienDatCoc(0);
+                    request.setBoiThuong(request.getBoiThuong() + (1000 - soTienDatCoc));
+                } else {
+                    request.setSoTienDatCoc(soTienDatCoc - 1000);
+                    request.setBoiThuong(boiThuong + 1000);
+                }
+                request.setDateUpdated(new Date());
+                yeuCauMuonSachRepository.save(request);
+            }
+        }
+    }
+
+    private void sendDueDateNotification(YeuCauMuonSach yeuCauMuonSach, boolean isDueDateToday) {
+        User nguoiMuon = yeuCauMuonSach.getNguoiMuon();
+        String recipient = nguoiMuon.getEmail();
+        String subject = "[Therasus] Thông báo sắp đến hạn trả sách";
+        StringBuilder messageBody = new StringBuilder();
+        messageBody.append("<html><body><h3>Thông báo tới ").append(nguoiMuon.getTenUser()).append("</h3>");
+        if(isDueDateToday) {
+            messageBody.append("<p>Yêu cầu mượn sách của bạn sẽ hết hạn trong <strong>HÔM NAY</strong>.</p>")
+                    .append("<p>Nếu những sách bạn đã mượn không được hoàn trả đầy đủ trong hôm nay, mức phạt trả muộn sẽ được áp dụng (<strong>1000đ/ngày</strong>)</p>");
+        } else {
+            messageBody.append("<p>Yêu cầu mượn sách của bạn sẽ hết hạn trong vòng <strong>3</strong> ngày.</p>");
+        }
+        messageBody.append("<h3>Yêu cầu mượn sách của ").append(nguoiMuon.getTenUser()).append("</h3>")
+                .append("<p>Số yêu cầu: <strong>").append(yeuCauMuonSach.getId()).append("</strong></p>")
+                .append("<p>Danh sách những sách đang mượn:</p>").append("<ul>");
+        for (SachDuocMuon sachDuocMuon : yeuCauMuonSach.getSachDuocMuonList()) {
+            messageBody.append("<li>").append(sachDuocMuon.getSach().getTenSach()).append(" <strong>x").append("</strong></li>");
+        }
+        messageBody.append("</ul><h5>Bạn đọc vui lòng trả đầy đủ toàn bộ sách đã mượn đúng hạn</h5>")
+                .append("<h5>Nếu trả không đúng hạn, thư viện sẽ phạt với mức 1000đ/ngày. Tiền phạt sẽ bị trừ vào tiền đặt cọc</h5>")
+                .append("</body></html>");
+        emailService.sendHtmlEmail(EmailDetailsDto.builder().recipient(recipient).subject(subject).messageBody(messageBody.toString()).build());
     }
 }

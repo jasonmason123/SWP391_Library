@@ -104,16 +104,12 @@
 										<thead>
 										<tr>
 											<th class="product-name">Sách</th>
-											<th class="product-total">Tổng</th>
+											<th class="product-total">Phí cọc</th>
 										</tr>
 										</thead>
 										<tbody>
 										</tbody>
 										<tfoot>
-										<tr class="cart-subtotal">
-											<th>Tổng phí cọc sách</th>
-											<td><span class="amount"></span></td>
-										</tr>
 										<tr class="shipping">
 											<th>Thời gian mượn sách</th>
 											<td>
@@ -128,12 +124,10 @@
 															</div>
 															<!-- Return Date Message -->
 															<div class="form-group mt-3">
-																<p id="returnDateMessage" class="text-muted mt-3" style="display: none">
-																	<span style="color: #ec4445">*</span>
-																	<i>Thời gian mượn sách sẽ kéo dài đến ngày
-																		<strong id="returnDate"></strong>
-																	</i>
-																</p>
+																<div id="returnDateMessage" class="text-muted mt-3" style="display: none">
+																	<label for="returnDate">Ngày trả</label><br/>
+																	<input type="date" id="returnDate" class="mt-3" required/>
+																</div>
 															</div>
 														</div>
 													</div>
@@ -141,7 +135,7 @@
 											</td>
 										</tr>
 										<tr class="order-total">
-											<th>Tổng cộng</th>
+											<th>Tổng phí cọc sách</th>
 											<td><strong><span class="amount"></span></strong>
 											</td>
 										</tr>
