@@ -10,11 +10,12 @@ $(document).ready(function () {
             let url = new URL(window.location.href);
             let params = new URLSearchParams(url.search);
             let last = params.get("auth");
+            console.log(last);
             $.ajax({
                 method: 'POST',
                 url: '/Library/management/processforgotpassword?auth=' + last + "&new=" + matKhauUnchecked,
                 success: () => {
-                    console.log("success");
+                    alert("Đã đổi mật khẩu");
                     window.location.replace("/Library/management/login")
                 },
                 error: (jqXHR, textStatus, errorThrown) => {

@@ -1,42 +1,59 @@
+<style>
+	.review-control-vote input[type="radio"] {
+		display: none;
+	}
+
+	.review-control-vote label {
+		color: #ccc; /* Default color (grey) */
+		font-size: 24px;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	.review-control-vote label:hover,
+	.review-control-vote label:hover ~ label {
+		color: #f39c12; /* Hover color (gold) */
+	}
+
+	.review-control-vote input[type="radio"]:checked ~ label,
+	.review-control-vote input[type="radio"]:checked ~ label ~ label {
+		color: #ccc; /* Reset color (grey) */
+	}
+
+	.review-control-vote input[type="radio"]:checked + label,
+	.review-control-vote input[type="radio"]:checked + label ~ label {
+		color: #f39c12; /* Checked color (gold) */
+	}
+</style>
 <div class="blog-main-area mb-70">
 	<div class="container">
 		<div class="row">
 			<div class="blog-main-wrapper">
 				<div class="single-blog-content">
 					<div class="single-blog-title">
-						<h3 th:text="${modelClass.getTieuDe()}"></h3>
+						<h3 th:text="${modelClass.get('blog').getTieuDe()}"></h3>
 						<div class="author-destils mb-30">
 							<div class="author-left">
 								<div class="author-description">
-									<p>Viết bởi: <strong th:text="${modelClass.getTacGia().getTenUser()}"></strong></p>
-									<span th:text="${modelClass.getNgayTao()}"></span>
+									<p>Viết bởi: <strong th:text="${modelClass.get('blog').getTacGia().getTenUser()}"></strong></p>
+									<span th:text="${modelClass.get('blog').getNgayTao()}"></span>
 								</div>
 							</div>
-							<div class="author-right d-flex justify-content-center">
-								<div class="product-rating text-end">
-									<ul class="d-flex justify-content-center">
-										<li th:each="i : ${#numbers.sequence(1, 5)}" style="font-size: 16px;"
-											th:style="${i <= modelClass.getDanhGia()} ? 'color:#f0ad4e;' : ''">
-											<i class="fa fa-star"></i>
-										</li>
-									</ul>
-									<p><strong th:text="${modelClass.getSoLuotDanhGia()}"></strong> lượt đánh giá</p>
-								</div>
-							</div>
+							<div class="author-right d-flex justify-content-center"></div>
 						</div>
 					</div>
 					<div class="blog-single-content">
-						<div th:utext="${modelClass.getNoiDung()}"></div>
+						<div th:utext="${modelClass.get('blog').getNoiDung()}"></div>
 					</div>
 				</div>
 				<div class="comment-tag">
 					<p>Tags: 
-						<strong th:each="tag, iterStat : ${modelClass.getTags()}" th:text="${tag.getTenTag()} + (${iterStat.index} < ${modelClass.getTags().size() - 1} ? ', ' : '')"></strong>
+						<strong th:each="tag, iterStat : ${modelClass.get('blog').getTags()}" th:text="${tag.getTenTag()} + (${iterStat.index} < ${modelClass.get('blog').getTags().size() - 1} ? ', ' : '')"></strong>
 					</p>
 				</div>
 				<div class="sharing-post mt-20">
 					<div class="share-text">
-						<span>Chia sẻ bài đăng này</span>
+						<span>Chia sẻ bài viết này</span>
 					</div>
 					<div class="share-icon">
 						<ul>
@@ -49,68 +66,66 @@
 					</div>
 				</div>
 				<div class="comment-title-wrap mt-30">
-					<h3 th:text="${modelClass.getBinhLuanBlogList.size() + ' Bình luận'}"></h3>
+					<h3 th:text="${modelClass.get('binhLuanBlogList').size() + ' Bình luận'}"></h3>
 				</div>
 				<div class="comment-reply-wrap mt-50">
 					<ul>
-						<li>
+						<li th:each="comment : ${modelClass.get('binhLuanBlogList')}">
 							<div class="public-comment">
-								<div class="comment-img">
-									<a href="#"><img src="img/author/2.jpg" alt="man" /></a>
-								</div>
 								<div class="public-text">
 									<div class="single-comm-top">
-										<a href="#">Scott Salwolke</a>
-										<p>March 08, 2017 at 1:38 am <a href="#">Reply</a></p>
+										<a href="#" th:text="${comment.getUser().getTenUser()}"></a>
+										<p th:text="${comment.getNgayTao()}"></p>
 									</div>
-									<p>Thanks Marcus for the suggestions. I hadn't given much thought in how to craft my own blog entries in order to encourage responses. Yet, the goal is to generate followers and develop interactions so this makes perfect sense. I'll definitely incorporate some of these suggestions into my future writings.</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="public-comment public-comment-2">
-								<div class="comment-img">
-									<a href="#"><img src="img/author/3.jpg" alt="man" /></a>
-								</div>
-								<div class="public-text">
-									<div class="single-comm-top">
-										<a href="#">Scott Salwolke</a>
-										<p>March 08, 2017 at 1:38 am <a href="#">Reply</a></p>
-									</div>
-									<p>Thanks Marcus for the suggestions. I hadn't given much thought in how to craft my own blog entries in order to encourage responses. Yet, the goal is to generate followers and develop interactions so this makes perfect sense. I'll definitely incorporate some of these suggestions into my future writings.</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="public-comment public-comment-2">
-								<div class="comment-img">
-									<a href="#"><img src="img/author/4.jpg" alt="man" /></a>
-								</div>
-								<div class="public-text">
-									<div class="single-comm-top">
-										<a href="#">Scott Salwolke</a>
-										<p>March 08, 2017 at 1:38 am <a href="#">Reply</a></p>
-									</div>
-									<p>Thanks Marcus for the suggestions. I hadn't given much thought in how to craft my own blog entries in order to encourage responses. Yet, the goal is to generate followers and develop interactions so this makes perfect sense. I'll definitely incorporate some of these suggestions into my future writings.</p>
+									<p th:text="${comment.getNoiDung()}"></p>
 								</div>
 							</div>
 						</li>
 					</ul>
 				</div>
 				<div class="comment-title-wrap mt-30">
-					<h3>Bình luận của bạn </h3>
+					<h3>Bình luận của bạn</h3>
 				</div>
 				<div class="comment-input mt-40">
-					<div class="comment-input-textarea mb-30">
-						<form action="#">
-							<textarea name="massage" cols="30" rows="10" placeholder="Viết bình luận của bạn tại đây"></textarea>
+					<div class="comment-input-textarea mb-30"  th:if="${isAuthenticated==1}">
+						<form id="comment-area">
+							<input type="hidden" id="blog" th:value="${modelClass.get('blog').getId()}"/>
+							<textarea id="newComment" cols="30" rows="10" placeholder="Viết bình luận của bạn tại đây"></textarea>
 							<div class="single-post-button">
-								<a href="#">Đăng bình luận</a>
+								<button type="submit">Đăng bình luận</button>
 							</div>
 						</form>
+					</div>
+					<div class="comment-input-textarea mb-30" th:if="${isAuthenticated==0}">
+						<p>Bạn chưa đăng nhập. Hãy <a href="/Library/login">đăng nhập</a>
+							để có thể đưa ra đánh giá và bình luận của bạn.
+						</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<script>
+	$('#comment-area').on('submit', function (e) {
+		e.preventDefault();
+		let data = {
+			postId: $('#blog').val(),
+			danhGia: '',
+			noiDung: $('#newComment').val()
+		};
+		$.ajax({
+			url: '/Library/blog/comment',
+			method: 'POST',
+			data: JSON.stringify(data),
+			contentType: 'application/json',
+			success: function () {
+				alert("Đã đăng bình luận");
+				window.location.reload();
+			},
+			error: function () {
+				alert("Có lỗi");
+			}
+		});
+	});
+</script>

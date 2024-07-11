@@ -3,7 +3,7 @@ $(document).ready(function () {
         e.preventDefault();
         console.log("Reached deactivate");
         $.ajax({
-            url: '/Library/management/deactivateCustomer?id=' + $('#deactivate-customer-id').val(),
+            url: '/Library/management/customers/deactivateCustomer?id=' + $('#deactivate-customer-id').val(),
             method: 'POST',
             contentType: 'application/json',
             success: function () {
@@ -22,7 +22,7 @@ $(document).ready(function () {
         e.preventDefault();
         console.log("Reached deactivate");
         $.ajax({
-            url: '/Library/management/activateCustomer?id=' + $('#activate-customer-id').val(),
+            url: '/Library/management/customers/activateCustomer?id=' + $('#activate-customer-id').val(),
             method: 'POST',
             contentType: 'application/json',
             success: function () {

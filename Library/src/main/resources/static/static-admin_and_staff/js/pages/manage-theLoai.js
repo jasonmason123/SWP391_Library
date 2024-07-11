@@ -5,7 +5,7 @@ $(document).ready(function () {
         modifyGenre(JSON.stringify({
             tenTheLoai: $("#tenTheLoai-add").val(),
             danhMucId: $("#tenDanhMuc-add").val()
-        }), '/Library/management/addGenre');
+        }), '/Library/management/genre/addGenre');
     });
 
     $('#update-theLoai-form').on('submit', function (e) {
@@ -13,7 +13,26 @@ $(document).ready(function () {
         modifyGenre(JSON.stringify({
             tenTheLoai: $("#tenTheLoai-update").val(),
             danhMucId: $("#tenDanhMuc-update").val() // Gửi đúng ID của danh mục
-        }), '/Library/management/updateGenre?id=' + $('#theLoai-id-update').val());
+        }), '/Library/management/genre/updateGenre?id=' + $('#theLoai-id-update').val());
+    });
+
+    $('#deactivate-theLoai-form').on('submit', function (e) {
+        e.preventDefault();
+        let theLoaiId = $('#deactivate-theLoai-id').val();
+        $.ajax({
+            url: '/Library/management/genre/deleteGenre?id=' + theLoaiId,
+            method: 'POST',
+            contentType: 'application/json',
+            success: function () {
+                $('#row_' + theLoaiId).remove();
+                alert('Đã xóa thể loại');
+                $('#deactivateTheLoaiModal').modal('hide');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.warn('Error:', textStatus, errorThrown);
+                alert("Có lỗi");
+            }
+        });
     });
 
     function modifyGenre(data, url) {
@@ -34,7 +53,6 @@ $(document).ready(function () {
         });
     }
 
-
     function formatDate(date) {
         let year = date.getFullYear();
         let month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -45,6 +63,4 @@ $(document).ready(function () {
 
         return `${hours}:${minutes}:${seconds} ngày ${year}/${month}/${day}`;
     }
-
-
 });

@@ -4,10 +4,12 @@ import com.springdemo.library.model.Blog;
 import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.repositories.BlogRepository;
 import com.springdemo.library.services.EmailService;
+import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,27 +22,25 @@ import java.util.List;
 @RequestMapping("/management")
 public class BaiVietCanDuyetController {
     private BlogRepository blogRepository;
+    private GenerateViewService generateViewService;
     private EmailService emailService;
 
     @GetMapping("/manageBaiVietCanDuyet")
-    public ModelAndView manageBookBorrowed() {
-        ModelAndView manageBlogViewModel = new ModelAndView("admin_and_staff/Layout");
+    public ModelAndView manageBookBorrowed(Authentication authentication) {
+        ModelAndView manageBlogViewModel = generateViewService.generateStaffView("Quản lí Blog", "admin_and_staff/manageBaiVietcanDuyet", authentication);
         List<Blog> list = blogRepository.findByFlagDel(2);
-        manageBlogViewModel.addObject("includedPage","admin_and_staff/manageBaiVietcanDuyet");
-        manageBlogViewModel.addObject("title","Quản lí Blog");
         manageBlogViewModel.addObject("modelClass",list);
         return manageBlogViewModel;
     }
 
     @GetMapping("/previewblog")
     public ModelAndView previewBlog(
-            @RequestParam("blog") int blogId
+            @RequestParam("blog") int blogId,
+            Authentication authentication
     ) {
         Blog idleBlog = blogRepository.findByIdAndFlagDel(blogId, 2).orElse(null);
         if(idleBlog!=null) {
-            ModelAndView previewBlogViewModel = new ModelAndView("admin_and_staff/Layout");
-            previewBlogViewModel.addObject("includedPage", "admin_and_staff/previewBlog");
-            previewBlogViewModel.addObject("title","Xem trước Blog");
+            ModelAndView previewBlogViewModel = generateViewService.generateStaffView("Xem trước Blog", "admin_and_staff/previewBlog", authentication);
             previewBlogViewModel.addObject("modelClass", idleBlog);
             return previewBlogViewModel;
         } else {

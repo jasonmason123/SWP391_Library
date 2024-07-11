@@ -1,9 +1,5 @@
 package com.springdemo.library.utils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.springdemo.library.model.dto.CartItemDto;
-
-import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Constants {

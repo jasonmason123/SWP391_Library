@@ -44,24 +44,6 @@
 					</div>
 					<div class="single-blog mb-50">
 						<div class="blog-left-title">
-							<h3>Tác giả</h3>
-						</div>
-						<div class="blog-side-menu">
-							<ul>
-								<li><a class="has-arrow" href="/Library/blog">Tất cả</a></li>
-								<li>
-									<a class="has-arrow" data-bs-toggle="collapse" data-bs-target="#tac-gia">Tìm kiếm theo tác giả</a>
-									<ul id="tac-gia" class="collapse blogTacGiaList">
-										<li th:each="tacGia : ${modelClass.get('topTacGia')}">
-											<a th:href="@{/blog(tacgia=${tacGia.getId()})}" th:text="${tacGia.getTenUser()}"></a>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div class="single-blog mb-50">
-						<div class="blog-left-title">
 							<h3>Thời gian xuất bản</h3>
 						</div>
 						<div class="blog-side-menu">
@@ -91,23 +73,6 @@
 									<div class="author-description">
 										<p>Viết bởi: <strong th:text="${blog.getTacGia().getTenUser()}"></strong></p>
 										<span th:text="${blog.getNgayTao()}"></span>
-									</div>
-								</div>
-								<div class="author-right d-flex justify-content-center">
-<!--									<span>Chia sẻ bài viết này:</span>-->
-<!--									<ul>-->
-<!--										<li><a href="#"><i class="fa fa-facebook"></i></a></li>-->
-<!--										<li><a href="#"><i class="fa fa-twitter"></i></a></li>-->
-<!--										<li><a href="#"><i class="fa fa-instagram"></i></a></li>-->
-<!--									</ul>-->
-									<div class="product-rating text-end">
-										<ul class="d-flex justify-content-center">
-											<li th:each="i : ${#numbers.sequence(1, 5)}" style="font-size: 16px;"
-												th:style="${i <= blog.getDanhGia()} ? 'color:#f0ad4e;' : ''">
-												<i class="fa fa-star"></i>
-											</li>
-										</ul>
-										<p><strong th:text="${blog.getSoLuotDanhGia()}"></strong> lượt đánh giá</p>
 									</div>
 								</div>
 							</div>

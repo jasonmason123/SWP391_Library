@@ -29,7 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
     @Autowired
     private UserService customUserDetailsService;
-    private final RequestMatcher managementMatcher = new AntPathRequestMatcher("/management/**");
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -41,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 int userId = userIdClaim!=null ? Integer.parseInt(userIdClaim) : 0;
                 String userName = (String) claims.get(Constants.TOKEN_USERNAME_CLAIM);
                 UserDetails userDetails;
-                if(managementMatcher.matches(request)) {
+                if(request.getRequestURI().contains("/Library/management/")) {
                     userDetails = customUserDetailsService.loadNhanVienByIdAndEmail(userId, userName);
                 } else {
                     userDetails = customUserDetailsService.loadUserByIdAndName(userId, userName);

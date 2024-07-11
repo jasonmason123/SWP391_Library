@@ -1,6 +1,8 @@
 package com.springdemo.library.services;
 
+import com.springdemo.library.model.NhanVien;
 import com.springdemo.library.security.userdetails.CustomUserDetails;
+import com.springdemo.library.security.userdetails.NhanVienUserDetails;
 import com.springdemo.library.utils.Common;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,21 @@ public class GenerateViewService {
         }
         return viewModel;
     }
+
+    public ModelAndView generateStaffView(String title, String includedPage, Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof NhanVienUserDetails)) {
+            return new ModelAndView("redirect:/error");
+        } else {
+            ModelAndView viewModel = new ModelAndView("admin_and_staff/Layout");
+            NhanVien nhanVien = ((NhanVienUserDetails) authentication.getPrincipal()).getNhanVien();
+            viewModel.addObject("role", nhanVien.getVaiTro());
+            viewModel.addObject("nhanVienEmail", nhanVien.getEmail());
+            viewModel.addObject("title", title);
+            viewModel.addObject("includedPage", includedPage);
+            return viewModel;
+        }
+    }
+
 
     public ModelAndView generateCustomerView(String title, String breadCrumb, String includedPage, Authentication authentication) {
         ModelAndView viewModel = new ModelAndView("Layout");

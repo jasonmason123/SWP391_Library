@@ -24,7 +24,7 @@ $(document).ready(function () {
                             soDienThoai: $("#phoneNo-add").val(),
                             diaChi: $("#address-add").val(),
                             vaiTro: $('#role-add').val()
-                        }),'/Library/management/addStaff'
+                        }),'/Library/management/staff/addStaff'
                     );
                 }
                 if(a1[0]==='existed' || a1[0]==='unmatched') {
@@ -60,7 +60,7 @@ $(document).ready(function () {
                     soDienThoai: $("#phoneNo-update").val(),
                     diaChi: $("#address-update").val(),
                     vaiTro: $('#role-update').val()
-                }),'/Library/management/updateStaff?id=' + $('#staff-id-update').val()
+                }),'/Library/management/staff/updateStaff?id=' + $('#staff-id-update').val()
                 );
             }
             if(a1[0]==='existed' || a1[0]==='unmatched') {
@@ -76,7 +76,7 @@ $(document).ready(function () {
             soDienThoai: $("#phoneNo-update").val(),
             diaChi: $("#address-update").val(),
             vaiTro: $('#role-update').val()
-        }),'/Library/management/updateStaff?id=' + $('#staff-id-update').val()
+        }),'/Library/management/staff/updateStaff?id=' + $('#staff-id-update').val()
         );
     });
 
@@ -101,7 +101,7 @@ $(document).ready(function () {
     $('#deactivate-staff-form').on('submit', function (e) {
         e.preventDefault();
         $.ajax({
-            url: '/Library/management/deactivateStaff?id=' + $('#deactivate-staff-id').val(),
+            url: '/Library/management/staff/deactivateStaff?id=' + $('#deactivate-staff-id').val(),
             method: 'POST',
             contentType: 'application/json',
             success: function () {
@@ -120,7 +120,7 @@ $(document).ready(function () {
         e.preventDefault();
         console.log("Reached deactivate");
         $.ajax({
-            url: '/Library/management/activateStaff?id=' + $('#activate-staff-id').val(),
+            url: '/Library/management/staff/activateStaff?id=' + $('#activate-staff-id').val(),
             method: 'POST',
             contentType: 'application/json',
             success: function () {

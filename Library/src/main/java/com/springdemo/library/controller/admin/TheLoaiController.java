@@ -1,18 +1,17 @@
 package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.*;
-import com.springdemo.library.model.Sach;
 import com.springdemo.library.model.dto.TheLoaiDto;
 import com.springdemo.library.repositories.DanhMucRepository;
-import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.TheLoaiRepository;
+import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,22 +21,19 @@ import java.util.List;
 @Controller
 @Slf4j
 @AllArgsConstructor
-@RequestMapping("/management")
+@RequestMapping("/management/genre")
 
 public class TheLoaiController {
 
+    private TheLoaiRepository theLoaiRepository;
+    private DanhMucRepository danhMucRepository;
+    private GenerateViewService generateViewService;
 
-    private final DanhMucRepository danhMucRepository;
-    private TheLoaiRepository TheLoaiRepository;
-    private DanhMucRepository DanhMucRepository;
-
-    @GetMapping("/genre")
-    public ModelAndView viewGenre() {
-        List<TheLoai> theLoaiList = TheLoaiRepository.findAll();
-        List<DanhMuc> danhMucList = DanhMucRepository.findAll();
-        ModelAndView manageBookViewModel = new ModelAndView("admin_and_staff/Layout");
-        manageBookViewModel.addObject("includedPage", "admin_and_staff/theLoai");
-        manageBookViewModel.addObject("title", "Quản lí Thể Loại");
+    @GetMapping
+    public ModelAndView viewGenre(Authentication authentication) {
+        List<TheLoai> theLoaiList = theLoaiRepository.findAll();
+        List<DanhMuc> danhMucList = danhMucRepository.findAll();
+        ModelAndView manageBookViewModel = generateViewService.generateStaffView("Quản lí Thể Loại", "admin_and_staff/theLoai", authentication);
         manageBookViewModel.addObject("modelClass", theLoaiList);
         manageBookViewModel.addObject("categories", danhMucList);
 
@@ -49,12 +45,10 @@ public class TheLoaiController {
             @RequestParam(name = "id") int id
     ) {
         try {
-            TheLoai existedGenre = TheLoaiRepository.findById(id).orElse(null);
+            TheLoai existedGenre = theLoaiRepository.findById(id).orElse(null);
             if(existedGenre!=null) {
-
-                TheLoaiRepository.save(existedGenre);
-                TheLoaiRepository.deleteById(id);
-
+                theLoaiRepository.save(existedGenre);
+                theLoaiRepository.deleteById(id);
                 return ResponseEntity.ok().build();
             }
         } catch (DataIntegrityViolationException e) {
@@ -66,21 +60,17 @@ public class TheLoaiController {
     @ResponseBody
     public ResponseEntity<String> addGenre(
             @RequestBody TheLoaiDto theLoaiDto
-
     ) {
         try {
-
-            TheLoai existedTheLoai = TheLoaiRepository.findById(theLoaiDto.getId()).orElse(null);
-            DanhMuc existedDanhMuc=DanhMucRepository.findById(theLoaiDto.getDanhMucId()).orElse(null);
+            TheLoai existedTheLoai = theLoaiRepository.findById(theLoaiDto.getId()).orElse(null);
+            DanhMuc existedDanhMuc= danhMucRepository.findById(theLoaiDto.getDanhMucId()).orElse(null);
             if (existedTheLoai == null && existedDanhMuc != null) {
                 log.warn("adding");
-                TheLoaiRepository.save(
+                theLoaiRepository.save(
                         TheLoai.builder().tenTheLoai(theLoaiDto.getTenTheLoai())
                                 .danhMuc(existedDanhMuc)
                                 .dateCreated(new Date()).build()
                 );
-
-                log.warn("added");
                 return ResponseEntity.ok().build();
             }
         } catch (DataIntegrityViolationException e) {
@@ -99,9 +89,9 @@ public class TheLoaiController {
             @RequestBody TheLoaiDto theLoaiDto
     ) {
         try {
-            TheLoai existedTheLoai = TheLoaiRepository.findById(id).orElse(null);
+            TheLoai existedTheLoai = theLoaiRepository.findById(id).orElse(null);
             if (existedTheLoai != null) {
-                DanhMuc existedDanhMuc = DanhMucRepository.findById(theLoaiDto.getDanhMucId()).orElse(null); // Tìm danh mục dựa trên ID mới
+                DanhMuc existedDanhMuc = danhMucRepository.findById(theLoaiDto.getDanhMucId()).orElse(null); // Tìm danh mục dựa trên ID mới
                 if (existedDanhMuc == null) {
                     return ResponseEntity.badRequest().body("Danh mục không tồn tại");
                 }
@@ -118,7 +108,7 @@ public class TheLoaiController {
                 }
 
                 existedTheLoai.setDateUpdated(new Date());
-                TheLoaiRepository.save(existedTheLoai);
+                theLoaiRepository.save(existedTheLoai);
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.badRequest().body("Thể loại không tồn tại");
@@ -131,6 +121,4 @@ public class TheLoaiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống");
         }
     }
-
-
 }

@@ -28,11 +28,13 @@ public class Sach {
     @Column(name = "MoTa")
     private String moTa;
     @Column(name = "DanhGia")
-    private int danhGia;
+    private float danhGia;
     @Column(name = "GiaTien")
     private double giaTien;
     @Column(name = "SoLuongTrongKho")
     private int soLuongTrongKho;
+    @Column(name = "SoLuotDanhGia")
+    private int soLuotDanhGia;
     @Column(name = "LinkAnh")
     private String linkAnh;
     @Column(name = "FlagDel")
@@ -50,10 +52,7 @@ public class Sach {
             name = "TagTheLoai",
             joinColumns = @JoinColumn(name = "SachId"),
             inverseJoinColumns = @JoinColumn(name = "TheLoaiId")
-
-
     )
-
     private List<TheLoai> theLoaiList;
     @OneToMany(orphanRemoval = true, mappedBy = "sach", cascade = CascadeType.ALL)
     private List<SachDuocMuon> sachDuocMuonList;
@@ -73,28 +72,14 @@ public class Sach {
         this.tacGia = tacGia;
         this.nhaXuatBan = nhaXuatBan;
         this.moTa = moTa;
-        this.danhGia = calculateDanhGia();
+        this.danhGia = 0;
         this.giaTien = giaTien;
         this.soLuongTrongKho = soLuongTrongKho;
+        this.soLuotDanhGia = 0;
         this.linkAnh = linkAnh;
         this.flagDel = flagDel;
         this.dateCreated = dateCreated;
 
     }
 
-    public String getTenTheLoai() {
-        return theLoaiList.stream()
-                .map(TheLoai::getTenTheLoai)
-                .collect(Collectors.joining(", "));
-    }
-
-    private int calculateDanhGia() {
-        if(binhLuan==null || binhLuan.isEmpty()) {
-            return 0;
-        }
-        double averageDanhGia = binhLuan.stream()
-                .mapToInt(BinhLuanSach::getDanhGia)
-                .average().orElse(0);
-        return (int) Math.round(averageDanhGia);
-    }
 }

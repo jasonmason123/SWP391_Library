@@ -1,47 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    .btn-custom {
+        background-color: #f07c29;
+        color: white;
+    }
 
-<head>
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 20px;
+    }
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    .order-status {
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
 
-    <title>${title}</title>
+    .order-status.pending {
+        background-color: #f0ad4e;
+    }
 
-    <style>
-        .btn-custom {
-            background-color: #f07c29;
-            color: white;
-        }
+    #status-detail {
+        text-align: center;
+        color: white;
+    }
+</style>
 
-        .modal-header,
-        .modal-body,
-        .modal-footer {
-            padding: 20px;
-        }
-
-        .order-status {
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        .order-status.pending {
-            background-color: #f0ad4e;
-        }
-
-        #status-detail {
-            text-align: center;
-            color: white;
-        }
-    </style>
-
-</head>
-
-<body id="page-top">
+<div id="page-top">
 
 <div id="wrapper">
 
@@ -236,14 +221,14 @@
         </div>
     </div>
 </div>
+</div>
 
 <script src="../static-admin_and_staff/js/pages/manage-yeuCauMuonSach.js"></script>
 <script th:inline="javascript">
-
     function getSachDuocMuonFromYeuCauMuonSach(id) {
         $.ajax({
             method: 'GET',
-            url: '/Library/management/findBorrowedBooks?yeuCauId=' + id,
+            url: '/Library/management/manageBookBorrowed/findBorrowedBooks?yeuCauId=' + id,
             success: (sachDuocMuonList) => {
                 openModalViewRequestDetail(id, sachDuocMuonList);
             },
@@ -254,7 +239,3 @@
     }
 
 </script>
-
-
-</body>
-</html>

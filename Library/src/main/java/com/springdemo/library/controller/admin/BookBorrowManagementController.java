@@ -1,15 +1,14 @@
 package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.Sach;
-import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.SachDuocMuonViewDto;
 import com.springdemo.library.model.other.SachDuocMuon;
 import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
-import com.springdemo.library.security.userdetails.CustomUserDetails;
 import com.springdemo.library.services.EmailService;
+import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,19 +25,18 @@ import java.util.List;
 @Controller
 @Slf4j
 @AllArgsConstructor
-@RequestMapping("/management")
+@RequestMapping("/management/manageBookBorrowed")
 public class BookBorrowManagementController {
 
     private YeuCauMuonSachRepository yeuCauMuonSachRepository;
     private SachRepository sachRepository;
     private EmailService emailService;
+    private GenerateViewService generateViewService;
 
-    @GetMapping("/manageBookBorrowed")
-    public ModelAndView manageBookBorrowed() {
-        ModelAndView manageBookBorrowedViewModel = new ModelAndView("admin_and_staff/Layout");
+    @GetMapping
+    public ModelAndView manageBookBorrowed(Authentication authentication) {
+        ModelAndView manageBookBorrowedViewModel = generateViewService.generateStaffView("Quản lí Sách được mượn", "admin_and_staff/manageYeuCauMuon", authentication);
         List<YeuCauMuonSach> yeuCauMuonSachList=yeuCauMuonSachRepository.findAll();
-        manageBookBorrowedViewModel.addObject("includedPage","admin_and_staff/manageYeuCauMuon");
-        manageBookBorrowedViewModel.addObject("title","Quản lí Sách được mượn");
         manageBookBorrowedViewModel.addObject("modelClass",yeuCauMuonSachList);
         return manageBookBorrowedViewModel;
     }
@@ -61,8 +59,7 @@ public class BookBorrowManagementController {
     @PostMapping("/updateRequestStatus")
     public ResponseEntity<String> updateRequestStatus(
             @RequestParam("yeuCauId") int yeuCauId,
-            @RequestParam("status") int status,
-            Authentication authentication
+            @RequestParam("status") int status
     ) {
         //-1:Tu choi, 0:Chua duoc duyet, 1:Da duyet - cho muon, 2:Dang muon, 3:Da tra
         try {
@@ -104,7 +101,7 @@ public class BookBorrowManagementController {
         }
     }
 
-    private boolean sendConfirmationEmail(int status, YeuCauMuonSach yeuCauMuonSach) {
+    private void sendConfirmationEmail(int status, YeuCauMuonSach yeuCauMuonSach) {
         String receipientEmail = yeuCauMuonSach.getNguoiMuon().getEmail();
         if(status==1) {
             String subject = "Thông báo xác nhận mượn sách";
@@ -130,7 +127,7 @@ public class BookBorrowManagementController {
             messageBodyBuilder.append("<p>Số tiền cần đặt cọc: <strong>");
             messageBodyBuilder.append(yeuCauMuonSach.getSoTienDatCoc());
             messageBodyBuilder.append("</strong></p><p>Vui lòng thanh toán tiền đặt cọc tại lễ tân thư viện khi đến nhận sách</p></body></html>");
-            return emailService.sendHtmlEmail(EmailDetailsDto.builder()
+            emailService.sendHtmlEmail(EmailDetailsDto.builder()
                     .recipient(receipientEmail).subject(subject).messageBody(messageBodyBuilder.toString()).build());
         } else if(status==-1) {
             String subject = "Thông báo xác nhận mượn sách";
@@ -142,9 +139,8 @@ public class BookBorrowManagementController {
                     </body>
                     </html>
                     """;
-            return emailService.sendHtmlEmail(EmailDetailsDto.builder()
+            emailService.sendHtmlEmail(EmailDetailsDto.builder()
                     .recipient(receipientEmail).subject(subject).messageBody(messageBody).build());
         }
-        return false;
     }
 }

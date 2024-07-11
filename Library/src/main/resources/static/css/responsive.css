@@ -478,6 +478,7 @@
     .review-form {
         padding-left: 0;
     }
+    .product-add-form form button,
     .product-add-form form a {
         padding: 0 20px;
     }

@@ -36,7 +36,7 @@ public abstract class AbstractAuthenticationController {
     public abstract ModelAndView forgotPassword();
     public abstract ModelAndView changePassword(String auth);
     public abstract ResponseEntity<String> processLogin(SigninDataDto signinDataDto, HttpServletResponse response);
-    public abstract ModelAndView processForgotPassword(String auth, String newPassword);
+    public abstract ResponseEntity<String> processForgotPassword(String auth, String newPassword);
     protected abstract boolean isExistEmail(String email);
 
     protected String getEmailFromAuthToken(String emailToken) {
@@ -44,13 +44,18 @@ public abstract class AbstractAuthenticationController {
     }
 
 //Utils_________________________________________________________________________________________________________________
-    public ResponseEntity<String> sendChangePasswordEmail(String email) {
+    public ResponseEntity<String> sendChangePasswordEmail(String email, boolean isInManagement) {
         if(isExistEmail(email)) {
             log.warn("Sent email to: " + email);
-            String token = jwtService.generateToken(email, 60*60*1000);
-            String link = Constants.CONTEXT_PATH + "/changepassword?auth=" + token;
-            return emailService.sendToUser(EmailDetailsDto.builder().recipient(email).subject("Đổi mật khẩu")
-                    .messageBody("Visit this url to change password: " + link).build()) //Đổi body thành định dạng html khi đã đẩy lên server
+            String token = jwtService.generateToken(email, 3600000);
+            String link;
+            if(isInManagement) {
+                link = Constants.CONTEXT_PATH + "/management/changepassword?auth=" + token;
+            } else {
+                link = Constants.CONTEXT_PATH + "/changepassword?auth=" + token;
+            }
+            return emailService.sendToUser(EmailDetailsDto.builder().recipient(email).subject("Truy cập đường dẫn dưới đây để đổi mật khẩu")
+                    .messageBody(link).build()) //Đổi body thành định dạng html khi đã đẩy lên server
                     ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
         }
         return ResponseEntity.badRequest().build();
@@ -62,11 +67,9 @@ public abstract class AbstractAuthenticationController {
             tokenCookie.setMaxAge(0);
             tokenCookie.setPath("/");
             response.addCookie(tokenCookie);
-            log.warn("Token cookie deleted");
         }
         securityContextLogoutHandler.logout(request, response, authentication);
         SecurityContextHolder.clearContext();
-        log.warn("Security context cleared");
     }
 
     public ResponseEntity<String> sendOtp(

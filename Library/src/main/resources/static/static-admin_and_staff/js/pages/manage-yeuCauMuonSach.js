@@ -106,7 +106,7 @@ document.getElementById('yeuCauMuonSachDetails').addEventListener('submit', func
 
         $.ajax({
             method: 'POST',
-            url: '/Library/management/updateRequestStatus?yeuCauId=' + currentId + '&status=' + updatedStatus,
+            url: '/Library/management/manageBookBorrowed/updateRequestStatus?yeuCauId=' + currentId + '&status=' + updatedStatus,
             success: function () {
                 alert("Cập nhật thành công");
                 location.reload();
