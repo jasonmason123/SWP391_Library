@@ -3,23 +3,17 @@ package com.springdemo.library.controller;
 import com.springdemo.library.model.Sach;
 import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
+import com.springdemo.library.model.dto.CheckoutDataDto;
 import com.springdemo.library.model.other.SachDuocMuon;
 import com.springdemo.library.repositories.SachRepository;
-import com.springdemo.library.repositories.UserRepository;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
 import com.springdemo.library.security.userdetails.CustomUserDetails;
-import com.springdemo.library.services.GenerateViewService;
-import com.springdemo.library.services.JwtService;
-import com.springdemo.library.utils.Constants;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.transaction.Transactional;
+import com.springdemo.library.utils.Common;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -39,11 +33,13 @@ public class CartController {
 
     @PostMapping("/process")
     public ResponseEntity<String> getCartFromClient(
-            @RequestBody Map<Integer, Double> clientCart,
-            @RequestParam(name = "ngayMuon") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date ngayMuon,
-            @RequestParam(name = "ngayTra") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date ngayTra,
+            @RequestBody CheckoutDataDto checkoutDataDto,
             Authentication authentication
     ) {
+        Map<Integer, Double> clientCart = checkoutDataDto.getClientCart();
+        Date ngayMuon = checkoutDataDto.getNgayMuon();
+        Date ngayTra = checkoutDataDto.getNgayTra();
+        String diaChiNhanSach = checkoutDataDto.getDiaChiNhanSach();
         LocalDate localDate = LocalDate.now();
         Date today = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         if(clientCart.size() > 5 || ngayMuon.before(today) || ngayTra.before(today) || ngayTra.before(ngayMuon)) {
@@ -63,7 +59,12 @@ public class CartController {
         if(user!=null) {
             List<SachDuocMuon> sachDuocMuonList = new ArrayList<>();
             double totalDeposit = sachList.stream().mapToDouble(Sach::getGiaTien).sum();
-            YeuCauMuonSach yeuCauMuonSach = new YeuCauMuonSach(ngayMuon, ngayTra, user, totalDeposit, new Date());
+            long daysBetween = Common.calculateDaysBetween(ngayMuon, ngayTra);
+            double borrowFee = daysBetween * 1000;
+            YeuCauMuonSach yeuCauMuonSach = new YeuCauMuonSach(ngayMuon, ngayTra, user, totalDeposit, borrowFee, new Date());
+            if(diaChiNhanSach!=null && !diaChiNhanSach.isEmpty()) {
+                yeuCauMuonSach.setDiaChiNhanSach(diaChiNhanSach.trim());
+            }
             this.yeuCauMuonSachRepository.save(yeuCauMuonSach);
             for(Sach sach : sachList) {
                 SachDuocMuon sachDuocMuon = new SachDuocMuon(sach, yeuCauMuonSach, clientCart.get(sach.getId()));

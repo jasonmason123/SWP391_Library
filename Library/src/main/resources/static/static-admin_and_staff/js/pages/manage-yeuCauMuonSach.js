@@ -9,6 +9,9 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
     let ngayTao = document.getElementById('NgayTao_' + id).innerText;
     let ngayCapNhat = document.getElementById('NgayCapNhat_' + id).getAttribute('data-NgayCapNhat');
     let soTienDatCoc = document.getElementById('SoTienDatCoc_' + id).getAttribute('data-SoTienDatCoc');
+    let phiMuonSach = document.getElementById('PhiMuonSach_' + id).getAttribute('data-PhiMuonSach');
+    let diaChi = document.getElementById('DiaChi_' + id).getAttribute('data-DiaChi');
+    let phiVanChuyen = document.getElementById('PhiVanChuyen_' + id);
 
     $('#ID-yeucau').text(Id);
     $('#tenNguoiMuon-detail').text(tenNguoiMuon);
@@ -19,7 +22,20 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
     $('#statusOptions').val(trangThai);
     $('#NgayTao-detail').text(ngayTao);
     $('#NgayCapNhat-detail').text(ngayCapNhat);
+    $('#SoTienCocSach-detail').text(soTienDatCoc);
+    $('#PhiMuonSach-detail').text(phiMuonSach);
     $('#totalDeposit').text(soTienDatCoc);
+    if(diaChi!==null && diaChi!=='') {
+        $('#diaChi-PhiVanChuyen-detail').removeClass('d-none');
+        $('#DiaChi-detail').val(diaChi);
+        $('#PhiVanChuyen-detail').attr('required', 'required');
+    } else {
+        $('#diaChi-PhiVanChuyen-detail').addClass('d-none');
+        $('#PhiVanChuyen-detail').removeAttr('required');
+    }
+    if(phiVanChuyen!=null) {
+        $('#PhiVanChuyen-detail').val(phiVanChuyen.getAttribute('data-PhiVanChuyen'));
+    }
 
     const sachDuocMuonTableBody = $('#sachDuocMuonTableBody');
     sachDuocMuonTableBody.empty();
@@ -103,10 +119,15 @@ document.getElementById('yeuCauMuonSachDetails').addEventListener('submit', func
         //send ajax request to server
         let currentId = document.getElementById('detailRequestModal').getAttribute('data-current-id');
         let updatedStatus = $('#statusOptions').val();
+        let p = $('#PhiVanChuyen-detail').val();
+        let url = '/Library/management/manageBookBorrowed/updateRequestStatus?yeuCauId=' + currentId + '&status=' + updatedStatus;
+        if(p!==null && p!=='') {
+            url += '&p=' + p;
+        }
 
         $.ajax({
             method: 'POST',
-            url: '/Library/management/manageBookBorrowed/updateRequestStatus?yeuCauId=' + currentId + '&status=' + updatedStatus,
+            url: url,
             success: function () {
                 alert("Cập nhật thành công");
                 location.reload();

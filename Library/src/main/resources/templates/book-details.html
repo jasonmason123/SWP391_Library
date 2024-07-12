@@ -61,7 +61,7 @@
 										</a>
 									</div>
 									<div class="reviews-actions">
-										<a href="#" th:text="${modelClass.get('soLuotDanhGia') + ' Đánh giá'}"></a>
+										<a href="#" th:text="${modelClass.get('sach').getSoLuotDanhGia() + ' Đánh giá'}"></a>
 									</div>
 								</div>
 								<div th:if="${modelClass.get('sach').getSoLuongTrongKho()>0}" class="product-add-form">

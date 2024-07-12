@@ -39,15 +39,22 @@ public class YeuCauMuonSach {
     private Date dateUpdated;
     @Column(name = "SoTienDatCoc")
     private double soTienDatCoc;
+    @Column(name = "PhiMuonSach")
+    private double phiMuonSach;
+    @Column(name = "DiaChiNhanSach")
+    private String diaChiNhanSach;
+    @Column(name = "PhiVanChuyen")
+    private Double phiVanChuyen;
     @OneToMany(mappedBy = "yeuCauMuonSach", orphanRemoval = true, cascade = CascadeType.ALL)
     List<SachDuocMuon> sachDuocMuonList;
 
     @Builder
-    public YeuCauMuonSach(Date ngayMuon, Date ngayTra, User nguoiMuon, double soTienDatCoc, Date dateCreated) {
+    public YeuCauMuonSach(Date ngayMuon, Date ngayTra, User nguoiMuon, double soTienDatCoc, double phiMuonSach, Date dateCreated) {
         this.ngayMuon = ngayMuon;
         this.ngayTra = ngayTra;
         this.nguoiMuon = nguoiMuon;
         this.soTienDatCoc = soTienDatCoc;
+        this.phiMuonSach = phiMuonSach;
         this.quaHan = 0;
         this.boiThuong = 0;
         this.trangThai = 0;
