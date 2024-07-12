@@ -43,4 +43,10 @@ public interface SachRepository extends JpaRepository<Sach, Integer> {
     List<Sach> findSachByDanhMucVaTheLoai(@Param("tenDanhMuc") String tenDanhMuc,@Param("tenTheLoai") String tenTheLoai);
     @Query(value = "select s.*,TagTheLoai.TheLoaiId from Sach s join TagTheLoai on s.Id=TagTheLoai.SachId where s.Id=:Id",nativeQuery = true)
     Optional<Sach> findByIdWithGenres(@Param("Id") int Id);
+    @Query(value="select SUM(SoLuong) from SachDuocMuon",nativeQuery = true)
+    long countSachMuon();
+    @Query(value="SELECT d.TenDanhMuc, COUNT(*) FROM Sach s JOIN TagTheLoai t on s.Id=t.SachId join TheLoai th on t.TheLoaiId=th.Id join DanhMuc d on th.DanhMucId=d.Id group by d.TenDanhMuc",nativeQuery = true)
+    List<Object[]> countBooksByCategory();
+    @Query(value="select SUM(SoLuongTrongKho) from Sach s",nativeQuery = true)
+    long countSoLuongTrongKho();
 }
