@@ -42,10 +42,10 @@ public class DashboardStaffController {
     @ResponseBody
     public Map<String, Long> getStatsStaff() {
         Map<String, Long> stats = new HashMap<>();
-        stats.put("sachTrongKhoCount", dashboardService.countSachTrongKho());
-        stats.put("sachCount", dashboardService.countSach());
+        stats.put("boiThuongCount", dashboardService.countBoiThuong());
+        stats.put("datCocCount", dashboardService.countDatCoc());
         stats.put("yeuCauMuonSachCount", dashboardService.countYeuCauMuonSach());
-        stats.put("sachDuocMuonCount", dashboardService.countSoSachMuon());
+        stats.put("phiMuonSachCount", dashboardService.countPhiMuonSach());
 
         return stats;
     }

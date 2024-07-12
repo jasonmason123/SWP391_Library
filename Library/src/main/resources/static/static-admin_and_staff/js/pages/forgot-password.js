@@ -3,10 +3,9 @@ $(document).ready(function () {
         e.preventDefault();
         $.ajax({
             method: 'POST',
-            url: "/Library/management/isvalidemail?email=" + $('#email').val(),
+            url: "/Library/management/isvalidemail?email=" + $('#inputEmail').val(),
             success: (response) => {
                 if(response=="existed") {
-                    $('#messageModal').modal('show');
                     getLink();
                 } else {
                     $('#text-danger').text("Email không tồn tại, hoặc không hợp lệ").css('color', 'red');
@@ -25,10 +24,10 @@ $(document).ready(function () {
     function getLink() {
         $.ajax({
             type: 'POST',
-            url: "/Library/auth?email=" + $('#email').val(),
+            url: "/Library/management/auth?email=" + $('#inputEmail').val(),
             contentType: 'application/json',
             success: () => {
-                console.error("Success");
+                alert("Chúng tôi đã gửi thông báo tới email của bạn, vui lòng kiểm tra mail");
             },
             error: (jqXHR, textStatus, errorThrown) => {
                 console.error("Failed! Error:" + textStatus + ', ' + errorThrown);

@@ -1,0 +1,67 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.lib-img-body {
+    background-color: #ffffff; /* Đổi nền thành trắng */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: wrap;
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.photo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1000px; /* Đặt giới hạn chiều rộng tối đa cho khung ảnh */
+    margin: 20px;
+}
+
+figure {
+    flex: 1 1 calc(33.333% - 20px);
+    margin: 10px;
+    width: 300px; /* Chiều rộng của mỗi ảnh */
+    height: auto;
+    text-align: center; /* Căn giữa nội dung */
+}
+
+.outerBevel {
+    box-shadow: 4px 6px 12px 0 black;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(109, 84, 58) rgb(24, 19, 13) rgb(24, 19, 13) rgb(109, 84, 58);
+}
+
+.flatSurface {
+    border: 12px solid rgb(65, 40, 16);
+}
+
+.innerBevel {
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(24, 19, 13) rgb(109, 84, 58) rgb(109, 84, 58) rgb(24, 19, 13);
+}
+
+.map {
+    display: block;
+    clear: both;
+    height: 100%;
+    width: 100%;
+    padding: 7.5% 7.5% 10% 7.5%; /* Mat width */
+    background-color: rgb(255, 249, 224); /* Mat color */
+    border-width: 3px; /* Gold edge of mat */
+    border-style: solid;
+    border-color: rgb(207, 166, 0) rgb(207, 166, 0) rgb(145, 110, 0) rgb(145, 110, 0);
+}
+
+figcaption {
+    margin-top: 10px;
+    font-size: 1em;
+    color: #333;
+}

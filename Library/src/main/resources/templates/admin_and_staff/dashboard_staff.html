@@ -15,7 +15,7 @@
                         <div class="card-body-icon">
                             <i class="fas fa-fw fa-book-open"></i>
                         </div>
-                        <div class="mr-5" id="sachTrongKhoCount"></div>
+                        <div class="mr-5" id="boiThuongCount"></div>
                     </div>
 
                 </div>
@@ -26,14 +26,9 @@
                         <div class="card-body-icon">
                             <i class="fas fa-fw fa-book"></i>
                         </div>
-                        <div class="mr-5" id="sachCount"></div>
+                        <div class="mr-5" id="datCocCount"></div>
                     </div>
-                    <a class="card-footer text-white clearfix small z-1" href="book">
-                        <span class="float-left">Xem chi tiết</span>
-                        <span class="float-right">
-                  <i class="fas fa-angle-right"></i>
-                </span>
-                    </a>
+
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 mb-3">
@@ -58,7 +53,7 @@
                         <div class="card-body-icon">
                             <i class="fas fa-fw fa-book-reader"></i>
                         </div>
-                        <div class="mr-5" id="sachDuocMuonCount"></div>
+                        <div class="mr-5" id="phiMuonSachCount"></div>
 
                     </div>
 
@@ -125,10 +120,10 @@
         fetch('/Library/management/staff_stats')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('sachTrongKhoCount').innerText = data.sachTrongKhoCount + ' sách trong kho';
-                document.getElementById('sachCount').innerText = data.sachCount + ' đầu sách';
+                document.getElementById('boiThuongCount').innerText =  'Tổng tiền phạt: '+data.boiThuongCount;
+                document.getElementById('datCocCount').innerText =  'Tiền đặt cọc: '+data.datCocCount ;
                 document.getElementById('yeuCauMuonSachCount').innerText = data.yeuCauMuonSachCount + ' yêu cầu mượn';
-                document.getElementById('sachDuocMuonCount').innerText = data.sachDuocMuonCount + ' sách được mượn';
+                document.getElementById('phiMuonSachCount').innerText =  'Phí mượn sách: '+data.phiMuonSachCount ;
             })
             .catch(error => console.error('Error fetching data:', error));
     });

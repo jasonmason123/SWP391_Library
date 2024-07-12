@@ -16,9 +16,9 @@ public class SachDto {
     private String tacGia;
     private String nhaXuatBan;
     private String moTa;
-    private String danhGia;
-    private String giaTien;
-    private String soLuongTrongKho;
+    private int danhGia;
+    private double giaTien;
+    private int soLuongTrongKho;
     private String linkAnh;
     private int flagDel;
     private Date dateCreated;

@@ -15,9 +15,13 @@ public class Constants {
             Pattern.compile("^(?=.{10}$)\\d+$", Pattern.CASE_INSENSITIVE);
     public static final Pattern VALID_USERNAME_REGEX =
             Pattern.compile("^(?=.{5,20}$)[a-zA-Z0-9_-]+$", Pattern.CASE_INSENSITIVE);
+    public static final Pattern VALID_PASSWORD_REGEX =
+            Pattern.compile("^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$", Pattern.CASE_INSENSITIVE);
     public static final String DATA_EXISTED = "existed";
     public static final String DATA_NOT_EXIST = "notExist";
     public static final String DATA_PATTERN_UNMATCHED = "unmatched";
     public static final String TOKEN_USER_ID_CLAIM = "id";
     public static final String TOKEN_USERNAME_CLAIM = "name";
+    public static final int MAXIMUM_NUMBER_OF_BOOKS_BORROWED = 5;
+    public static final long A_DAY_IN_MILISECONDS = 1000 * 60 * 60 * 24;
 }

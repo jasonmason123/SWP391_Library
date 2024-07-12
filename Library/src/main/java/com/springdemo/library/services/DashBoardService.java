@@ -78,8 +78,14 @@ public class DashBoardService {
     public long countYeuCauMuonSach() {
         return yeuCauMuonSachRepository.count();
     }
-    public long countSoSachMuon(){
-        return sachRepository.countSachMuon();
+    public long countBoiThuong(){
+        return yeuCauMuonSachRepository.countBoiThuong();
+    }
+    public long countDatCoc(){
+        return yeuCauMuonSachRepository.countSoTienDatCoc();
+    }
+    public long countPhiMuonSach(){
+        return yeuCauMuonSachRepository.countPhiMuonSach();
     }
     public long countNhanVien(){
         return nhanVienRepository.count();

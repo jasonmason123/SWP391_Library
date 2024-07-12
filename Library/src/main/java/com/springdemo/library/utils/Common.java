@@ -7,7 +7,11 @@ import org.springframework.security.core.Authentication;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -60,5 +64,17 @@ public class Common {
 
     public static boolean isAuthenticated(Authentication authentication) {
         return authentication!=null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken);
+    }
+
+    public static long calculateDaysBetween(Date startDate, Date endDate) {
+        LocalDate startLocalDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return ChronoUnit.DAYS.between(startLocalDate, endLocalDate);
+    }
+
+    public static Date addDays(Date date, long days) {
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate newLocalDate = localDate.plusDays(days);
+        return Date.from(newLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }

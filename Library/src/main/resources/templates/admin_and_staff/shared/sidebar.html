@@ -6,54 +6,52 @@
     </a>
     <div class="dropdown-menu" aria-labelledby="pagesDropdown">
 
-        <a class="dropdown-item" href="dashboard_admin">Admin</a>
-        <a class="dropdown-item" href="dashboard_staff">Nhân viên</a>
+        <a class="dropdown-item" href="/Library/management/dashboard_admin">Admin</a>
+        <a class="dropdown-item" href="/Library/management/dashboard_staff">Nhân viên</a>
 
     </div>
 </li>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-fw fa-user"></i>
-            <span>Người dùng</span>
+<li th:if="${role!=null && role.equals('ROLE_ADMIN')}" class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-user"></i>
+        <span>Người dùng</span>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+        <a class="dropdown-item" href="/Library/management/customers">Khách Hàng</a>
+        <a class="dropdown-item" href="/Library/management/staff">Nhân Viên</a>
+    </div>
+</li>
+
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-book"></i>
+        <span>Thông tin sách</span>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+
+        <a class="dropdown-item" href="/Library/management/book">Sách</a>
+        <a class="dropdown-item" href="/Library/management/category">Danh mục</a>
+        <a class="dropdown-item" href="/Library/management/genre">Thể loại</a>
+    </div>
+</li>
+<li th:if="${role!=null && role.equals('ROLE_STAFF')}" class="nav-item">
+    <a class="nav-link" href="/Library/management/manageBookBorrowed">
+        <i class="fas fa-fw fa-list"></i>
+        <span>Yêu cầu mượn sách</span></a>
+</li>
+
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-fw fa-blog"></i>
+        <span>Blog</span>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+
+        <a class="dropdown-item" href="/Library/management/manageDanhSachBaiViet">Danh sách bài viết</a>
+        <a class="dropdown-item" href="/Library/management/manageBaiVietCanDuyet" th:if="${role!=null && role.equals('ROLE_STAFF')}">
+            Bài viết cần duyệt
         </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-
-            <a class="dropdown-item" href="customers">Khách Hàng</a>
-            <a class="dropdown-item" href="staff">Nhân Viên</a>
-        </div>
-    </li>
-
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-fw fa-book"></i>
-            <span>Thông tin sách</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-
-            <a class="dropdown-item" href="book">Sách</a>
-            <a class="dropdown-item" href="category">Danh mục</a>
-            <a class="dropdown-item" href="genre">Thể loại</a>
-        </div>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="manageBookBorrowed">
-            <i class="fas fa-fw fa-list"></i>
-            <span>Yêu cầu mượn sách</span></a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="announcement.html">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Thông báo</span></a>
-    </li>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-fw fa-blog"></i>
-            <span>Blog</span>
-        </a>
-        <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-
-            <a class="dropdown-item" href="manageDanhSachBaiViet">Danh sách bài viết</a>
-            <a class="dropdown-item" href="manageBaiVietMoi">Bài viết mới</a>
-            <a class="dropdown-item" href="manageBaiVietCanDuyet">Bài viết cần duyệt</a>
-        </div>
-    </li>
+    </div>
+</li>

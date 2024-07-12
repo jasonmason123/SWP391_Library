@@ -1,3 +1,6 @@
+function back() {
+    history.back();
+}
 document.addEventListener('DOMContentLoaded', () => {
     let userName="", soCCCD="", email="", soDienThoai="", matKhau="";
 
@@ -91,6 +94,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    $('#matKhau').on('change', function () {
+        let matKhauUnchecked = $('#matKhau').val();
+        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+        if(regex.test(matKhauUnchecked)) {
+            matKhau = matKhauUnchecked;
+            $('#password-invalid').text('');
+        } else {
+            $('#password-invalid').text('Mật khẩu chưa đáp ứng đúng yêu cầu! Vui lòng nhập lại.');
+        }
+    });
+
     $('#signup-form').on('submit', function (e) {
         e.preventDefault();
         let matKhauUnchecked = $('#matKhau').val();
@@ -101,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('#missing-information-message').text('');
                 $('#otpModal').modal('show');
             } else {
-                $('#missing-information-message').text('Vui lòng điền đầy đủ những thông tin bên trên');
+                $('#missing-information-message').text('Vui lòng điền đầy đủ những thông tin bên trên, hoặc kiểm tra lại tính hợp lệ của thông tin nhập vào');
             }
         } else {
             $('#password-not-match').text('Vui lòng nhập lại mật khẩu');

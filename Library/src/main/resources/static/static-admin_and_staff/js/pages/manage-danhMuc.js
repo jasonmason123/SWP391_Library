@@ -4,14 +4,33 @@ $(document).ready(function () {
         e.preventDefault();
         modifyCategory(JSON.stringify({
             tenDanhMuc: $("#tenDanhMuc-add").val(),
-        }), '/Library/management/addCategory');
+        }), '/Library/management/category/addCategory');
     });
 
     $('#update-danhMuc-form').on('submit', function (e) {
         e.preventDefault();
         modifyCategory(JSON.stringify({
             tenDanhMuc: $("#tenDanhMuc-update").val(),
-        }), '/Library/management/updateCategory?id=' + $('#danhMuc-id-update').val());
+        }), '/Library/management/category/updateCategory?id=' + $('#danhMuc-id-update').val());
+    });
+
+    $('#deactivate-danhMuc-form').on('submit', function (e) {
+        e.preventDefault();
+        let danhMucId = $('#deactivate-danhMuc-id').val();
+        $.ajax({
+            url: '/Library/management/category/deleteCategory?id=' + danhMucId,
+            method: 'POST',
+            contentType: 'application/json',
+            success: function () {
+                $('#row_' + danhMucId).remove();
+                alert('Đã xóa danh mục');
+                $('#deactivateDanhMucModal').modal('hide');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.warn('Error:', textStatus, errorThrown);
+                alert("Có lỗi");
+            }
+        });
     });
 
     function modifyCategory(data, url) {
@@ -42,6 +61,5 @@ $(document).ready(function () {
 
         return `${hours}:${minutes}:${seconds} ngày ${year}/${month}/${day}`;
     }
-
 
 });

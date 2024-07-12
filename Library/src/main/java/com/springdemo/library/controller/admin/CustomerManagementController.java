@@ -2,10 +2,12 @@ package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.User;
 import com.springdemo.library.repositories.UserRepository;
+import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,19 +18,18 @@ import java.util.List;
 @Controller
 @Slf4j
 @AllArgsConstructor
-@RequestMapping("/management")
+@RequestMapping("/management/customers")
 public class CustomerManagementController {
 
 //Customer accounts_____________________________________________________________________________________________________
 
     private UserRepository userRepository;
+    private GenerateViewService generateViewService;
 
-    @GetMapping("/customers")
-    public ModelAndView viewCustomers() {
+    @GetMapping
+    public ModelAndView viewCustomers(Authentication authentication) {
         List<User> customerList = userRepository.findAll();
-        ModelAndView manageCustomerViewModel = new ModelAndView("admin_and_staff/Layout");
-        manageCustomerViewModel.addObject("includedPage","admin_and_staff/manageCustomer");
-        manageCustomerViewModel.addObject("title","Quản lí Khách");
+        ModelAndView manageCustomerViewModel = generateViewService.generateStaffView("Quản lí Khách", "admin_and_staff/manageCustomer", authentication);
         manageCustomerViewModel.addObject("modelClass", customerList);
         return manageCustomerViewModel;
     }

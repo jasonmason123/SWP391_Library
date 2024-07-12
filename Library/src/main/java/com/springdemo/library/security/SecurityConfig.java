@@ -35,41 +35,33 @@ public class SecurityConfig {
                                 .requestMatchers("/login", "/processlogin", "/sendotp",
                                         "/signup", "/processsignup", "/auth", "/changepassword",
                                         "/forgotpassword", "/processforgotpassword",
-                                        "/isvalidemail", "/isvalidsodienthoai",
-                                        "/isvalidsocccd", "/isvalidtenuser",
+                                        "/isvalidemail", "/isvalidsodienthoai", "/gallery", "/slogan",
+                                        "/isvalidsocccd", "/isvalidtenuser", "/aboutus", "/rule",
                                         "/home", "/book/**", "/blog/**").permitAll()
-                                .requestMatchers("/management/**").permitAll()
-                                .requestMatchers("/management/manageBookBorrowed").permitAll()
-                                //0:Admin, 1:Staff, 2:Customer
-                                //.requestMatchers("/").hasRole("ROLE_0")
-                                //.requestMatchers("/").hasRole("ROLE_1")
+                                .requestMatchers("/management/login", "/management/processlogin",
+                                        "/management/forgotpassword", "/management/processforgotpassword",
+                                        "/management/sendotp", "/management/auth", "/management/changepassword",
+                                        "/management/isvalidemail", "/management/changepassword").permitAll()
+                                .requestMatchers("/management/staff/**", "/management/customers/**").hasRole("ADMIN")
+                                .requestMatchers("/management/manageBookBorrowed/**", "/management/manageBaiVietCanDuyet/**").hasRole("STAFF")
+                                .requestMatchers("/management/**").hasAnyRole("ADMIN", "STAFF")
+                                //.requestMatchers("/cart/**").permitAll()
                                 //.requestMatchers("/").hasRole("ROLE_CUSTOMER")
+                                //.requestMatchers("/").hasRole("ROLE_COLLABORATOR")
                                 .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/Library/logout").permitAll()
                         .deleteCookies("JSESSIONID", Constants.JWT_COOKIE_NAME)
                         .clearAuthentication(true)
                 );
-                //.formLogin(formLogin -> formLogin.loginPage("/login").permitAll());
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(otpAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
-//    @Bean
-//    protected SecurityFilterChain otpFilterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeRequests(authorizeRequests ->
-//                        authorizeRequests
-//                                .requestMatchers("/processsignup", "/auth").authenticated()
-//                                .anyRequest().permitAll()
-//                );
-//        http.addFilterAfter(otpAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-//    }
-
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**", "/static-admin_and_staff/**");
+        return (web) -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/fonts/**",
+                "/static-admin_and_staff/**", "/tinymce/**", "/select2/**");
     }
 }

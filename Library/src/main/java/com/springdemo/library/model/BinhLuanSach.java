@@ -2,6 +2,7 @@ package com.springdemo.library.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "BinhLuanSach")
+@Table(name = "BinhLuanSach", uniqueConstraints = {@UniqueConstraint(columnNames = {"sachId", "userId"})})
 public class BinhLuanSach {
     @Id
     @Column(name = "Id")
@@ -23,8 +24,19 @@ public class BinhLuanSach {
     @ManyToOne
     @JoinColumn(name = "UserId")
     private User user;
+    @Column(name = "DanhGia")
+    private int danhGia;
     @Column(name = "NoiDung")
     private String noiDung;
     @Column(name = "NgayTao")
     private Date ngayTao;
+
+    @Builder
+    public BinhLuanSach(Sach sach, User user, int danhGia, String noiDung, Date ngayTao) {
+        this.sach = sach;
+        this.user = user;
+        this.danhGia = danhGia;
+        this.noiDung = noiDung;
+        this.ngayTao = ngayTao;
+    }
 }

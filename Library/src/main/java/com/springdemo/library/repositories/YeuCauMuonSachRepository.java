@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, Long> {
+public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, Integer> {
     @Query(value="WITH AllMonths AS ( " +
             "SELECT 1 AS MonthNum " +
             "UNION ALL (SELECT 2) " +
@@ -22,7 +22,20 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
             "GROUP BY am.MonthNum " +
             "ORDER BY am.MonthNum)")
     List<Object[]> countLoansByMonth();
+    @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE (y.NgayTra - GETDATE()) = 3", nativeQuery = true)
+    List<YeuCauMuonSach> findYeuCauWhereDueDateIsIn3Days();
 
+    @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra = GETDATE()", nativeQuery = true)
+    List<YeuCauMuonSach> findYeuCauWhereDueDateIsToday();
+
+    @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra < GETDATE()", nativeQuery = true)
+    List<YeuCauMuonSach> findAllOverdueYeuCau();
+    @Query(value="select SUM(BoiThuong) from YeuCauMuonSach",nativeQuery = true)
+    long countBoiThuong();
+    @Query(value="select SUM(SoTienDatCoc) from YeuCauMuonSach where TrangThai=2",nativeQuery = true)
+    long countSoTienDatCoc();
+    @Query(value="select SUM(PhiMuonSach) from YeuCauMuonSach",nativeQuery = true)
+    long countPhiMuonSach();
 
 
 }

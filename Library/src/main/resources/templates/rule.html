@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nội quy thư viện cộng đồng Thesaurus</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800&amp;display=swap">
+    <link rel="stylesheet" href="css/Rule.css">
+    <style>
+        * {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .rule-body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .responsive-containerAboutUs-block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ff8c00;
+            padding-top: 8%;
+            padding-bottom: 8%;
+        }
+
+        .containerAboutUs {
+            width: 80%;
+            max-width: 1200px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative; /* Để tạo không gian cho phần hoa văn */
+            overflow: hidden; /* Để ẩn phần hoa văn vượt ra khỏi phần containerAboutUs */
+        }
+
+        /* Hoa văn background */
+        .containerAboutUs::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://img.lovepik.com/free-png/20210926/lovepik-red-corner-decorative-pattern-png-image_401503898_wh1200.png'); /* Thay đổi thành đường dẫn tới hình ảnh hoa văn */
+            opacity: 0.1; /* Độ mờ của hoa văn, có thể điều chỉnh tùy ý */
+            /* Đẩy lớp background hoa văn xuống dưới */
+        }
+
+        /* Hiệu ứng hover */
+
+
+        .text-blk {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section-text ul {
+            padding-left: 20px;
+        }
+
+        /*li {*/
+        /*    margin-bottom: 10px;*/
+        /*    font-size: 16px; !* Kích thước chữ *!*/
+        /*}*/
+
+        .section-text ul > li {
+            list-style-type: none; /* Bỏ đánh số */
+            margin-bottom: 15px;
+        }
+
+        .section-text ul .section-text ul {
+            list-style-type: none; /* Bỏ đánh số */
+            margin-top: 5px;
+            margin-bottom: 0;
+            font-size: 15px; /* Kích thước chữ */
+        }
+
+        .frame h2 {
+            font-size: 24px; /* Kích thước chữ tiêu đề */
+            margin-bottom: 15px;
+        }
+
+        .frame p {
+            font-size: 18px; /* Kích thước chữ đoạn văn */
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="rule-body">
+<div class="responsive-containerAboutUs-block">
+    <div class="containerAboutUs">
+        <p class="text-blk section-head">
+            ✴  🎀  𝒩ộ𝒾 𝒬𝓊𝓎 𝒯𝒽ư 𝒱𝒾ệ𝓃 𝒞ộ𝓃𝑔 Đồ𝓃𝑔 𝒯𝒽𝑒𝓈𝒶𝓊𝓇𝓊𝓈  🎀  ✴
+        </p>
+        <div class="frame">
+
+            <p class="text-blk section-text">
+            <ul>
+                <li><strong>I, Quyền mượn sách:</strong>
+                    <ul>
+                        <li>Mỗi thành viên được mượn tối đa 5 quyển sách trong một lần.</li>
+                        <li>Số lượng sách tối đa được mượn của mỗi cuốn là 3.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>II, Thời hạn mượn và trả sách:</strong>
+                    <ul>
+                        <li>Thời hạn mượn sách tối đa là 60 ngày.</li>
+                        <li>Trường hợp quá hạn, mức phạt sẽ là 2.000 đồng/ngày.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>III, Trách nhiệm bảo quản sách:</strong>
+                    <ul>
+                        <li>Thành viên mượn sách có trách nhiệm bảo quản sách trong tình trạng tốt.</li>
+                        <li>Nếu sách bị hư hỏng, rách, ố hoặc bẩn, thành viên phải đền bù 100% giá trị cuốn sách theo giá bìa.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>IV, Đặt cọc và hoàn trả:</strong>
+                    <ul>
+                        <li>Thành viên mượn sách phải đặt cọc theo giá bìa của cuốn sách được mượn.</li>
+                        <li>Tiền cọc sẽ được hoàn trả khi sách được tiếp nhận lại từ thư viện trong tình trạng tốt.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>V, Thanh toán tiền cọc:</strong>
+                    <ul>
+                        <li>Thành viên thực hiện thanh toán tiền cọc khi đến thư viện nhận sách.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>VI, Quy định chung:</strong>
+                    <ul>
+                        <li>Thành viên cần tuân thủ mọi quy định của thư viện, tôn trọng và không làm phiền các bạn đọc khác.</li>
+                        <li>Sử dụng sách và các thiết bị trong thư viện một cách có trách nhiệm và giữ gìn trật tự chung.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>VII, Xử lý vi phạm:</strong>
+                    <ul>
+                        <li>Thành viên vi phạm các quy định sẽ phải chịu các hình thức xử lý tương ứng như phạt tiền, cấm mượn sách trong thời gian nhất định hoặc cấm truy cập thư viện tùy theo mức độ vi phạm.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>VIII, Đề xuất và khiếu nại:</strong>
+                    <ul>
+                        <li>Thành viên có quyền đề xuất và khiếu nại về các vấn đề liên quan đến dịch vụ thư viện. Mọi đề xuất và khiếu nại sẽ được giải quyết trong thời gian sớm nhất để đảm bảo quyền lợi của thành viên.</li>
+                    </ul>
+                    <br/>
+                </li>
+                <li><strong>IX, Liên hệ:</strong>
+                    <ul>
+                        <li>Mọi thắc mắc, khiếu nại và đề xuất xin vui lòng liên hệ với ban quản lý thư viện qua số điện thoại hoặc email được cung cấp trên trang web của thư viện.</li>
+                    </ul>
+                    <br/>
+                </li>
+            </ul>
+            <br/>
+            <p>
+                <strong>
+                    Ban Quản Lý Thư Viện Cộng Đồng Thesaurus rất mong nhận được sự hợp tác
+                    và ủng hộ từ quý thành viên để xây dựng một môi trường đọc sách văn minh và bổ ích.
+                </strong>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
