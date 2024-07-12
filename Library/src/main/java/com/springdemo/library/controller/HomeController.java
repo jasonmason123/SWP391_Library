@@ -68,7 +68,7 @@ public class HomeController {
         String breadCrumb = """
             <ul>
                 <li><a href="#">Trang chủ</a></li>
-                <li><a href="#"></a>Checkout</li>
+                <li><a href="#">Checkout</a></li>
             </ul>""";
         ModelAndView checkOutViewModel = generateViewService.generateCustomerView("Checkout", breadCrumb, "checkout", authentication);
         checkOutViewModel.addObject("noCart", 0);

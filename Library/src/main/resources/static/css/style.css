@@ -6760,6 +6760,7 @@ p.lost-password a:hover {
     font-size: 18px;
 }
 
+.country-select ol li,
 .country-select ul li,
 .country-select label span.required,
 .checkout-form-list label span.required {
@@ -6955,6 +6956,8 @@ p.lost-password a:hover {
     padding: 0;
 }
 
+.payment-accordion .panel-body input,
+.payment-accordion .panel-body label,
 .payment-accordion .panel-body p {
     font-size: 14px;
     margin-bottom: 0;

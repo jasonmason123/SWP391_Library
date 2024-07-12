@@ -63,6 +63,9 @@ CREATE TABLE  [dbo].[YeuCauMuonSach]
   TrangThai INT NOT NULL DEFAULT 0, --0:Chua duoc duyet, 1:Da duoc duyet, 2:Dang muon, 3:Da tra, -1:Huy
   NguoiMuonId INT NOT NULL,
   SoTienDatCoc FLOAT NOT NULL,
+  PhiMuonSach FLOAT NOT NULL,
+  DiaChiNhanSach NVARCHAR(MAX),
+  PhiVanChuyen FLOAT,
   DateCreated DATETIME NOT NULL,
   DateUpdated DATETIME,
   PRIMARY KEY (Id),
