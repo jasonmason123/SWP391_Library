@@ -15,8 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -72,21 +75,32 @@ public class BookManagementController {
     }
 
     @PostMapping("/addBook")
-    public ResponseEntity<String> addBook(@RequestBody SachDto sachDTO) {
+    public ResponseEntity<String> addBook(
+            @RequestParam("tenSach") String tenSach,
+            @RequestParam("tacGia") String tacGia,
+            @RequestParam("nhaXuatBan") String nhaXuatBan,
+            @RequestParam("moTa") String moTa,
+            @RequestParam("giaTien") double giaTien,
+            @RequestParam("soLuongTrongKho") int soLuongTrongKho,
+            @RequestParam("anh") MultipartFile anh,
+            @RequestParam("theLoaiId") List<Integer> theLoaiId
+    ) {
+        String linkAnh = handleFileUpload(anh);
+        if(linkAnh.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         Sach sach = Sach.builder()
-                .tenSach(sachDTO.getTenSach())
-                .tacGia(sachDTO.getTacGia())
-                .nhaXuatBan(sachDTO.getNhaXuatBan())
-                .moTa(sachDTO.getMoTa())
-                .giaTien(sachDTO.getGiaTien())
-                .soLuongTrongKho(sachDTO.getSoLuongTrongKho())
-                .linkAnh(sachDTO.getLinkAnh())
-                .flagDel(sachDTO.getFlagDel())
+                .tenSach(tenSach)
+                .tacGia(tacGia)
+                .nhaXuatBan(nhaXuatBan)
+                .moTa(moTa)
+                .giaTien(giaTien)
+                .soLuongTrongKho(soLuongTrongKho)
+                .linkAnh(linkAnh)
+                .flagDel(0)
                 .dateCreated(new Date())
                 .build();
-
-        sachService.addSach(sach, sachDTO.getTheLoaiId());
-
+        sachService.addSach(sach, theLoaiId);
         return ResponseEntity.ok("Sach added successfully");
     }
 
@@ -174,5 +188,32 @@ public class BookManagementController {
             log.error("Database error: " + e);
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    public String handleFileUpload(MultipartFile file) {
+        if (file.isEmpty()) {
+            log.error("file is empty");
+            return "";
+        }
+        final String uploadPath = "D:/Code/SpringBoot/SWP391_Library/Library/src/main/resources/static/img/product";
+        try {
+            log.warn("Saving img: " +  file.getOriginalFilename());
+            // Save the file locally
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                log.warn("dir not exist");
+                uploadDir.mkdirs();
+            }
+
+            String fileName = file.getOriginalFilename();
+            File destFile = new File(uploadPath + File.separator + fileName);
+            log.warn("transfering: " + destFile.getAbsolutePath());
+            file.transferTo(destFile);
+
+            return "img/product/" + fileName;
+        } catch (IOException e) {
+            log.error("Upload image failed!");
+            return "";
+        }
     }
 }
