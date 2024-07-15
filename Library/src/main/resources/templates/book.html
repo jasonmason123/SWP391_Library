@@ -98,7 +98,10 @@
                                                th:text="${sach.getTenSach()}"></a></h4>
                                         <div class="product-price">
                                             <ul>
-                                                <li th:text="${sach.getTacGia()}"></li>
+                                                <li>
+                                                    <div th:text="${sach.getTacGia()}"></div>
+                                                    <div>Giá tiền: <span th:text="${sach.getGiaTien()}"></span>đ</div>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>

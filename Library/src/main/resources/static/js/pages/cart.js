@@ -28,7 +28,7 @@ function saveCart() {
 }
 
 function updateCartWithIdPrefix(id, idPrefix='', action) {
-    if((cart.size>=5 && action===CART_ADD) || (cart.size<=0 && action===CART_MINUS)) {
+    if((cart.size>=2 && action===CART_ADD) || (cart.size<=0 && action===CART_MINUS)) {
         console.warn('Cannot update cart');
     } else {
         if(cart.has(id)) {
