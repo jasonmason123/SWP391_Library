@@ -50,8 +50,8 @@
                                 <td th:id="'tenNV_' + ${item.getId()}" th:text="${item.getTenNhanVien()}"></td>
                                 <td th:id="'email_' + ${item.getId()}" th:text="${item.getEmail()}"></td>
                                 <td th:id="'vaiTro_' + ${item.getId()}" th:data-vaiTro="${item.getVaiTro()}">
-                                    <span th:if="${item.getVaiTro().equals('0')}">Quản trị viên</span>
-                                    <span th:if="${item.getVaiTro().equals('1')}">Thủ thư</span>
+                                    <span th:if="${item.getVaiTro().equals('ROLE_ADMIN')}">Quản trị viên</span>
+                                    <span th:if="${item.getVaiTro().equals('ROLE_STAFF')}">Thủ thư</span>
                                 </td>
                                 <td class="text-center">
                                     <div th:if="${item.getFlagDel()==0}" class="badge badge-success">Đang hoạt động</div>

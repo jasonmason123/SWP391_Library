@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ public class DashBoardService {
 
     @Autowired
     private SachRepository sachRepository;
-
     @Autowired
     private YeuCauMuonSachRepository yeuCauMuonSachRepository;
     @Autowired
@@ -74,9 +72,12 @@ public class DashBoardService {
     public long countSach() {
         return sachRepository.count();
     }
-
     public long countYeuCauMuonSach() {
         return yeuCauMuonSachRepository.count();
+    }
+
+    public long countPendingYeuCauMuonSach() {
+        return yeuCauMuonSachRepository.countPendingYeuCauMuonSach();
     }
     public long countBoiThuong(){
         return yeuCauMuonSachRepository.countBoiThuong();

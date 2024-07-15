@@ -1,12 +1,6 @@
-<style>
-    .btn-custom {
-        background-color: #f07c29; /* Mã màu cam tùy chỉnh */
-        color: white;
-    }
-</style>
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="index.html">Thông tin</a>
+    <a class="navbar-brand mr-1" href="/Library/management/dashboard">Thông tin</a>
 
     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
         <i class="fas fa-bars"></i>
@@ -15,12 +9,7 @@
     <!-- Navbar Search -->
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Tìm kiếm" aria-label="Search" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-custom" type="button">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
+            <input type="text" class="form-control" th:value="${nhanVien.getTenNhanVien()}" disabled>
         </div>
     </form>
 
@@ -32,6 +21,9 @@
                 <i class="fas fa-user-circle fa-fw"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                <p class="dropdown-item mb-0"><strong th:text="${nhanVien.getTenNhanVien()}"></strong></p>
+                <p class="dropdown-item" style="font-size: 12px" th:text="${nhanVien.getEmail()}"></p>
+                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/Library/management/forgotpassword">Đổi mật khẩu</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Đăng xuất</a>

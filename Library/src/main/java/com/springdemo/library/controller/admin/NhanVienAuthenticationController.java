@@ -44,7 +44,7 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
             && authentication.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN") || role.getAuthority().equals("ROLE_STAFF"))
         ) {
-            return new ModelAndView("redirect:/management/home");
+            return new ModelAndView("redirect:/management/dashboard");
         }
         return new ModelAndView("admin_and_staff/login");
     }

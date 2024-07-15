@@ -1,0 +1,119 @@
+<style>
+    .btn-custom {
+        background-color: #f07c29; /* Mã màu cam tùy chỉnh */
+        color: white;
+    }
+    img {
+        width: 100px;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<div id="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb d-flex justify-content-between align-items-center">
+            <li class="breadcrumb-item active">Bảng thông tin</li>
+            <div class="text-right">
+                <a href="#addTagModal" class="btn btn-custom" data-toggle="modal"><span>Thêm </span><i class="fa fa-plus"></i></a>
+            </div>
+        </ol>
+        <!-- DataTables Example -->
+        <div class="card mb=3">
+            <div class="card-header">
+                <i class="fas fa-table"></i>
+                Bảng thông tin danh mục
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên tag</th>
+                            <th>Ngày tạo</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${modelClass}" th:id="'row_' + ${item.getId()}">
+                            <td th:id="'tagId_' + ${item.getId()}" th:text="${item.getId()}"></td>
+                            <td th:id="'tenTag_' + ${item.getId()}" th:text="${item.getTenTag()}"></td>
+                            <td th:id="'NgayTao_' + ${item.getId()}" th:text="${item.getDateCreated()}"></td>
+                            <td class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-light" th:onclick="'deleteTag(' + ${item.getId()} + ')'" title="Xóa tag">
+                                    <i class="fa fa-times text-primary"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Cập nhật mới nhất lúc <span id="time-update"></span></div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-wrapper -->
+
+<!-- Add Modal-->
+<div id="addTagModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="add-tag-form">
+                <div class="modal-header">
+                    <h4 class="modal-title">Thêm danh mục</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tên tag</label>
+                        <input id="tenTag-add" type="text" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
+                    <input type="submit" class="btn btn-success" value="Thêm">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    function openModalDeleteTag(id) {
+        if(confirm("Bạn có chắc chắn muốn xóa tag này không?")) {
+            $.ajax({
+               method: 'POST',
+                url: '/Library/management/blogtag/delete?tag=' + id,
+                success: function () {
+                    alert("Đã xóa thành công");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("Có lỗi");
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $('#add-tag-form').on('submit', function (e) {
+            e.preventDefault();
+            $.ajax({
+               method: 'POST',
+               url: '/Library/management/blogtag/add?tag=' + $('#tenTag-add').val(),
+                success: function () {
+                    alert("Đã thêm thành công");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("Có lỗi");
+                }
+            });
+        });
+    });
+</script>
