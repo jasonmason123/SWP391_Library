@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "Tag")
@@ -20,8 +21,6 @@ public class Tag {
     @Setter(AccessLevel.NONE)
     @Column(name = "DateCreated")
     private Date dateCreated;
-    @Column(name = "DateUpdated")
-    private Date dateUpdated;
 
     @ManyToMany(mappedBy = "tags")
     private List<Blog> blogs;

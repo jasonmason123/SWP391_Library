@@ -38,7 +38,7 @@ public class GenerateViewService {
         } else {
             ModelAndView viewModel = new ModelAndView("admin_and_staff/Layout");
             NhanVien nhanVien = ((NhanVienUserDetails) authentication.getPrincipal()).getNhanVien();
-            viewModel.addObject("role", nhanVien.getVaiTro());
+            viewModel.addObject("nhanVien", nhanVien);
             viewModel.addObject("nhanVienEmail", nhanVien.getEmail());
             viewModel.addObject("title", title);
             viewModel.addObject("includedPage", includedPage);

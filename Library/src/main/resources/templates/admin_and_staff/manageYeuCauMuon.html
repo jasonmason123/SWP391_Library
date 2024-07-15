@@ -3,23 +3,11 @@
         background-color: #f07c29;
         color: white;
     }
-
     .modal-header,
     .modal-body,
     .modal-footer {
         padding: 20px;
     }
-
-    .order-status {
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-    }
-
-    .order-status.pending {
-        background-color: #f0ad4e;
-    }
-
     #status-detail {
         text-align: center;
         color: white;
@@ -27,18 +15,13 @@
 </style>
 
 <div id="page-top">
-
 <div id="wrapper">
-
     <div id="content-wrapper">
-
         <div class="container-fluid">
-
             <!-- Breadcrumbs-->
             <ol class="breadcrumb d-flex justify-content-between align-items-center">
                 <li class="breadcrumb-item active">Bảng thông tin</li>
             </ol>
-
             <!-- DataTables Example -->
             <div class="card mb-3">
                 <div class="card-header">
@@ -57,10 +40,9 @@
                                 <th>Ngày trả</th>
                                 <th>Địa chỉ nhận sách</th>
                                 <th>Trạng thái</th>
-                                <th></th>
+                                <th th:if="${nhanVien.getVaiTro().equals('ROLE_STAFF')}"></th>
                             </tr>
                             </thead>
-
                             <tbody>
                             <tr th:each="item : ${modelClass}">
                                 <td th:id="'ID_' + ${item.getId()}" th:text="${item.getId()}"></td>
@@ -90,7 +72,7 @@
                                 <div style="display: none" th:id="'PhiMuonSach_' + ${item.getId()}" th:attr="data-PhiMuonSach=${item.getPhiMuonSach()}"></div>
                                 <div style="display: none" th:id="'PhiVanChuyen_' + ${item.getId()}" th:attr="data-PhiVanChuyen=${item.getPhiVanChuyen()}"
                                      th:if="${item.getPhiVanChuyen()!=null}"></div>
-                                <td class="d-flex justify-content-center">
+                                <td th:if="${nhanVien.getVaiTro().equals('ROLE_STAFF')}" class="d-flex justify-content-center">
                                     <button type="button" class="btn btn-light" th:onclick="'getSachDuocMuonFromYeuCauMuonSach(' + ${item.getId()} + ')'">
                                         <i class="fa fa-pen text-primary"></i>
                                     </button>
@@ -100,9 +82,8 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer small text-muted">Cập nhật mới nhất lúc 11:59</div>
+                <div class="card-footer small text-muted"></div>
             </div>
-
             <div class="modal fade" id="detailRequestModal" tabindex="-1" role="dialog" data-backdrop="static"
                  aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
@@ -198,6 +179,7 @@
                                     <tr>
                                         <th scope="col" class="text-center">Tên sách</th>
                                         <th scope="col" class="text-center">Số tiền đặt cọc</th>
+                                        <th scope="col" class="text-center">Đã trả</th>
                                     </tr>
                                     </thead>
                                     <tbody id="sachDuocMuonTableBody"></tbody>
@@ -214,7 +196,6 @@
             </div>
         </div>
         <!-- /.container-fluid -->
-
         <!-- Sticky Footer -->
         <footer class="sticky-footer">
             <div class="container my-auto">
@@ -223,18 +204,14 @@
                 </div>
             </div>
         </footer>
-
     </div>
     <!-- /.content-wrapper -->
-
 </div>
 <!-- /#wrapper -->
-
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -269,5 +246,4 @@
             }
         });
     }
-
 </script>

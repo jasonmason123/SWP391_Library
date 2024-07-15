@@ -42,12 +42,11 @@ public class SecurityConfig {
                                         "/management/forgotpassword", "/management/processforgotpassword",
                                         "/management/sendotp", "/management/auth", "/management/changepassword",
                                         "/management/isvalidemail", "/management/changepassword").permitAll()
-                                .requestMatchers("/management/staff/**", "/management/customers/**").hasRole("ADMIN")
-                                .requestMatchers("/management/manageBookBorrowed/**", "/management/manageBaiVietCanDuyet/**").hasRole("STAFF")
-                                .requestMatchers("/management/**").hasAnyRole("ADMIN", "STAFF")
-                                //.requestMatchers("/cart/**").permitAll()
-                                //.requestMatchers("/").hasRole("ROLE_CUSTOMER")
-                                //.requestMatchers("/").hasRole("ROLE_COLLABORATOR")
+                                .requestMatchers("/management/staff/**", "/management/customers/**",
+                                        "/management/dashboard/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/management/manageBookBorrowed/**", "/management/manageBaiVietCanDuyet/**",
+                                        "/management/dashboard/staff/**").hasRole("STAFF")
+                                .requestMatchers("/management/**", "/management/manageBookBorrowed").hasAnyRole("ADMIN", "STAFF")
                                 .anyRequest().authenticated()
                 ).logout(logout -> logout
                         .logoutUrl("/Library/logout").permitAll()

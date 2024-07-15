@@ -1,0 +1,58 @@
+<div id="content-wrapper">
+    <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb d-flex justify-content-between align-items-center">
+            <li class="breadcrumb-item active">Bảng thông tin</li>
+        </ol>
+        <!-- DataTables Example -->
+        <div class="card mb=3">
+            <div class="card-header">
+                <i class="fas fa-table"></i>
+                Bảng thông tin sách đã mất
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Tên sách</th>
+                            <th>Tác giả</th>
+                            <th>Nhà xuất bản</th>
+                            <th>Số lượng đã mất</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item : ${modelClass}" th:id="'row_' + ${item.getId()}">
+                            <td th:id="'TenSach_' + ${item.getId()}" th:text="${item.getMissingSach().getTenSach()}"></td>
+                            <td th:id="'TacGia_' + ${item.getId()}" th:text="${item.getMissingSach().getTacGia()}"></td>
+                            <td th:id="'NhaXuatBan_' + ${item.getId()}" th:text="${item.getMissingSach().getNhaXuatBan()}"></td>
+                            <td th:id="'SoLuongDaMat_' + ${item.getId()}" th:text="${item.getMissingSach().getSoLuongDaMat()}"></td>
+                            <td class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-light" th:onclick="'refill(' + ${item.getId()} + ')'">Mua bù</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content-wrapper -->
+<script th:inline="javascript">
+    function refill(id) {
+        $.ajax({
+            method: 'POST',
+            url: '/Library/management/missingbooks/refill',
+            success: function () {
+                alert("Đã cập nhật số lượng mua bù vào cơ sở dữ liệu");
+                window.location.reload();
+            },
+            error: function () {
+                alert("Có lỗi");
+            }
+        });
+    }
+</script>

@@ -1,6 +1,7 @@
+let formatter = new Intl.NumberFormat('en-US');
 $(document).ready(function() {
     $.ajax({
-        url: '/Library/management/areaChart',
+        url: '/Library/management/dashboard/admin/areaChart',
         method: 'POST',
         dataType: 'json',
         success: function(data) {
@@ -60,7 +61,7 @@ $(document).ready(function() {
 });
 document.addEventListener("DOMContentLoaded", function() {
 
-    fetch('/Library/management/staff_barChart')
+    fetch('/Library/management/dashboard/staff/barChart')
         .then(response => response.json())
         .then(data => {
             const labels = data.map(item => item.category);
@@ -113,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 $(document).ready(function() {
     $.ajax({
-        url: '/Library/management/staff_areaChart',
+        url: '/Library/management/dashboard/staff/areaChart',
         method: 'POST',
         dataType: 'json',
         success: function(data) {
@@ -123,7 +124,7 @@ $(document).ready(function() {
                 data: {
                     labels:Object.keys(data),
                     datasets: [{
-                        label: "Số lượt mượn",
+                        label: "Số yêu cầu mượn",
                         lineTension: 0.4,
                         backgroundColor: "rgba(2,117,216,0.2)",
                         borderColor: "rgba(2,117,216,1)",
@@ -174,7 +175,7 @@ $(document).ready(function() {
 });
 $(document).ready(function() {
     $.ajax({
-        url: '/Library/management/staffChart',
+        url: '/Library/management/dashboard/admin/staffChart',
         method: 'POST',
         dataType: 'json',
         success: function(data) {
@@ -234,13 +235,11 @@ $(document).ready(function() {
 });
 document.addEventListener("DOMContentLoaded", function() {
 
-    fetch('/Library/management/pieChart')
+    fetch('/Library/management/dashboard/pieChart')
         .then(response => response.json())
         .then(data => {
             const labels = data.map(item => item.category);
             const counts = data.map(item => item.count);
-
-
             const ctx = document.getElementById('myPieChart');
             new Chart(ctx, {
                 type: 'pie',

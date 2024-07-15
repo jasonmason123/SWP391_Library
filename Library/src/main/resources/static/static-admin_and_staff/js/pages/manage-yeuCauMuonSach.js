@@ -124,10 +124,11 @@ document.getElementById('yeuCauMuonSachDetails').addEventListener('submit', func
         if(p!==null && p!=='') {
             url += '&p=' + p;
         }
-
         $.ajax({
             method: 'POST',
             url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(returnedBooks),
             success: function () {
                 alert("Cập nhật thành công");
                 location.reload();
@@ -136,7 +137,10 @@ document.getElementById('yeuCauMuonSachDetails').addEventListener('submit', func
                 const errorResponse = jqXHR.responseText;
                 if(errorResponse && errorResponse === 'Invalid status') {
                     alert("Trạng thái cập nhật không hợp lệ, vui lòng cập nhật lại");
-                    console.error("Error response:", errorResponse);
+                } else if(errorResponse && errorResponse === 'Insufficient amount') {
+                    alert("Số lượng sách trong kho không đủ đáp ứng yêu cầu này");
+                } else if(errorResponse && errorResponse === 'No returned books') {
+                    alert("Bạn chưa chọn sách đã trả lại");
                 } else {
                     alert("Có lỗi, vui lòng thử lại sau");
                 }

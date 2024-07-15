@@ -1,6 +1,7 @@
 package com.springdemo.library.repositories;
 
 import com.springdemo.library.model.YeuCauMuonSach;
+import com.springdemo.library.model.dto.MissingSach;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -28,8 +29,13 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
     @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra = GETDATE()", nativeQuery = true)
     List<YeuCauMuonSach> findYeuCauWhereDueDateIsToday();
 
+    @Query("SELECT s.sach, COUNT(s.sach) FROM YeuCauMuonSach y JOIN y.sachDuocMuonList s WHERE y.boiThuong = y.soTienDatCoc GROUP BY s.sach")
+    List<MissingSach> findAllMissingSach();
+
     @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra < GETDATE()", nativeQuery = true)
     List<YeuCauMuonSach> findAllOverdueYeuCau();
+    @Query("SELECT COUNT(y) FROM YeuCauMuonSach y WHERE y.trangThai = 0")
+    long countPendingYeuCauMuonSach();
     @Query(value="select SUM(BoiThuong) from YeuCauMuonSach",nativeQuery = true)
     long countBoiThuong();
     @Query(value="select SUM(SoTienDatCoc) from YeuCauMuonSach where TrangThai=2",nativeQuery = true)
@@ -37,5 +43,6 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
     @Query(value="select SUM(PhiMuonSach) from YeuCauMuonSach",nativeQuery = true)
     long countPhiMuonSach();
 
-
+    @Query("SELECT y FROM YeuCauMuonSach y ORDER BY y.trangThai, y.dateCreated")
+    List<YeuCauMuonSach> findAllYeuCauOrderByDateCreated();
 }
