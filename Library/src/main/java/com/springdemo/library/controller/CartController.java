@@ -42,8 +42,8 @@ public class CartController {
         String diaChiNhanSach = checkoutDataDto.getDiaChiNhanSach();
         LocalDate localDate = LocalDate.now();
         Date today = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        if(clientCart.size() > 5 || ngayMuon.before(today) || ngayTra.before(today) || ngayTra.before(ngayMuon)) {
-            if(clientCart.size() > 5) {
+        if(clientCart.size() > 2 || ngayMuon.before(today) || ngayTra.before(today) || ngayTra.before(ngayMuon)) {
+            if(clientCart.size() > 2) {
                 log.warn("Maximum number of books");
             }
             if(ngayMuon.before(today) || ngayTra.before(today) || ngayTra.before(ngayMuon)) {

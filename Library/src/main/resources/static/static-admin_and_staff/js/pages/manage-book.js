@@ -50,18 +50,37 @@ $(document).ready(function () {
 
     $('#add-book-form').on('submit', function (e) {
         e.preventDefault();
-        modifyBook(JSON.stringify({
-                            tenSach: $("#tenSach-add").val(),
-                            linkAnh: $("#anh-add").val(),
-                            tacGia:  $("#tacGia-add").val(),
-                            giaTien: $("#giaTien-add").val(),
-                            soLuongTrongKho: $("#soLuong-add").val(),
-                            nhaXuatBan:  $('#nhaXuatBan-add').val(),
-                            moTa: $('#moTa-add').val(),
-                            theLoaiId:$('#theLoai-add').val()
-            }),'/Library/management/book/addBook'
-        );
+
+        var formData = new FormData();
+        formData.append('tenSach', $("#tenSach-add").val());
+        formData.append('tacGia', $("#tacGia-add").val());
+        formData.append('giaTien', $("#giaTien-add").val());
+        formData.append('anh', $('#anh-add')[0].files[0]);
+        formData.append('soLuongTrongKho', $("#soLuong-add").val());
+        formData.append('nhaXuatBan', $('#nhaXuatBan-add').val());
+        formData.append('moTa', $('#moTa-add').val());
+        formData.append('theLoaiId', $('#theLoai-add').val());
+
+        $.ajax({
+            url: '/Library/management/book/addBook',
+            type: 'POST',
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Prevent jQuery from setting the content type
+            success: function (response) {
+                // Handle the response from the server
+                console.log('Success:', response);
+                alert("Đã thêm thành công");
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                // Handle errors
+                console.error('Error:', error);
+                alert("Có lỗi");
+            }
+        });
     });
+
 
     $('#update-book-form').on('submit', function (e) {
         e.preventDefault();

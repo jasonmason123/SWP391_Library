@@ -1,3 +1,18 @@
+<style>
+	.checkbox-container {
+		display: flex;
+		align-items: center;
+	}
+	.checkbox-container input[type="checkbox"] {
+		margin-right: 3px; /* Điều chỉnh khoảng cách giữa checkbox và nhãn */
+		margin-top: 0; /* Đảm bảo không có khoảng cách trên */
+	}
+	.checkbox-container label {
+		position: relative;
+		top: 0.25em; /* Điều chỉnh để nhãn thấp hơn */
+	}
+</style>
+
 <div class="user-login-area mb-70">
 	<div class="container">
 		<div class="row">
@@ -19,8 +34,8 @@
 					</div>
 					<div class="single-login single-login-2 d-flex justify-content-between">
 						<button id="login-submit-button" type="submit">Đăng nhập</button>
-						<div class="col-lg-4 col-md-4 text-center">
-							<input id="rememberme" name="rememberme" type="checkbox" class="mt-3" />
+						<div class="checkbox-container d-flex align-items-center">
+							<input id="rememberme" name="rememberme" type="checkbox" />
 							<label for="rememberme">Duy trì đăng nhập</label>
 						</div>
 					</div>
@@ -28,7 +43,7 @@
 						<div class="col-lg-5 col-md-5">
 							<a href="/Library/forgotpassword" class="page-link">Quên mật khẩu?</a>
 						</div>
-						<div class="col-lg-7 col-md-7">
+						<div class="col-lg-8 col-md-8">
 							Chưa có tài khoản? <a href="/Library/signup" class="page-link">Đăng ký tại đây</a>
 						</div>
 					</div>
