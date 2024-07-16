@@ -40,6 +40,9 @@
 						<div class="col-lg-5 col-md-6 col-12">
 							<img th:id="${'imagePath_' + modelClass.get('sach').getId()}"
 								 th:src="${modelClass.get('sach').getLinkAnh()}" alt="book" class="primary" />
+							<p class="text-center mt-3" style="font-size: 16px;">Giá tiền:
+								<strong style="color: #f0ad4e" th:text="${modelClass.get('sach').getGiaTien()}"></strong> đ
+							</p>
 						</div>
 						<div class="col-lg-7 col-md-6 col-12">
 							<div class="product-info-main">

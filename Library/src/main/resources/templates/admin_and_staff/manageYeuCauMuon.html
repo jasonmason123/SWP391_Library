@@ -8,7 +8,7 @@
     .modal-footer {
         padding: 20px;
     }
-    #status-detail {
+    #status-detail, #status-notfix {
         text-align: center;
         color: white;
     }
@@ -73,8 +73,13 @@
                                 <div style="display: none" th:id="'PhiVanChuyen_' + ${item.getId()}" th:attr="data-PhiVanChuyen=${item.getPhiVanChuyen()}"
                                      th:if="${item.getPhiVanChuyen()!=null}"></div>
                                 <td th:if="${nhanVien.getVaiTro().equals('ROLE_STAFF')}" class="d-flex justify-content-center">
-                                    <button type="button" class="btn btn-light" th:onclick="'getSachDuocMuonFromYeuCauMuonSach(' + ${item.getId()} + ')'">
+                                    <button type="button" class="btn btn-light" th:unless="${item.getTrangThai()==3}"
+                                            th:onclick="'getSachDuocMuonFromYeuCauMuonSach(' + ${item.getId()} + ')'">
                                         <i class="fa fa-pen text-primary"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-light" th:if="${item.getTrangThai()==3}"
+                                            th:onclick="'getSachDuocMuonFromYeuCauMuonSachNotFix(' + ${item.getId()} + ')'">
+                                        <i class="fa fa-eye text-primary"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -179,7 +184,6 @@
                                     <tr>
                                         <th scope="col" class="text-center">Tên sách</th>
                                         <th scope="col" class="text-center">Số tiền đặt cọc</th>
-                                        <th scope="col" class="text-center">Đã trả</th>
                                     </tr>
                                     </thead>
                                     <tbody id="sachDuocMuonTableBody"></tbody>
@@ -190,6 +194,103 @@
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-custom" id="saveButton">Lưu</button>
                             <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="cancelButton">Đóng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal fade" id="notfixRequestModal" tabindex="-1" role="dialog" data-backdrop="static"
+                 aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <form class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thông tin yêu cầu mượn sách</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>ID yêu cầu</label>
+                                        <b id="ID-yeucau-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Tên người mượn</label>
+                                        <b id="tenNguoiMuon-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>Ngày mượn</label>
+                                        <b id="NgayMuon-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Ngày trả</label>
+                                        <b id="NgayTra-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>Số tiền cọc sách</label>
+                                        <b id="SoTienCocSach-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Phí mượn sách</label>
+                                        <b id="PhiMuonSach-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>Quá hạn</label>
+                                        <b id="QuaHan-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Bồi thường</label>
+                                        <b id="BoiThuong-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>Ngày tạo</label>
+                                        <b id="NgayTao-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Ngày cập nhật gần nhất</label>
+                                        <b id="NgayCapNhat-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                </div>
+                                <div class="form-row d-none" id="diaChi-PhiVanChuyen-notfix">
+                                    <div class="form-group col-md-6">
+                                        <label>Địa chỉ nhận sách</label>
+                                        <input id="DiaChi-notfix" type="text" class="form-control" disabled/>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Phí vận chuyển</label>
+                                        <b id="PhiVanChuyen-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>Trạng thái</label>
+                                        <b id="status-notfix" type="text" class="form-control"></b>
+                                    </div>
+                                    <div class="form-group col-md-6"></div>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center">Tên sách</th>
+                                        <th scope="col" class="text-center">Số tiền đặt cọc</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="sachDuocMuonTableBodyNotFix"></tbody>
+                                </table>
+                                <p>Tổng số tiền phải cọc: <strong id="totalDepositNotFix"></strong> đ</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
                         </div>
                     </form>
                 </div>
@@ -240,6 +341,18 @@
             url: '/Library/management/manageBookBorrowed/findBorrowedBooks?yeuCauId=' + id,
             success: (sachDuocMuonList) => {
                 openModalViewRequestDetail(id, sachDuocMuonList);
+            },
+            error: () => {
+                console.error('Request Id not found: ' + id);
+            }
+        });
+    }
+    function getSachDuocMuonFromYeuCauMuonSachNotFix(id) {
+        $.ajax({
+            method: 'GET',
+            url: '/Library/management/manageBookBorrowed/findBorrowedBooks?yeuCauId=' + id,
+            success: (sachDuocMuonList) => {
+                openModalViewRequestDetailNotFix(id, sachDuocMuonList);
             },
             error: () => {
                 console.error('Request Id not found: ' + id);

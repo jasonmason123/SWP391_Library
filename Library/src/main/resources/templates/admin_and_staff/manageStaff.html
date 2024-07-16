@@ -3,16 +3,8 @@
         background-color: #f07c29; /* Mã màu cam tùy chỉnh */
         color: white;
     }
-    .badge-custom{
-        background-color: grey;
-        color: white;
-    }
     .badge-danger{
         background-color: red;
-        color: white;
-    }
-    .btn-custom2 {
-        background-color:darkturquoise; /* Mã màu cam tùy chỉnh */
         color: white;
     }
 </style>
@@ -39,7 +31,7 @@
                         <tr>
                             <th>Tên nhân viên</th>
                             <th>Email</th>
-                            <th>Vị trí</th>
+                            <th>Vai trò</th>
                             <th class="text-center">Trạng thái</th>
                             <th></th>
                         </tr>
@@ -76,7 +68,7 @@
                                     </button>
                                     <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
                                             th:onclick="'openModalActivateStaff(' + ${item.getId()} + ')'">
-                                        <i class="fa fa-times text-primary"></i>
+                                        <i class="fa fa-check text-primary"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -130,9 +122,9 @@
                     <p id="unmatched-password-message-add"></p>
                     <div class="form-group">
                         <label>Vai trò</label>
-                        <select id="role-add" class="form-select" aria-label="Default select example" required>
-                            <option value="0">Quản trị viên</option>
-                            <option value="1">Thủ thư</option>
+                        <select id="role-add" class="form-control" aria-label="Default select example" required>
+                            <option value="ROLE_ADMIN">Quản trị viên</option>
+                            <option value="ROLE_STAFF">Thủ thư</option>
                         </select>
                     </div>
                 </div>
@@ -175,9 +167,9 @@
                     </div>
                     <div class="form-group">
                         <label>Vai trò</label>
-                        <select id="role-update" class="form-select" aria-label="Default select example">
-                            <option value="0">Quản trị viên</option>
-                            <option value="1">Thủ thư</option>
+                        <select id="role-update" class="form-control" aria-label="Default select example">
+                            <option value="ROLE_ADMIN">Quản trị viên</option>
+                            <option value="ROLE_STAFF">Thủ thư</option>
                         </select>
                     </div>
                 </div>
@@ -308,9 +300,9 @@
         $('#email-detail').text(email);
         $('#phoneNo-detail').text(soDienThoai);
         $('#address-detail').text(diaChi);
-        if(vaiTro==='0') {
+        if(vaiTro==='ROLE_ADMIN') {
             $('#role-detail').text('Quản trị viên');
-        } else if(vaiTro==='1') {
+        } else if(vaiTro==='ROLE_STAFF') {
             $('#role-detail').text('Thủ thư');
         }
         $('#detailEmployeeModal').modal('show');

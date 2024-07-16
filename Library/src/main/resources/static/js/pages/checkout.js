@@ -5,14 +5,14 @@ function displayCartTable() {
 
     if (cart.size === 0) {
         cartTableBody.append('<tr><td colspan="2" class="no-items">Bạn chưa đăng ký mượn cuốn sách nào.</td></tr>');
-        $('.cart-subtotal .amount').text('0.00 VNĐ');
-        $('.order-total .amount').text('0.00 VNĐ');
+        $('.cart-subtotal .amount').text('0.00 đ');
+        $('.order-total .amount').text('0.00 đ');
     } else {
         let totalPrice = 0;
         cart.forEach((itemData, bookId) => {
             const itemRow = $('<tr class="cart_item"></tr>');
             const itemName = $('<td class="product-name"></td>').html(`${itemData.bookName} <strong class="product-quantity"></strong>`);
-            const itemTotal = $('<td class="product-total"></td>').html(`<span class="amount">${(+itemData.price).toFixed(2)} VNĐ</span>`);
+            const itemTotal = $('<td class="product-total"></td>').html(`<span class="amount">${(+itemData.price).toFixed(2)} đ</span>`);
             itemRow.append(itemName, itemTotal);
             cartTableBody.append(itemRow);
 
@@ -20,8 +20,8 @@ function displayCartTable() {
         });
         orderTotal = totalPrice;
         // Update the totals
-        $('.cart-subtotal .amount').text(`${totalPrice.toFixed(2)} VNĐ`);
-        $('.order-total .amount').text(`${totalPrice.toFixed(2)} VNĐ`);
+        $('.cart-subtotal .amount').text(`${totalPrice.toFixed(1)} đ`);
+        $('.order-total .amount').text(`${totalPrice.toFixed(1)} đ`);
     }
 }
 
@@ -103,7 +103,7 @@ $(document).ready(function () {
             $('#soNgayMuon').text(daysBorrow);
             $('#phiMuon').text(borrowFee);
             $('#borrowFee').removeClass('d-none');
-            $('.order-total .amount').text(`${orderTotalLocal.toFixed(2)} VNĐ`)
+            $('.order-total .amount').text(`${orderTotalLocal.toFixed(0)} đ`)
         }
     })
 });

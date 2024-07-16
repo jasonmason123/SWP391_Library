@@ -112,14 +112,15 @@ public class BookBorrowManagementController {
                 yeuCauMuonSachRepository.delete(yeuCauMuonSach);
                 return ResponseEntity.ok().build();
             } else if(status==3) {
-                if(today.before(yeuCauMuonSach.getNgayTra())) {
-                    yeuCauMuonSach.setNgayTra(today);
-                    long daysBetween = Common.calculateDaysBetween(yeuCauMuonSach.getNgayMuon(), today);
-                    yeuCauMuonSach.setPhiMuonSach((double) daysBetween * 1000);
-                }
+                yeuCauMuonSach.getSachDuocMuonList().forEach(x -> {
+                    Sach sach = x.getSach();
+                    sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() + 1);
+                    sachRepository.save(sach);
+                });
                 sendReturnConfimationEmail(yeuCauMuonSach);
             }
             yeuCauMuonSach.setTrangThai(status);
+            yeuCauMuonSach.setDateUpdated(new Date());
             yeuCauMuonSachRepository.save(yeuCauMuonSach);
             return ResponseEntity.ok().build();
         } catch (NullPointerException e) {
@@ -183,21 +184,17 @@ public class BookBorrowManagementController {
         } else if(status==-1) {
             String subject = "Thông báo xác nhận mượn sách";
             String messageBody = """
-                    <html>
-                    <body>
+                    <html><body>
                         <h2>Thư viện cộng đồng Therasus đã từ chối yêu cầu mượn sách của bạn.</h2>
                         <div>Chúng tôi rất xin lỗi vì sự bất tiện này!</div>
-                    </body>
-                    </html>
-                    """;
+                    </body></html>""";
             emailService.sendHtmlEmail(EmailDetailsDto.builder()
                     .recipient(receipientEmail).subject(subject).messageBody(messageBody).build());
         }
     }
 
     private void sendReturnConfimationEmail(YeuCauMuonSach yeuCauMuonSach) {
-        long daysBetween = Common.calculateDaysBetween(yeuCauMuonSach.getNgayMuon(), yeuCauMuonSach.getNgayTra());
-        double returnAmount = (yeuCauMuonSach.getSoTienDatCoc() - yeuCauMuonSach.getBoiThuong() < 0) ?
+        double returnAmount = (yeuCauMuonSach.getSoTienDatCoc() - yeuCauMuonSach.getBoiThuong() > 0) ?
                 yeuCauMuonSach.getSoTienDatCoc() - yeuCauMuonSach.getBoiThuong() : 0;
         String receipientEmail = yeuCauMuonSach.getNguoiMuon().getEmail();
         String subject = "[THERASUS] Thông báo xác nhận trả sách";
@@ -213,12 +210,10 @@ public class BookBorrowManagementController {
             messageBodyBuilder.append("<li><strong>").append(sachDuocMuon.getSach().getTenSach()).append("</strong>- <span>Đặt cọc: ")
                     .append(sachDuocMuon.getSoTienDatCoc()).append(" đ</span></li>");
         }
-        messageBodyBuilder.append("</ul></div><p>Số tiền cần đặt cọc: <strong>").append(yeuCauMuonSach.getSoTienDatCoc()).append(" đ")
-                .append("</strong></p><p>Phí mượn: ").append(daysBetween).append(" ngày x 1000đ/ngày = <strong>")
-                .append(yeuCauMuonSach.getPhiMuonSach()).append(" đ</strong></p>")
+        messageBodyBuilder.append("</ul></div><p>Số tiền đã đặt cọc: <strong>").append(yeuCauMuonSach.getSoTienDatCoc()).append(" đ")
                 .append("<p>Số ngày quá hạn: <strong>").append(yeuCauMuonSach.getQuaHan()).append("</strong> ngày")
                 .append("<p>Phí bồi thường: <strong>").append(yeuCauMuonSach.getBoiThuong()).append(" </strong> đ")
-                .append("<p>Số tiền nhận lại: <strong>").append(returnAmount).append(" </strong> đ")
+                .append("<p><strong>Số tiền trả lại: ").append(returnAmount).append(" </strong> đ</p>")
                 .append("Bạn đọc vui lòng đến nhận lại tiền cọc tại thư viện hoặc gửi thông tin số tài khoản tới email: sonbmhe180353@fpt.edu.vn");
         emailService.sendHtmlEmail(EmailDetailsDto.builder()
                 .recipient(receipientEmail).subject(subject).messageBody(messageBodyBuilder.toString()).build());

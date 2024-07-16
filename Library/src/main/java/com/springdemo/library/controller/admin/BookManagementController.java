@@ -2,7 +2,6 @@ package com.springdemo.library.controller.admin;
 
 import com.springdemo.library.model.*;
 import com.springdemo.library.model.Sach;
-import com.springdemo.library.model.dto.SachDto;
 import com.springdemo.library.repositories.DanhMucRepository;
 import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.TheLoaiRepository;
@@ -107,39 +106,50 @@ public class BookManagementController {
     @PostMapping("/updateBook")
     @ResponseBody
     public ResponseEntity<String> updateBook(
-            @RequestParam(name = "id") int id,
-            @RequestBody SachDto sachDto
+            @RequestParam(name = "book") int id,
+            @RequestParam("tenSach") String tenSach,
+            @RequestParam("tacGia") String tacGia,
+            @RequestParam("nhaXuatBan") String nhaXuatBan,
+            @RequestParam("moTa") String moTa,
+            @RequestParam("giaTien") double giaTien,
+            @RequestParam("soLuongTrongKho") int soLuongTrongKho,
+            @RequestParam("anh") MultipartFile anh,
+            @RequestParam("theLoaiId") List<Integer> theLoaiId
     ) {
         try {
             Sach existedBook = sachService.getSachById(id);
 
             if (existedBook != null) {
-                if (sachDto.getTheLoaiId() != null && !sachDto.getTheLoaiId().isEmpty()) {
-                    sachService.updateTheLoaiForSach(existedBook, sachDto.getTheLoaiId());
+                if(anh!=null) {
+                    String linkAnh = handleFileUpload(anh);
+                    if(linkAnh.isEmpty()) {
+                        return ResponseEntity.badRequest().build();
+                    } else {
+                        existedBook.setLinkAnh(linkAnh);
+                    }
                 }
-                String newTacGia = sachDto.getTacGia();
-                if(!newTacGia.equals(existedBook.getTacGia())) {
-                    existedBook.setTacGia(newTacGia);
+                if(!tenSach.equals(existedBook.getTenSach())) {
+                    existedBook.setTenSach(tenSach);
                 }
-                double newPrice = sachDto.getGiaTien();
-                if(newPrice!=(existedBook.getGiaTien())) {
-                    existedBook.setGiaTien(newPrice);
+                if (theLoaiId != null && !theLoaiId.isEmpty()) {
+                    sachService.updateTheLoaiForSach(existedBook, theLoaiId);
                 }
-                int newSoLuong = sachDto.getSoLuongTrongKho();
-                if(newSoLuong!=(existedBook.getSoLuongTrongKho())) {
-                    existedBook.setSoLuongTrongKho(newSoLuong);
+                if(!tacGia.equals(existedBook.getTacGia())) {
+                    existedBook.setTacGia(tacGia);
                 }
-                String newNhaXuatBan = (sachDto.getNhaXuatBan()!=null && !sachDto.getNhaXuatBan().isBlank()) ? sachDto.getNhaXuatBan() : "";
+                if(giaTien!=(existedBook.getGiaTien())) {
+                    existedBook.setGiaTien(giaTien);
+                }
+                if(soLuongTrongKho!=(existedBook.getSoLuongTrongKho())) {
+                    existedBook.setSoLuongTrongKho(soLuongTrongKho);
+                }
+                String newNhaXuatBan = (nhaXuatBan!=null && !nhaXuatBan.isBlank()) ? nhaXuatBan : "";
                 if(!newNhaXuatBan.equals(existedBook.getNhaXuatBan())) {
                     existedBook.setNhaXuatBan(newNhaXuatBan);
                 }
-                String newMoTa = (sachDto.getMoTa()!=null && !sachDto.getMoTa().isBlank()) ? sachDto.getMoTa() : "";
+                String newMoTa = (moTa!=null && !moTa.isBlank()) ? moTa : "";
                 if(!newMoTa.equals(existedBook.getMoTa())) {
                     existedBook.setMoTa(newMoTa);
-                }
-                int newDanhGia = sachDto.getDanhGia();
-                if(newDanhGia!=(existedBook.getDanhGia())) {
-                    existedBook.setDanhGia(newDanhGia);
                 }
                 existedBook.setDateUpdated(new Date());
                 sachRepository.save(existedBook);
@@ -150,6 +160,17 @@ public class BookManagementController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("System error: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/gettentheloaifromBook")
+    @ResponseBody
+    public ResponseEntity<List<Integer>> getTenTheLoaiFromBook(@RequestParam(name = "book") int bookId) {
+        Sach existedBook = sachRepository.findById(bookId).orElse(null);
+        if(existedBook!=null) {
+            List<Integer> listOfTenTheLoai = existedBook.getTheLoaiList().stream().map(TheLoai::getId).toList();
+            return ResponseEntity.ok(listOfTenTheLoai);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/hideBook")

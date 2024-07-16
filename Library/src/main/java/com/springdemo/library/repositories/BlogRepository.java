@@ -15,21 +15,24 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
     void deleteById(Integer id);
     List<Blog> findByFlagDel(int flagDel);
     List<Blog> findByFlagDelIn(List<Integer> flagDel);
-    @Query("WITH AllMonths AS ( " +
-            "SELECT 1 AS MonthNum " +
-            "UNION ALL SELECT 2 " +
-            "UNION ALL SELECT 3 " +
-            "UNION ALL SELECT 4 " +
-            "UNION ALL SELECT 5 " +
-            "UNION ALL SELECT 6 " +
-            "UNION ALL SELECT 7) " +
-
-            "SELECT am.MonthNum AS Thang, " +
-            "COUNT(b.ngayTao) AS SoLuotTao " +
-            "FROM AllMonths am " +
-            "LEFT JOIN Blog b ON am.MonthNum = MONTH(b.ngayTao) " +
-            "GROUP BY am.MonthNum " +
-            "ORDER BY am.MonthNum")
+    @Query(value = "WITH AllMonths AS ( " +
+            "    SELECT 1 AS MonthNum " +
+            "    UNION ALL SELECT 2 " +
+            "    UNION ALL SELECT 3 " +
+            "    UNION ALL SELECT 4 " +
+            "    UNION ALL SELECT 5 " +
+            "    UNION ALL SELECT 6 " +
+            "    UNION ALL SELECT 7 " +
+            "    UNION ALL SELECT 8 " +
+            "    UNION ALL SELECT 9 " +
+            "    UNION ALL SELECT 10 " +
+            "    UNION ALL SELECT 11 " +
+            "    UNION ALL SELECT 12 " +
+            ") " +
+            "SELECT am.MonthNum AS Month, COALESCE(COUNT(b.Id), 0) AS BlogCount FROM AllMonths am " +
+            "LEFT JOIN Blog b ON am.MonthNum = MONTH(b.ngayTao) AND YEAR(b.ngayTao) = YEAR(GETDATE()) AND b.flagDel = 0 " +
+            "GROUP BY am.MonthNum ORDER BY am.MonthNum",
+            nativeQuery = true)
     List<Object[]> countBlogByMonth();
     @Query("SELECT b FROM Blog b WHERE b.flagDel = :flagDel AND b.tacGia.Id = :tacGiaId")
     List<Blog> findByFlagDelAndTacGia(@Param("flagDel")int flagDel, @Param("tacGiaId") int tacGiaId);

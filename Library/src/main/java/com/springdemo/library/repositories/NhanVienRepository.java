@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface NhanVienRepository extends JpaRepository<NhanVien, Integer> {
 
-    @Query("SELECT n FROM NhanVien n WHERE  n.Id = :id AND n.email = :email")
+    @Query("SELECT n FROM NhanVien n WHERE  n.Id = :id AND n.email = :email AND n.flagDel=0")
     Optional<NhanVien> findNhanVienByIdAndEmail(@Param("id") int id , @Param("email") String email);
 
     @Query("SELECT n FROM NhanVien n WHERE n.tenNhanVien = :tenNhanVien")

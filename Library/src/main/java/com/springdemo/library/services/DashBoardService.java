@@ -30,7 +30,7 @@ public class DashBoardService {
         List<Object[]> results = yeuCauMuonSachRepository.countLoansByMonth();
         for (Object[] result : results) {
             String month = "Tháng "+result[0].toString();
-            Long count = (Long) result[1];
+            Long count = ((Number) result[1]).longValue();
             data.put(month, count);
         }
         return data;
@@ -40,7 +40,7 @@ public class DashBoardService {
         List<Object[]> results = userRepository.countUserAccountByMonth();
         for (Object[] result : results) {
             String month = "Tháng "+result[0].toString();
-            Long count = (Long) result[1];
+            Long count = ((Number) result[1]).longValue();
             data.put(month, count);
         }
         return data;
@@ -50,7 +50,7 @@ public class DashBoardService {
         List<Object[]> results = blogRepository.countBlogByMonth();
         for (Object[] result : results) {
             String month = "Tháng "+result[0].toString();
-            Long count = (Long) result[1];
+            Long count = ((Number) result[1]).longValue();
             data.put(month, count);
         }
         return data;
@@ -60,7 +60,7 @@ public class DashBoardService {
         List<Object[]> results = nhanVienRepository.countStaffAccountByMonth();
         for (Object[] result : results) {
             String month = "Tháng "+result[0].toString();
-            Long count = (Long) result[1];
+            Long count = ((Number) result[1]).longValue();
             data.put(month, count);
         }
         return data;

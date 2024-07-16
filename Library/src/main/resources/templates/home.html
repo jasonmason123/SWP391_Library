@@ -251,8 +251,10 @@
                                                 <div class="product-details text-center">
                                                     <div class="product-rating">
                                                         <ul>
-                                                            <li th:each="star : ${#numbers.sequence(1, book.getDanhGia())}">
-                                                                <a href="#"><i class="fa fa-star"></i></a>
+                                                            <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                                <a href="#">
+                                                                    <i th:class="${i <= book.getDanhGia() ? 'fa fa-star' : 'fa fa-star-o'}"></i>
+                                                                </a>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -263,7 +265,10 @@
                                                     </h4>
                                                     <div class="product-price">
                                                         <ul>
-                                                            <li th:text="${book.getTacGia()}"></li>
+                                                            <li>
+                                                                <div th:text="${book.getTacGia()}"></div>
+                                                                <div>Giá tiền: <span th:text="${book.getGiaTien()}"></span>đ</div>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -324,8 +329,10 @@
                                             <div class="product-details text-center">
                                                 <div class="product-rating mt-20">
                                                     <ul>
-                                                        <li th:each="star : ${#numbers.sequence(1, book.getDanhGia())}">
-                                                            <a href="#"><i class="fa fa-star"></i></a>
+                                                        <li th:each="i : ${#numbers.sequence(1, 5)}">
+                                                            <a href="#">
+                                                                <i th:class="${i <= book.getDanhGia() ? 'fa fa-star' : 'fa fa-star-o'}"></i>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -336,7 +343,10 @@
                                                 </h4>
                                                 <div class="product-price">
                                                     <ul>
-                                                        <li th:text="${book.getTacGia()}"></li>
+                                                        <li>
+                                                            <div th:text="${book.getTacGia()}"></div>
+                                                            <div>Giá tiền: <span th:text="${book.getGiaTien()}"></span>đ</div>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </div>
