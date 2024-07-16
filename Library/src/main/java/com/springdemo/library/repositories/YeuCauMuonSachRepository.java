@@ -8,20 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, Integer> {
-    @Query(value="WITH AllMonths AS ( " +
-            "SELECT 1 AS MonthNum " +
-            "UNION ALL (SELECT 2) " +
-            "UNION ALL (SELECT 3) " +
-            "UNION ALL (SELECT 4) " +
-            "UNION ALL (SELECT 5) " +
-            "UNION ALL (SELECT 6) " +
-            "UNION ALL (SELECT 7)) " +
-            "(SELECT am.MonthNum AS Thang, " +
-            "COUNT(y.ngayMuon) AS SoLuotMuon " +
-            "FROM AllMonths am " +
-            "LEFT JOIN YeuCauMuonSach y ON am.MonthNum = MONTH(y.ngayMuon) " +
-            "GROUP BY am.MonthNum " +
-            "ORDER BY am.MonthNum)")
+    @Query(value = "WITH AllMonths AS ( SELECT 1 AS MonthNum UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 " +
+            "    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 " +
+            "    UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 ), YearMonths AS ( " +
+            "    SELECT MonthNum FROM AllMonths WHERE MonthNum BETWEEN 1 AND MONTH(GETDATE()) " +  // Adjust to the current month
+            ") " +
+            "SELECT ym.MonthNum AS Thang, COALESCE(COUNT(y.ngayMuon), 0) AS SoLuotMuon FROM YearMonths ym " +
+            "LEFT JOIN YeuCauMuonSach y ON ym.MonthNum = MONTH(y.ngayMuon) GROUP BY ym.MonthNum ORDER BY ym.MonthNum",
+            nativeQuery = true)
     List<Object[]> countLoansByMonth();
     @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE (y.NgayTra - GETDATE()) = 3", nativeQuery = true)
     List<YeuCauMuonSach> findYeuCauWhereDueDateIsIn3Days();
@@ -34,13 +28,13 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
 
     @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra < GETDATE()", nativeQuery = true)
     List<YeuCauMuonSach> findAllOverdueYeuCau();
-    @Query("SELECT COUNT(y) FROM YeuCauMuonSach y WHERE y.trangThai = 0")
+    @Query("SELECT COUNT(y.Id) FROM YeuCauMuonSach y WHERE y.trangThai = 0")
     long countPendingYeuCauMuonSach();
-    @Query(value="select SUM(BoiThuong) from YeuCauMuonSach",nativeQuery = true)
+    @Query(value="select COALESCE(SUM(BoiThuong), 0) from YeuCauMuonSach",nativeQuery = true)
     long countBoiThuong();
-    @Query(value="select SUM(SoTienDatCoc) from YeuCauMuonSach where TrangThai=2",nativeQuery = true)
+    @Query(value="select COALESCE(SUM(SoTienDatCoc), 0) from YeuCauMuonSach where TrangThai=2", nativeQuery = true)
     long countSoTienDatCoc();
-    @Query(value="select SUM(PhiMuonSach) from YeuCauMuonSach",nativeQuery = true)
+    @Query(value="select COALESCE(SUM(PhiMuonSach), 0) from YeuCauMuonSach where TrangThai=2 or TrangThai=3",nativeQuery = true)
     long countPhiMuonSach();
 
     @Query("SELECT y FROM YeuCauMuonSach y ORDER BY y.trangThai, y.dateCreated")

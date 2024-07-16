@@ -14,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.tenUser = :userName")
     Optional<User> findUserByTenUser(@Param("userName") String userName);
 
-    @Query("SELECT u FROM User u WHERE u.Id = :id AND u.tenUser = :userName")
+    @Query("SELECT u FROM User u WHERE u.Id = :id AND u.tenUser = :userName AND u.flagDel=0")
     Optional<User> findUserByIdAndTenUser(@Param("id") int id ,@Param("userName") String userName);
 
     @Query("SELECT u FROM User u WHERE u.soDienThoai = :soDienThoai")
@@ -26,19 +26,27 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findUserByEmail(@Param("email") String email);
 
-    @Query("WITH AllMonths AS ( " +
-            "SELECT 1 AS MonthNum " +
-            "UNION ALL SELECT 2 " +
-            "UNION ALL SELECT 3 " +
-            "UNION ALL SELECT 4 " +
-            "UNION ALL SELECT 5 " +
-            "UNION ALL SELECT 6 " +
-            "UNION ALL SELECT 7) " +
-            "SELECT am.MonthNum AS Thang, " +
-            "COUNT(u.dateCreated) AS SoLuongTao " +
-            "FROM AllMonths am " +
-            "LEFT JOIN User u ON am.MonthNum = MONTH(u.dateCreated) " +
-            "GROUP BY am.MonthNum " +
-            "ORDER BY am.MonthNum")
+    @Query(value = "WITH AllMonths AS ( " +
+            "    SELECT 1 AS MonthNum " +
+            "    UNION ALL SELECT 2 " +
+            "    UNION ALL SELECT 3 " +
+            "    UNION ALL SELECT 4 " +
+            "    UNION ALL SELECT 5 " +
+            "    UNION ALL SELECT 6 " +
+            "    UNION ALL SELECT 7 " +
+            "    UNION ALL SELECT 8 " +
+            "    UNION ALL SELECT 9 " +
+            "    UNION ALL SELECT 10 " +
+            "    UNION ALL SELECT 11 " +
+            "    UNION ALL SELECT 12 " +
+            "), " +
+            "YearMonths AS ( " +
+            "    SELECT MonthNum " +
+            "    FROM AllMonths " +
+            "    WHERE MonthNum BETWEEN 1 AND MONTH(GETDATE()) " +  // Adjust to the current month
+            ") " +
+            "SELECT ym.MonthNum AS Thang, COALESCE(COUNT(u.dateCreated), 0) AS SoLuongTao FROM YearMonths ym " +
+            "LEFT JOIN [User] u ON ym.MonthNum = MONTH(u.dateCreated) AND YEAR(u.dateCreated) = YEAR(GETDATE()) " +  // Filter by current year
+            "GROUP BY ym.MonthNum ORDER BY ym.MonthNum", nativeQuery = true)
     List<Object[]> countUserAccountByMonth();
 }

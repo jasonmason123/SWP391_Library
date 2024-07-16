@@ -29,6 +29,9 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
         $('#diaChi-PhiVanChuyen-detail').removeClass('d-none');
         $('#DiaChi-detail').val(diaChi);
         $('#PhiVanChuyen-detail').attr('required', 'required');
+        if(trangThai!=='0') {
+            $('#PhiVanChuyen-detail').removeAttr('required').attr('disabled', 'disabled');
+        }
     } else {
         $('#diaChi-PhiVanChuyen-detail').addClass('d-none');
         $('#PhiVanChuyen-detail').removeAttr('required');
@@ -90,6 +93,62 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
     document.getElementById('detailRequestModal').setAttribute('data-current-id', id);
 }
 
+function openModalViewRequestDetailNotFix(id, sachDuocMuonList) {
+    let Id = document.getElementById('ID_' + id).innerText;
+    let tenNguoiMuon = document.getElementById('TenNguoiMuon_' + id).getAttribute('data-TenNguoiMuon');
+    let ngayMuon = document.getElementById('NgayMuon_' + id).innerText;
+    let ngayTra = document.getElementById('NgayTra_' + id).innerText;
+    let quaHan = document.getElementById('QuaHan_' + id).getAttribute('data-QuaHan');
+    let boiThuong = document.getElementById('BoiThuong_' + id).getAttribute('data-BoiThuong');
+    let trangThai = document.getElementById('TrangThai_' + id).getAttribute("data-TrangThai");
+    let ngayTao = document.getElementById('NgayTao_' + id).innerText;
+    let ngayCapNhat = document.getElementById('NgayCapNhat_' + id).getAttribute('data-NgayCapNhat');
+    let soTienDatCoc = document.getElementById('SoTienDatCoc_' + id).getAttribute('data-SoTienDatCoc');
+    let phiMuonSach = document.getElementById('PhiMuonSach_' + id).getAttribute('data-PhiMuonSach');
+    let diaChi = document.getElementById('DiaChi_' + id).getAttribute('data-DiaChi');
+    let phiVanChuyen = document.getElementById('PhiVanChuyen_' + id);
+
+    $('#ID-yeucau-notfix').text(Id);
+    $('#tenNguoiMuon-notfix').text(tenNguoiMuon);
+    $('#NgayMuon-notfix').text(ngayMuon);
+    $('#NgayTra-notfix').text(ngayTra);
+    $('#QuaHan-notfix').text(quaHan);
+    $('#BoiThuong-notfix').text(boiThuong);
+    $('#statusOptions').text(trangThai);
+    $('#NgayTao-notfix').text(ngayTao);
+    $('#NgayCapNhat-notfix').text(ngayCapNhat);
+    $('#SoTienCocSach-notfix').text(soTienDatCoc);
+    $('#PhiMuonSach-notfix').text(phiMuonSach);
+    $('#totalDepositNotFix').text(soTienDatCoc);
+    $('#status-notfix').css('background-color', '#0275d8').text('Đã trả');
+    if(diaChi!==null && diaChi!=='') {
+        $('#diaChi-PhiVanChuyen-notfix').removeClass('d-none');
+        $('#DiaChi-notfix').val(diaChi);
+    } else {
+        $('#diaChi-PhiVanChuyen-notfix').addClass('d-none');
+        $('#PhiVanChuyen-notfix').removeAttr('required');
+    }
+    if(phiVanChuyen!=null) {
+        $('#PhiVanChuyen-notfix').text(phiVanChuyen.getAttribute('data-PhiVanChuyen'));
+    }
+
+    const sachDuocMuonTableBody = $('#sachDuocMuonTableBodyNotFix');
+    sachDuocMuonTableBody.empty();
+    if(sachDuocMuonList && sachDuocMuonList.length>0) {
+        sachDuocMuonList.forEach(sachDuocMuon => {
+            const $row = $("<tr></tr>");
+            $row.append(`<td class="text-center">${sachDuocMuon.tenSach}</td>`);
+            $row.append(`<td class="text-center">${sachDuocMuon.soTienDatCoc} đ</td>`);
+            sachDuocMuonTableBody.append($row);
+        });
+    }
+
+    $('#notfixRequestModal').modal('show');
+
+    // Store the current item ID for later use
+    document.getElementById('notfixRequestModal').setAttribute('data-current-id', id);
+}
+
 $('#statusOptions').on('change', function () {
     console.log("Reached statusOptions change")
     let val = parseInt($('#statusOptions').val(), 10);
@@ -127,8 +186,6 @@ document.getElementById('yeuCauMuonSachDetails').addEventListener('submit', func
         $.ajax({
             method: 'POST',
             url: url,
-            contentType: 'application/json',
-            data: JSON.stringify(returnedBooks),
             success: function () {
                 alert("Cập nhật thành công");
                 location.reload();

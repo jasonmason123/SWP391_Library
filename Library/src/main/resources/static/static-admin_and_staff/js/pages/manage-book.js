@@ -84,26 +84,23 @@ $(document).ready(function () {
 
     $('#update-book-form').on('submit', function (e) {
         e.preventDefault();
-        modifyBook(JSON.stringify({
-                tenSach: $("#tenSach-update").val(),
-                linkAnh: $("#anh-update").val(),
-                tacGia:  $("#tacGia-update").val(),
-                giaTien: $("#giaTien-update").val(),
-                soLuongTrongKho: $("#soLuong-update").val(),
-                nhaXuatBan:  $('#nhaXuatBan-update').val(),
-                moTa: $('#moTa-update').val(),
-                danhGia: $('#danhGia-update').val(),
-                theLoaiId:$('#theLoai-update').val()
-            }),'/Library/management/book/updateBook?id=' + $('#book-id-update').val()
-        );
-    });
 
-    function modifyBook(data, url) {
+        var formData = new FormData();
+        formData.append('tenSach', $("#tenSach-update").val());
+        formData.append('tacGia', $("#tacGia-update").val());
+        formData.append('giaTien', $("#giaTien-update").val());
+        formData.append('anh', $('#anh-upload-update')[0].files[0]);
+        formData.append('soLuongTrongKho', $("#soLuong-update").val());
+        formData.append('nhaXuatBan', $('#nhaXuatBan-update').val());
+        formData.append('moTa', $('#moTa-update').val());
+        formData.append('theLoaiId', $('#theLoai-update').val());
+
         $.ajax({
-            url: url,
+            url: '/Library/management/book/updateBook?book=' + $('#book-id-update').val(),
             method: 'POST',
-            contentType: 'application/json',
-            data: data,
+            data: formData,
+            processData: false, // Prevent jQuery from automatically transforming the data into a query string
+            contentType: false, // Prevent jQuery from setting the content type
             success: function () {
                 $('#time-update').text(formatDate(new Date()));
                 window.location.reload();
@@ -114,7 +111,8 @@ $(document).ready(function () {
                 alert("Có lỗi");
             }
         });
-    }
+    });
+
     function formatDate(date) {
         let year = date.getFullYear();
         let month = (date.getMonth() + 1).toString().padStart(2, '0');

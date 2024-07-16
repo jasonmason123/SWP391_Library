@@ -31,14 +31,10 @@ public class SachDuocMuon {
     private YeuCauMuonSach yeuCauMuonSach;
     @Column(name = "SoTienDatCoc")
     private double soTienDatCoc;
-    @Column(name = "DaTra")
-    private int daTra;
-
     @Builder
     public SachDuocMuon(Sach sach, YeuCauMuonSach yeuCauMuonSach, double soTienDatCoc) {
         this.sach = sach;
         this.yeuCauMuonSach = yeuCauMuonSach;
         this.soTienDatCoc = soTienDatCoc;
-        this.daTra = 0;
     }
 }

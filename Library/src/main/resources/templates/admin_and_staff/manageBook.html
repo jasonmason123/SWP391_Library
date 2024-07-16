@@ -29,10 +29,6 @@
         width: 100% !important;
     }
 
-    .select2-dropdown {
-        z-index: 9999;
-    }
-
 </style>
 
 <div id="content-wrapper">
@@ -101,8 +97,6 @@
                                  th:attr="data-danhGia=${item.getDanhGia()}"></div>
                             <div style="display: none" th:id="'nhaXuatBan_' + ${item.getId()}"
                                  th:attr="data-nhaXuatBan=${item.getNhaXuatBan()}"></div>
-                            <div style="display: none" th:id="'theLoai_' + ${item.getId()}"
-                                 th:attr="data-theLoai=${item.getTheLoaiList()}"></div>
                             <div style="display: none" th:id="'ngayTao_' + ${item.getId()}"
                                  th:attr="data-ngayTao=${item.getDateCreated()}"></div>
                             <div style="display: none" th:id="'ngayCapNhat_' + ${item.getId()}"
@@ -203,8 +197,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Ảnh</label>
                         <img id="anh-update" class="book-image"/>
+                        <label>Ảnh mới</label>
+                        <input id="anh-upload-update" type="file" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>Tên sách</label>
@@ -216,7 +211,7 @@
                     </div>
                     <div class="form-group">
                         <label>Thể loại</label>
-                        <select id="theLoai-update" class="form-control select2" multiple="multiple" required>
+                        <select id="theLoai-update" class="form-control select2" multiple="multiple" >
                             <option th:each="genre : ${modelClass.get('genresAddUpdate')}"
                                     th:value="${genre.getId()}" th:text="${genre.getTenTheLoai()}">
                             </option>
@@ -238,10 +233,6 @@
                     <div class="form-group">
                         <label>Mô tả</label>
                         <input id="moTa-update" type="text" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label>Đánh giá</label>
-                        <input id="danhGia-update" type="text" class="form-control" />
                     </div>
                 </div>
                 <input id="book-id-update" type="hidden" style="display: none;"/>
@@ -296,10 +287,6 @@
                         <label>Mô tả</label>
                         <b id="moTa-detail" type="text" class="form-control"></b>
                     </div>
-                    <div class="form-group">
-                        <label>Đánh giá</label>
-                        <b id="danhGia-detail" type="text" class="form-control"></b>
-                    </div>
                 </div>
             </form>
         </div>
@@ -352,63 +339,6 @@
 
 <script src="../static-admin_and_staff/js/pages/manage-book.js"></script>
 <script src="../select2/dist/js/select2.min.js"></script>
-<script th:inline="javascript">
-    function openModalDeactivateBook(id) {
-        $('#deactivate-book-id').val(id);
-        $('#deactivateBookModal').modal('show');
-    }
-
-    function openModalActivateBook(id) {
-        $('#activate-book-id').val(id);
-        $('#activateBookModal').modal('show');
-    }
-
-    function openModalUpdateBook(id) {
-        let tenSach = document.getElementById('tenSach_' + id).innerText;
-        let anh = document.getElementById('anh_' + id).getAttribute('src');
-        let tacGia = document.getElementById('tacGia_' + id).innerText;
-        let giaTien = document.getElementById('giaTien_' + id).innerText;
-        let soLuong = document.getElementById('soLuong_' + id).innerText;
-        let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
-        let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
-        let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
-        let theLoai = document.getElementById('theLoai_' + id).getAttribute('data-theLoai');
-        $('#tenSach-update').val(tenSach);
-        $('#anh-update').attr('src', anh);
-        $('#tacGia-update').val(tacGia);
-        $('#giaTien-update').val(giaTien);
-        $('#soLuong-update').val(soLuong);
-        $('#book-id-update').val(id);
-        $('#moTa-update').val(moTa);
-        $('#nhaXuatBan-update').val(nhaXuatBan);
-        $('#danhGia-update').val(danhGia);
-        $('#theLoai-update').val(theLoai);
-       
-        $('#updateBookModal').modal('show');
-    }
-
-    function openModalViewBookDetail(id) {
-        let tenSach = document.getElementById('tenSach_' + id).innerText;
-        let anh = document.getElementById('anh_' + id).getAttribute('src');
-        let tacGia = document.getElementById('tacGia_' + id).innerText;
-        let giaTien = document.getElementById('giaTien_' + id).innerText;
-        let soLuong = document.getElementById('soLuong_' + id).innerText;
-        let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
-        let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
-        let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
-        let theLoai = document.getElementById('theLoai_' + id).getAttribute('data-theLoai');
-        $('#tenSach-detail').text(tenSach);
-        $('#anh-detail').attr('src', anh);
-        $('#tacGia-detail').text(tacGia);
-        $('#giaTien-detail').text(giaTien);
-        $('#soLuong-detail').text(soLuong);
-        $('#theLoai-detail').text(theLoai);
-        $('#moTa-detail').text(moTa);
-        $('#nhaXuatBan-detail').text(nhaXuatBan);
-        $('#danhGia-detail').text(danhGia);
-        $('#detailBookModal').modal('show');
-    }
-</script>
 <script>
     $('#searchCategory').select2();
     $('#searchGenre').select2();
@@ -422,4 +352,100 @@
         allowClear: true,
         width: '100%'
     });
+</script>
+<script th:inline="javascript">
+    function openModalDeactivateBook(id) {
+        $('#deactivate-book-id').val(id);
+        $('#deactivateBookModal').modal('show');
+    }
+
+    function openModalActivateBook(id) {
+        $('#activate-book-id').val(id);
+        $('#activateBookModal').modal('show');
+    }
+
+    function getTenTheLoaiFromBook(id) {
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                method: 'POST',
+                url: '/Library/management/book/gettentheloaifromBook?book=' + id,
+                success: function (response) {
+                    resolve(response);
+                },
+                error: function () {
+                    console.error("Cannot get theLoai");
+                    reject([]);
+                }
+            });
+        });
+    }
+
+    function openModalUpdateBook(id) {
+        let tenSach = document.getElementById('tenSach_' + id).innerText;
+        let anh = document.getElementById('anh_' + id).getAttribute('src');
+        let tacGia = document.getElementById('tacGia_' + id).innerText;
+        let giaTien = document.getElementById('giaTien_' + id).innerText;
+        let soLuong = document.getElementById('soLuong_' + id).innerText;
+        let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
+        let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
+        let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        $('#tenSach-update').val(tenSach);
+        $('#anh-update').attr('src', anh);
+        $('#tacGia-update').val(tacGia);
+        $('#giaTien-update').val(giaTien);
+        $('#soLuong-update').val(soLuong);
+        $('#book-id-update').val(id);
+        $('#moTa-update').val(moTa);
+        $('#nhaXuatBan-update').val(nhaXuatBan);
+        $('#danhGia-update').val(danhGia);
+
+        // getTenTheLoaiFromBook(id)
+        //     .then(function(response) {
+        //         let theLoai = response;
+        //         if (theLoai) {
+        //             let selectedValues = Array.isArray(theLoai) ? theLoai : theLoai.split(',');
+        //             $('#theLoai-update').select2('val', selectedValues);
+        //         }
+        //     })
+        //     .catch(function(error) {
+        //         console.error("Error fetching theLoai:", error);
+        //         // Handle error as needed
+        //     });
+       
+        $('#updateBookModal').modal('show');
+    }
+
+    function openModalViewBookDetail(id) {
+        let tenSach = document.getElementById('tenSach_' + id).innerText;
+        let anh = document.getElementById('anh_' + id).getAttribute('src');
+        let tacGia = document.getElementById('tacGia_' + id).innerText;
+        let giaTien = document.getElementById('giaTien_' + id).innerText;
+        let soLuong = document.getElementById('soLuong_' + id).innerText;
+        let moTa = document.getElementById('moTa_' + id).getAttribute('data-moTa');
+        let nhaXuatBan = document.getElementById('nhaXuatBan_' + id).getAttribute('data-nhaXuatBan');
+        let danhGia = document.getElementById('danhGia_' + id).getAttribute('data-danhGia');
+        $('#tenSach-detail').text(tenSach);
+        $('#anh-detail').attr('src', anh);
+        $('#tacGia-detail').text(tacGia);
+        $('#giaTien-detail').text(giaTien);
+        $('#soLuong-detail').text(soLuong);
+        $('#moTa-detail').text(moTa);
+        $('#nhaXuatBan-detail').text(nhaXuatBan);
+        $('#danhGia-detail').text(danhGia);
+
+        getTenTheLoaiFromBook(id)
+            .then(function(response) {
+                let theLoai = response;
+                if (theLoai) {
+                    let genres = Array.isArray(theLoai) ? theLoai : theLoai.split(',');
+                    $('#theLoai-detail').text(genres.join(', '));
+                }
+            })
+            .catch(function(error) {
+                console.error("Error fetching theLoai:", error);
+                // Handle error as needed
+            });
+
+        $('#detailBookModal').modal('show');
+    }
 </script>

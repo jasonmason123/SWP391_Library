@@ -13,6 +13,7 @@ function submitBlog() {
             data: JSON.stringify(blogData),
             success: function () {
                 alert("Bài viết đã được gửi đi và đang chờ xét duyệt, vui lòng kiểm tra email để cập nhật trạng thái bài viết của bạn");
+                window.location.replace('Library/drafts');
             },
             error: function () {
                 alert("Gửi không thành công, vui lòng thử lại sau!");

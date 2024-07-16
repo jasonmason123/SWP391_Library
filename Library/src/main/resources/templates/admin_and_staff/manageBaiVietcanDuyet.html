@@ -4,28 +4,11 @@
     <meta charset="UTF-8">
     <title>${title}</title>
     <style>
-        .btn-custom {
-            background-color: #f07c29;
-            color: white;
-        }
-
-        .badge-custom {
-            background-color: grey;
-            color: white;
-        }
-
-        .btn-custom2 {
-            background-color: darkturquoise;
-            color: white;
-        }
-
         .modal-header,
         .modal-body,
         .modal-footer {
             padding: 20px;
         }
-
-
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -35,7 +18,6 @@
         <ol class="breadcrumb d-flex justify-content-between align-items-center">
             <li class="breadcrumb-item active">Bảng thông tin</li>
         </ol>
-
         <div class="card mb-3">
             <div class="card-header">
                 <i class="fas fa-table"></i>
@@ -73,20 +55,11 @@
                             <div style="display: none" th:id="'NoiDung_' + ${item.getId()}" th:attr="data-NoiDung=${item.getNoiDung()}"></div>
                             <div style="display: none" th:id="'DanhGia_' + ${item.getId()}" th:attr="data-DanhGia=${item.getDanhGia()}"></div>
                             <td class="d-flex justify-content-center">
-                                <button type="button" class="btn btn-light" th:onclick="'openModalViewBaiVietCanDuyetDetail(' + ${item.getId()} + ')'">
-                                    <i class="fa fa-pen text-primary"></i>
-                                </button>
-                                <button th:if="${item.getFlagDel()==0 }" type="button" class="btn btn-light" th:onclick="'openModalDeactivateBlog(' + ${item.getId()}+ ')' ">
+                                <button type="button" class="btn btn-light" title="Từ chối bài viết"
+                                        th:onclick="'openModalDeactivateBlog(' + ${item.getId()}+ ')' ">
                                     <i class="fa fa-times text-primary"></i>
                                 </button>
-                                <button th:if="${item.getFlagDel()==1}" type="button" class="btn btn-light"
-                                        th:onclick="'openModalActivateBlog(' + ${item.getId()} + ')'">
-                                    <i class="fa fa-check text-primary" ></i>
-                                </button>
-                                <button th:if="${item.getFlagDel()==2 }" type="button" class="btn btn-light" th:onclick="'openModalDeactivateBlog(' + ${item.getId()}+ ')' ">
-                                    <i class="fa fa-times text-primary"></i>
-                                </button>
-                                <button th:if="${item.getFlagDel()==2}" type="button" class="btn btn-light"
+                                <button type="button" class="btn btn-light" title="Duyệt bài viết"
                                         th:onclick="'openModalActivateBlog(' + ${item.getId()} + ')'">
                                     <i class="fa fa-check text-primary" ></i>
                                 </button>
@@ -97,60 +70,6 @@
                 </div>
             </div>
             <div class="card-footer small text-muted"></div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="detailBaiVietCanDuyetModal" tabindex="-1" role="dialog" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="orderDetailsModalLabel">Thông tin bài viết cần duyệt</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>ID</label>
-                                <b id="ID" type="text" class="form-control"></b>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Tiêu đề</label>
-                                <b id="tieuDe-detail" type="text" class="form-control"></b>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>Ngày tạo</label>
-                                <b id="NgayTao-detail" type="text" class="form-control"></b>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Tác Giả</label>
-                                <b id="TacGia-detail" type="text" class="form-control"></b>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label>Nội dung</label>
-                                <b id="NoiDung-detail" type="text" class="form-control"></b>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Đánh giá</label>
-                                <b id="DanhGia-detail" type="text" class="form-control"></b>
-                            </div>
-                        </div>
-
-
-
-
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="closeButton">Đóng</button>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -236,42 +155,17 @@
     </div>
 </div>
 <script>
-    function openModalViewBaiVietCanDuyetDetail(id) {
-        let Id = document.getElementById('ID_' + id).getAttribute('data-ID');
-        let tieuDe = document.getElementById('TieuDe_' + id).getAttribute('data-TieuDe');
-        let tacGia = document.getElementById('TacGia_' + id).getAttribute('data-TacGia');
-        let noiDung = document.getElementById('NoiDung_' + id).getAttribute('data-NoiDung');
-        let ngayTao = document.getElementById('NgayTao_' + id).getAttribute('data-NgayTao');
-        let danhGia = document.getElementById('DanhGia_' + id).getAttribute('data-DanhGia');
-
-        $('#ID').text(Id);
-        $('#tieuDe-detail').text(tieuDe);
-        $('#TacGia-detail').text(tacGia);
-        $('#NoiDung-detail').text(noiDung);
-        $('#DanhGia-detail').text(danhGia);
-        $('#NgayTao-detail').text(ngayTao);
-
-        $('#detailBaiVietCanDuyetModal').modal('show');
-    }
     function openModalDeactivateBlog(id,button) {
         $('#reject-blog-id').val(id);
-
         $('#rejectBlogModal').modal('show');
-
-
-
     }
 
     function openModalActivateBlog(id) {
         $('#accept-blog-id').val(id);
-
         $('#acceptBlogModal').modal('show');
-
-
     }
 
 </script>
-
 <script>
     $(document).ready(function () {
         $('#reject-blog-form').on('submit', function (e) {

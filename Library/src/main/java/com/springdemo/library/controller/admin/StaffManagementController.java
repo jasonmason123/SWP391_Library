@@ -96,7 +96,6 @@ public class StaffManagementController {
                         ? Common.sha256Hash(nhanVienDto.getMatKhau()) : "";
                 String newVaiTro = (nhanVienDto.getVaiTro()!=null && !nhanVienDto.getVaiTro().isBlank())
                         ? nhanVienDto.getVaiTro() : "";
-                newVaiTro = newVaiTro.equals("0") ? "ROLE_ADMIN" : newVaiTro.equals("1") ? "ROLE_STAFF" : "";
                 if(!newMatKhau.equals(existedNhanVien.getMatKhau())) {
                     existedNhanVien.setMatKhau(newMatKhau);
                 }
