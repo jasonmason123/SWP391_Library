@@ -7,7 +7,7 @@
         <div class="col-lg-6 col-md-6 col-12">
           <div class="account-area text-end">
             <ul>
-              <li th:if="${isAuthenticated==1}"><a href="my-account.html">Tài khoản</a></li>
+              <li th:if="${isAuthenticated==1}"><a href="/Library/account">Tài khoản</a></li>
               <li th:if="${isAuthenticated==0 || isAuthenticated==null}"><a href="/Library/signup">Đăng ký</a></li>
               <li>
                 <a th:if="${isAuthenticated==0 || isAuthenticated==null}" href="/Library/login">Đăng nhập</a>
@@ -28,7 +28,7 @@
         <div class="col-lg-3 col-md-5 col-12"></div>
         <div class="col-lg-6 col-md-4 col-12">
           <div class="logo-area text-center logo-xs-mrg">
-            <a href="index.html"><img src="img/logo/library_logo.jpg" alt="logo" /></a>
+            <a href="/Library/home"><img src="img/logo/library_logo.jpg" alt="logo" /></a>
           </div>
         </div>
         <div class="col-lg-3 col-md-3 col-12">

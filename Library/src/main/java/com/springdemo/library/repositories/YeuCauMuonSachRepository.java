@@ -4,9 +4,12 @@ import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.dto.MissingSach;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, Integer> {
     @Query(value = "WITH AllMonths AS ( SELECT 1 AS MonthNum UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 " +
             "    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 " +
@@ -39,4 +42,10 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
 
     @Query("SELECT y FROM YeuCauMuonSach y ORDER BY y.trangThai, y.dateCreated")
     List<YeuCauMuonSach> findAllYeuCauOrderByDateCreated();
+
+    @Query("SELECT y FROM YeuCauMuonSach y WHERE y.nguoiMuon.Id = :userId AND y.trangThai = :trangThai ORDER BY y.ngayTra DESC")
+    List<YeuCauMuonSach> findAllByNguoiMuonAndTrangThaiOrderByNgayTraDesc(@Param("userId") int userId, @Param("trangThai") int trangThai);
+
+    @Query("SELECT y FROM YeuCauMuonSach y WHERE y.nguoiMuon.Id = :userId AND y.trangThai = :trangThai ORDER BY y.ngayTra")
+    List<YeuCauMuonSach> findAllByNguoiMuonAndTrangThai(@Param("userId") int userId, @Param("trangThai") int trangThai);
 }
