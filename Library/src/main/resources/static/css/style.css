@@ -5092,6 +5092,11 @@ nav.menu .cr-dropdown ul {
     margin-bottom: 20px;
 }
 
+.blog-left-title p {
+    color: #000;
+    font-family: 'Rufina', serif;
+}
+
 .blog-left-title h3 {
     color: #000;
     font-size: 16px;
@@ -5322,6 +5327,7 @@ nav.menu .cr-dropdown ul {
     font-weight: 400;
 }
 
+.single-blog-content .single-blog-title .draft h5,
 .single-blog-content .single-blog-title .draft a h5 {
     color: #3f3f3f;
     font-size: 20px;
@@ -5332,6 +5338,7 @@ nav.menu .cr-dropdown ul {
     font-weight: 400;
 }
 
+.single-blog-content .single-blog-title .draft p,
 .single-blog-content .single-blog-title .draft a p {
     color: #626262;
     font-size: 12px;
@@ -5343,6 +5350,7 @@ nav.menu .cr-dropdown ul {
     border-bottom: 1px solid grey;
 }
 
+.single-blog-content .single-blog-title .draft h5:hover,
 .single-blog-content .single-blog-title .draft a h5:hover,
 .single-blog-content .single-blog-title h3 a:hover {
     color: #F07C29;

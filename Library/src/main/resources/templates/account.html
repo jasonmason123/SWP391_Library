@@ -1,0 +1,59 @@
+<style>
+    #back-to-homepage {
+        color: #ff4500; /* Set link color to light orange */
+        text-decoration: none;
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 10px;
+    }
+</style>
+<div class="user-login-area mb-70">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="login-title text-center mb-30">
+                    <h2>Thông tin tài khoản</h2>
+                </div>
+            </div>
+            <div class="offset-lg-2 col-lg-8 col-md-12 col-12">
+                <form class="billing-fields" id="signup-form">
+                    <div class="row">
+                        <div class="single-labeled-input">
+                            <div>
+                                <label>Tên đăng nhập</label>
+                                <b type="text" class="form-control" th:text="${modelClass.getTenUser()}"></b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single-labeled-input">
+                        <div>
+                            <label>Số CCCD/CMTND</label>
+                            <b type="text" class="form-control"  th:text="${modelClass.getSoCCCD()}"></b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="single-labeled-input">
+                            <div>
+                                <label>Địa chỉ Email</label>
+                                <b type="text" class="form-control"  th:text="${modelClass.getEmail()}"></b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="single-labeled-input">
+                            <div>
+                                <label>Số điện thoại</label>
+                                <b type="text" class="form-control"  th:text="${modelClass.getSoDienThoai()}"></b>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="/Library/history">Xem lịch sử mượn sách</a> |
+                    <a href="/Library/borrowing">Xem sách đang mượn</a> |
+                    <a href="/Library/borrowing?trangThai=1">Xem sách đã được đồng ý mượn</a> |
+                    <a href="/Library/borrowing?trangThai=0">Xem sách đang chờ mượn</a>
+                    <a href="/Library/home" id="back-to-homepage">Trở về trang chủ</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

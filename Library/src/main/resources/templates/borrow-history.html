@@ -1,0 +1,158 @@
+<style>
+    .btn-custom {
+        background-color: #f07c29; /* Mã màu cam tùy chỉnh */
+        color: white;
+    }
+</style>
+<div class="user-login-area mb-70">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2 col-md-12 col-12 order-lg-1 order-2 mt-sm-50">
+                <div class="single-blog mb-50">
+                    <div class="blog-left-title">
+                        <h3><i class="fa fa-search"></i>&nbsp;Tìm kiếm</h3>
+                    </div>
+                    <div class="side-form">
+                        <form class="search-container" action="/Library/history">
+                            <input type="text" name="search" placeholder="Tìm kiếm...." />
+                            <button type="submit"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="single-blog mb-50">
+                    <div class="blog-left-title">
+                        <a href="/Library/borrowing">
+                            <p><i class="fa fa-search"></i> Sách đang mượn</p>
+                        </a>
+                        <a href="/Library/borrowing?trangThai=1">
+                            <p><i class="fa fa-search"></i> Sách đã được đồng ý mượn</p>
+                        </a>
+                        <a href="/Library/borrowing?trangThai=0">
+                            <p><i class="fa fa-search"></i> Sách đang chờ mượn</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-md-12 col-12 order-lg-2 order-1" id="edit-section">
+                <div class="col-lg-12">
+                    <div class="login-title text-center mb-30">
+                        <h2>Lịch sử mượn sách</h2>
+                    </div>
+                </div>
+                <div class="offset-lg-2 col-lg-8 col-md-12 col-12">
+                    <!-- List of drafts -->
+                    <div class="blog-main-wrapper">
+                        <div th:if="${!modelClass.isEmpty()}" th:each="yeuCau : ${modelClass}"
+                             th:id="'yeuCau_' + ${yeuCau.getId()}" class="single-blog-content">
+                            <div class="single-blog-title">
+                                <div class="draft d-flex justify-content-between">
+                                    <a href="">
+                                        <h5>Số ID yêu cầu: <span th:text="${yeuCau.getId()}"></span></h5>
+                                        <p>Từ ngày: <strong th:text="${yeuCau.getNgayMuon()}"></strong>,
+                                            Đến ngày: <strong th:text="${yeuCau.getNgayTra()}"></strong></p>
+                                    </a>
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-custom" data-bs-toggle="tooltip" title="Xem chi tiết" th:onclick="'viewDetails(' + ${yeuCau.getId()} + ')'">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${modelClass.isEmpty()}" class="single-blog-content">
+                            <div class="single-blog-title">
+                                <p class="text-center">Bạn chưa có yêu cầu nào</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="RequestModal" tabindex="-1" role="dialog" data-backdrop="static"
+     aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thông tin yêu cầu mượn sách</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>ID yêu cầu</label>
+                            <b id="ID-yeucau" type="text" class="form-control"></b>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Trạng thái</label>
+                            <b id="status" type="text" class="form-control" style="background-color: #0275d8; color: white;">Đã trả</b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Ngày mượn</label>
+                            <b id="NgayMuon" type="text" class="form-control"></b>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Ngày trả</label>
+                            <b id="NgayTra" type="text" class="form-control"></b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Số tiền cọc sách</label>
+                            <b id="SoTienCocSach" type="text" class="form-control"></b>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Phí mượn sách</label>
+                            <b id="PhiMuonSach" type="text" class="form-control"></b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Quá hạn</label>
+                            <b id="QuaHan" type="text" class="form-control"></b>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Bồi thường</label>
+                            <b id="BoiThuong" type="text" class="form-control"></b>
+                        </div>
+                    </div>
+                    <div class="row d-none" id="diaChi-PhiVanChuyen">
+                        <div class="form-group col-md-6">
+                            <label>Địa chỉ nhận sách</label>
+                            <input id="DiaChi" type="text" class="form-control" disabled/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Phí vận chuyển</label>
+                            <b id="PhiVanChuyen" type="text" class="form-control"></b>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Tên sách</th>
+                            <th scope="col" class="text-center">Số tiền đặt cọc</th>
+                        </tr>
+                        </thead>
+                        <tbody id="sachDuocMuonTableBody"></tbody>
+                    </table>
+                    <p>Tổng số tiền phải cọc: <strong id="totalDeposit"></strong> đ</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="js/pages/yeucaumuon.js"></script>
+<script th:inline="javascript">
+    function viewDetails(id) {
+        openModalViewDetails(id);
+    }
+</script>

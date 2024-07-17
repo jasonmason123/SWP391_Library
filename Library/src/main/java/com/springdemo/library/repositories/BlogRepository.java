@@ -13,7 +13,8 @@ import java.util.Optional;
 public interface BlogRepository extends JpaRepository<Blog, Integer> {
 
     void deleteById(Integer id);
-    List<Blog> findByFlagDel(int flagDel);
+    @Query("SELECT b FROM Blog b WHERE b.flagDel = :flagDel")
+    List<Blog> findByFlagDel(@Param("flagDel") int flagDel);
     List<Blog> findByFlagDelIn(List<Integer> flagDel);
     @Query(value = "WITH AllMonths AS ( " +
             "    SELECT 1 AS MonthNum " +
