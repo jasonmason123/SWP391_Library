@@ -67,7 +67,9 @@ ________________________________ADMIN STATISTICS________________________________
         stats.put("sachCount", dashboardService.countSach());
         stats.put("yeuCauMuonSachCount", dashboardService.countYeuCauMuonSach());
         stats.put("nhanVienCount", dashboardService.countNhanVien());
-
+        stats.put("boiThuongCount", dashboardService.countBoiThuong());
+        stats.put("datCocCount", dashboardService.countDatCoc());
+        stats.put("phiMuonSachCount", dashboardService.countPhiMuonSach());
         return stats;
     }
 
