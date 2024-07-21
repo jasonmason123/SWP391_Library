@@ -27,7 +27,7 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
     @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra = GETDATE()", nativeQuery = true)
     List<YeuCauMuonSach> findYeuCauWhereDueDateIsToday();
 
-    @Query("SELECT new com.springdemo.library.model.dto.MissingSach(s.sach, COUNT(s.sach)) FROM YeuCauMuonSach y JOIN y.sachDuocMuonList s WHERE s.trangThai = -1 GROUP BY s.sach")
+    @Query("SELECT new com.springdemo.library.model.dto.MissingSach(s.sach, COUNT(s.sach)) FROM YeuCauMuonSach y JOIN y.sachDuocMuonList s WHERE s.trangThai = -1 AND y.trangThai=3 GROUP BY s.sach")
     List<MissingSach> findAllMissingSach();
 
     @Query("SELECT s FROM YeuCauMuonSach y JOIN y.sachDuocMuonList s WHERE s.sach.Id = :sachId")
@@ -37,7 +37,7 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
     List<YeuCauMuonSach> findAllOverdueYeuCau();
     @Query("SELECT COUNT(y.Id) FROM YeuCauMuonSach y WHERE y.trangThai = 0")
     long countPendingYeuCauMuonSach();
-    @Query(value="select COALESCE(SUM(BoiThuong), 0) from YeuCauMuonSach",nativeQuery = true)
+    @Query(value="select COALESCE(SUM(BoiThuong), 0) from YeuCauMuonSach y WHERE y.TrangThai=3",nativeQuery = true)
     long countBoiThuong();
     @Query(value="select COALESCE(SUM(SoTienDatCoc), 0) from YeuCauMuonSach where TrangThai=2", nativeQuery = true)
     long countSoTienDatCoc();

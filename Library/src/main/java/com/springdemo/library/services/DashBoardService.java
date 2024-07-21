@@ -1,5 +1,6 @@
 package com.springdemo.library.services;
 
+import com.springdemo.library.model.dto.MissingSach;
 import com.springdemo.library.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,12 @@ public class DashBoardService {
         return yeuCauMuonSachRepository.countPendingYeuCauMuonSach();
     }
     public long countBoiThuong(){
-        return yeuCauMuonSachRepository.countBoiThuong();
+        long total = 0;
+        List<MissingSach> missingSachList = yeuCauMuonSachRepository.findAllMissingSach();
+        for(MissingSach missingSach : missingSachList) {
+            total += missingSach.getSoLuongDaMat();
+        }
+        return total;
     }
     public long countDatCoc(){
         return yeuCauMuonSachRepository.countSoTienDatCoc();
