@@ -26,6 +26,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findUserByEmail(@Param("email") String email);
 
+    @Query("SELECT u FROM User u WHERE u.email = :email AND u.flagDel=0")
+    Optional<User> findActiveUserByEmail(@Param("email") String email);
+
     @Query(value = "WITH AllMonths AS ( " +
             "    SELECT 1 AS MonthNum " +
             "    UNION ALL SELECT 2 " +

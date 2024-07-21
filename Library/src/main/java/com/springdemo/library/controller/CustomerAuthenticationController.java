@@ -162,7 +162,7 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
      {
         String email = getEmailFromAuthToken(auth);
         if(email != null) {
-            User foundUser = userRepository.findUserByEmail(email).orElse(null);
+            User foundUser = userRepository.findActiveUserByEmail(email).orElse(null);
             if(foundUser!=null) {
                 foundUser.setMatKhau(Common.sha256Hash(newPassword));
                 userRepository.save(foundUser);

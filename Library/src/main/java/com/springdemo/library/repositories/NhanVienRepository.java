@@ -16,13 +16,10 @@ public interface NhanVienRepository extends JpaRepository<NhanVien, Integer> {
     @Query("SELECT n FROM NhanVien n WHERE  n.Id = :id AND n.email = :email AND n.flagDel=0")
     Optional<NhanVien> findNhanVienByIdAndEmail(@Param("id") int id , @Param("email") String email);
 
-    @Query("SELECT n FROM NhanVien n WHERE n.tenNhanVien = :tenNhanVien")
-    Optional<NhanVien> findNhanViensByTenNhanVien(@Param("tenNhanVien") String tenNhanVien);
-
-    @Query("SELECT n FROM NhanVien n WHERE n.email = :email")
+    @Query("SELECT n FROM NhanVien n WHERE n.email = :email AND n.flagDel=0")
     Optional<NhanVien> findNhanVienByEmail(@Param("email") String email);
 
-    @Query("SELECT n FROM NhanVien n WHERE n.soDienThoai = :soDienThoai")
+    @Query("SELECT n FROM NhanVien n WHERE n.soDienThoai = :soDienThoai AND n.flagDel=0")
     Optional<NhanVien> findNhanVienBySoDienThoai(@Param("soDienThoai") String soDienThoai);
     @Query("WITH AllMonths AS ( " +
             "SELECT 1 AS MonthNum " +
