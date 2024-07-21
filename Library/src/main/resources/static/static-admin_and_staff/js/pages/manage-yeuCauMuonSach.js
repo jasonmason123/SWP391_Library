@@ -57,19 +57,23 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
             if((status===2 || status==='2') && $('#daTiepNhanHead').length !== 0) {
                 let $checkbox;
                 if(sachDuocMuon.trangThai===1 || sachDuocMuon.trangThai==='1') {
-                    $checkbox = $('<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra" checked disabled>');
+                    $checkbox = $(`<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra" data-tienCoc="${sachDuocMuon.soTienDatCoc}" checked disabled>`);
                 } else if(sachDuocMuon.trangThai===0 || sachDuocMuon.trangThai==='0') {
-                    $checkbox = $('<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra">');
-                    //bookFine += sachDuocMuon.soTienDatCoc;
+                    $checkbox = $(`<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra" data-tienCoc="${sachDuocMuon.soTienDatCoc}">`);
                 } else {
                     $checkbox = $('<span class="badge badge-danger">Đã mất/hỏng</span>');
-                    bookFine += sachDuocMuon.soTienDatCoc;
                 }
                 $checkbox.attr('value', sachDuocMuon.sachId);
                 const $checkboxCell = $('<td class="text-center"></td>').append($checkbox);
                 $row.append($checkboxCell);
             }
             sachDuocMuonTableBody.append($row);
+        });
+        const checkboxes = document.querySelectorAll('input[name="sachDaTra"]');
+        checkboxes.forEach(checkbox => {
+            if(!checkbox.checked) {
+                bookFine += Number(checkbox.getAttribute('data-tienCoc'));
+            }
         });
         let totalFine = (bookFine + quaHan*1000 < soTienDatCoc) ? bookFine + quaHan*1000 : soTienDatCoc;
         let totalReturn = Number(soTienDatCoc) - Number(totalFine);

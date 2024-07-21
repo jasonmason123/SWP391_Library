@@ -142,11 +142,9 @@ public class BookBorrowManagementController {
                     Date newNgayTra = Common.addDays(today, daysBetween);
                     yeuCauMuonSach.setNgayMuon(today);
                     yeuCauMuonSach.setNgayTra(newNgayTra);
-                    yeuCauMuonSachRepository.save(yeuCauMuonSach);
                 }
                 if(yeuCauMuonSach.getDiaChiNhanSach()!=null && !yeuCauMuonSach.getDiaChiNhanSach().isEmpty() && phiVanChuyen!=null) {
                     yeuCauMuonSach.setPhiVanChuyen(phiVanChuyen);
-                    yeuCauMuonSachRepository.save(yeuCauMuonSach);
                 }
                 sendBorrowConfirmationEmail(status, yeuCauMuonSach);
             } else if(status==-1) {
@@ -163,9 +161,9 @@ public class BookBorrowManagementController {
             } else if(status==3) {
                 //set all sachDuocMuon with trangThai!=1 to -1
                 yeuCauMuonSach.getSachDuocMuonList().stream().filter(x -> x.getTrangThai()!=1).forEach(x -> x.setTrangThai(-1));
-                yeuCauMuonSach.setTrangThai(3);
                 sendReturnConfimationEmail(yeuCauMuonSach);
             }
+            yeuCauMuonSach.setTrangThai(status);
             yeuCauMuonSach.setDateUpdated(new Date());
             yeuCauMuonSachRepository.save(yeuCauMuonSach);
             return ResponseEntity.ok().build();

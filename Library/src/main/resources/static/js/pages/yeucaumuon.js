@@ -70,18 +70,23 @@ function generateModalViewRequestDetail(yeuCauMuonSach) {
             if((status===2 || status==='2') && $('#daMatHead').length !== 0) {
                 let $checkbox;
                 if(sachDuocMuon.trangThai===1 || sachDuocMuon.trangThai==='1') {
-                    $checkbox = $('<span style="color: #0275d8;">Đã trả</span>');
+                    $checkbox = $(`<span style="color: #0275d8;">Đã trả</span>`);
                 } else if (sachDuocMuon.trangThai===0 || sachDuocMuon.trangThai==='0') {
-                    $checkbox = $(`<input type="checkbox" class="form-check-input" name="lost" value="${sachDuocMuon.sachId}">`);
-                    //bookFine += sachDuocMuon.soTienDatCoc;
+                    $checkbox = $(`<input type="checkbox" class="form-check-input sach" name="lost" value="${sachDuocMuon.sachId}" data-tienCoc="${sachDuocMuon.soTienDatCoc}">`);
                 } else {
-                    $checkbox = $(`<input type="checkbox" class="form-check-input" name="lost" value="${sachDuocMuon.sachId}" checked>`);
-                    bookFine += sachDuocMuon.soTienDatCoc;
+                    $checkbox = $(`<input type="checkbox" class="form-check-input sach" name="lost" value="${sachDuocMuon.sachId}" data-tienCoc="${sachDuocMuon.soTienDatCoc}" checked>`);
                 }
-                const $checkboxCell = $('<td class="text-center"></td>').append($checkbox);
+                const $checkboxCell = $(`<td class="text-center"></td>`).append($checkbox);
                 $row.append($checkboxCell);
             }
             sachDuocMuonTableBody.append($row);
+        });
+        const elements = document.querySelectorAll('.sach');
+        elements.forEach(element => {
+            if(element.tagName==='INPUT' && element.checked) {
+                bookFine += Number(element.getAttribute('data-tienCoc'));
+                console.log("bookFine: " + bookFine);
+            }
         });
         let totalFine = (bookFine + yeuCauMuonSach.quaHan*1000 < yeuCauMuonSach.soTienDatCoc) ?
             bookFine + yeuCauMuonSach.quaHan*1000 : yeuCauMuonSach.soTienDatCoc;
