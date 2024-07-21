@@ -13,10 +13,12 @@ public class SachDuocMuonViewDto {
     private int sachId;
     private String tenSach;
     private double soTienDatCoc;
+    private int trangThai;
 
     public SachDuocMuonViewDto(SachDuocMuon sachDuocMuon) {
         sachId = sachDuocMuon.getSach().getId();
         tenSach = sachDuocMuon.getSach().getTenSach();
         soTienDatCoc = sachDuocMuon.getSoTienDatCoc();
+        trangThai = sachDuocMuon.getTrangThai();
     }
 }

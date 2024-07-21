@@ -8,5 +8,5 @@ import lombok.Getter;
 @Getter
 public class MissingSach {
     private Sach missingSach;
-    private int soLuongDaMat;
+    private long soLuongDaMat;
 }

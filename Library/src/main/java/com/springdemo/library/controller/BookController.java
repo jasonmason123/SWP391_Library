@@ -52,7 +52,7 @@ public class BookController {
                 int pageSize = 16;
                 int maxPagesToShow = 3;
                 if(sachList.isEmpty()) {
-                    sachList.addAll(sachRepository.findAll());
+                    sachList.addAll(sachRepository.findAllAvailableBooks());
                 }
 
                 //filter

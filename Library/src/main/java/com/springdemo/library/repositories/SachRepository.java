@@ -55,4 +55,7 @@ public interface SachRepository extends JpaRepository<Sach, Integer> {
     List<Object[]> countBooksByCategory();
     @Query(value="select SUM(SoLuongTrongKho) from Sach s",nativeQuery = true)
     long countSoLuongTrongKho();
+
+    @Query("SELECT s FROM Sach s WHERE s.flagDel=0 AND s.soLuongTrongKho > 0")
+    List<Sach> findAllAvailableBooks();
 }

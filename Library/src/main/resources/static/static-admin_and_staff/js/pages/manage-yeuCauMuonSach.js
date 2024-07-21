@@ -24,7 +24,6 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
     $('#NgayCapNhat-detail').text(ngayCapNhat);
     $('#SoTienCocSach-detail').text(soTienDatCoc);
     $('#PhiMuonSach-detail').text(phiMuonSach);
-    $('#totalDeposit').text(soTienDatCoc);
     if(diaChi!==null && diaChi!=='') {
         $('#diaChi-PhiVanChuyen-detail').removeClass('d-none');
         $('#DiaChi-detail').val(diaChi);
@@ -42,13 +41,50 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
 
     const sachDuocMuonTableBody = $('#sachDuocMuonTableBody');
     sachDuocMuonTableBody.empty();
+    let status = $('#statusOptions').val();
+    if((status===2 || status==='2') && $('#daTiepNhanHead').length === 0) {
+        $('#sachDuocMuonTable thead tr').append('<th scope="col" id="daTiepNhanHead" class="text-center">Đã tiếp nhận</th>');
+    } else if(!(status===2 || status==='2')) {
+        $('#daTiepNhanHead').remove();
+        $('.sachDaTiepNhan').remove();
+    }
     if(sachDuocMuonList && sachDuocMuonList.length>0) {
+        let bookFine = 0;
         sachDuocMuonList.forEach(sachDuocMuon => {
             const $row = $("<tr></tr>");
             $row.append(`<td class="text-center">${sachDuocMuon.tenSach}</td>`);
             $row.append(`<td class="text-center">${sachDuocMuon.soTienDatCoc} đ</td>`);
+            if((status===2 || status==='2') && $('#daTiepNhanHead').length !== 0) {
+                let $checkbox;
+                if(sachDuocMuon.trangThai===1 || sachDuocMuon.trangThai==='1') {
+                    $checkbox = $('<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra" checked disabled>');
+                } else if(sachDuocMuon.trangThai===0 || sachDuocMuon.trangThai==='0') {
+                    $checkbox = $('<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra">');
+                    //bookFine += sachDuocMuon.soTienDatCoc;
+                } else {
+                    $checkbox = $('<span class="badge badge-danger">Đã mất/hỏng</span>');
+                    bookFine += sachDuocMuon.soTienDatCoc;
+                }
+                $checkbox.attr('value', sachDuocMuon.sachId);
+                const $checkboxCell = $('<td class="text-center"></td>').append($checkbox);
+                $row.append($checkboxCell);
+            }
             sachDuocMuonTableBody.append($row);
         });
+        let totalFine = (bookFine + quaHan*1000 < soTienDatCoc) ? bookFine + quaHan*1000 : soTienDatCoc;
+        let totalReturn = Number(soTienDatCoc) - Number(totalFine);
+        if(Number(trangThai) >= 2) {
+            $('#totalDepositWrapper').show();
+            $('#totalDeposit').text(soTienDatCoc);
+            $('#totalFineWrapper').show();
+            $('#totalFine').text(totalFine);
+            $('#totalReturnWrapper').show();
+            $('#totalReturn').text(totalReturn);
+        } else {
+            $('#totalDepositWrapper').hide();
+            $('#totalFineWrapper').hide();
+            $('#totalReturnWrapper').hide();
+        }
     }
 
     //request status here
@@ -120,6 +156,8 @@ function openModalViewRequestDetailNotFix(id, sachDuocMuonList) {
     $('#SoTienCocSach-notfix').text(soTienDatCoc);
     $('#PhiMuonSach-notfix').text(phiMuonSach);
     $('#totalDepositNotFix').text(soTienDatCoc);
+    $('#totalFineNotFix').text(boiThuong);
+    $('#totalReturnNotFix').text(Number(soTienDatCoc) - Number(boiThuong));
     $('#status-notfix').css('background-color', '#0275d8').text('Đã trả');
     if(diaChi!==null && diaChi!=='') {
         $('#diaChi-PhiVanChuyen-notfix').removeClass('d-none');
@@ -139,6 +177,15 @@ function openModalViewRequestDetailNotFix(id, sachDuocMuonList) {
             const $row = $("<tr></tr>");
             $row.append(`<td class="text-center">${sachDuocMuon.tenSach}</td>`);
             $row.append(`<td class="text-center">${sachDuocMuon.soTienDatCoc} đ</td>`);
+            let $trangThaiRow = $(`<td class="text-center"></td>`);
+            let $trangThai = $(`<span></span>`);
+            if(sachDuocMuon.trangThai===1 || sachDuocMuon.trangThai==='1') {
+                $trangThai.text('Đã trả').attr('class', 'badge badge-primary');
+            } else {
+                $trangThai.text('Đã mất/hỏng').attr('class', 'badge badge-danger');
+            }
+            $trangThaiRow.append($trangThai);
+            $row.append($trangThaiRow);
             sachDuocMuonTableBody.append($row);
         });
     }
@@ -153,11 +200,8 @@ $('#statusOptions').on('change', function () {
     console.log("Reached statusOptions change")
     let val = parseInt($('#statusOptions').val(), 10);
     switch (val) {
-        case -1:
-            $('#status-detail').css('background-color', '#d9534f').text('Từ chối');
-            break;
         case 0:
-            $('#status-detail').css('background-color', '#f0ad4e').text('Chờ duyệt');
+            $('#status-detail').css('background-color', '#d9534f').text('Chờ duyệt');
             break;
         case 1:
             $('#status-detail').css('background-color', '#5cb85c').text('Đã duyệt, chờ nhận');
@@ -174,18 +218,31 @@ $('#statusOptions').on('change', function () {
 
 document.getElementById('yeuCauMuonSachDetails').addEventListener('submit', function(e) {
     e.preventDefault();
-    if(window.confirm("Bạn có chắc chắn muốn cập nhật trạng thái cho yêu cầu này?")) {
+    let updatedStatus = $('#statusOptions').val();
+    let message;
+    if(updatedStatus===3 || updatedStatus==='3') {
+        message = "Khi cập nhật lên 'Đã trả', những sách chưa được tiếp nhận sẽ được coi như là đã mất, bạn có chắc chắn muốn cập nhật không?";
+    } else {
+        message = "Bạn có chắc chắn muốn cập nhật yêu cầu này?";
+    }
+    if(window.confirm(message)) {
         //send ajax request to server
         let currentId = document.getElementById('detailRequestModal').getAttribute('data-current-id');
-        let updatedStatus = $('#statusOptions').val();
-        let p = $('#PhiVanChuyen-detail').val();
-        let url = '/Library/management/manageBookBorrowed/updateRequestStatus?yeuCauId=' + currentId + '&status=' + updatedStatus;
-        if(p!==null && p!=='') {
-            url += '&p=' + p;
+        let phiVanChuyen = $('#PhiVanChuyen-detail').val();
+        let url = '/Library/management/manageBookBorrowed/updateRequestStatus';
+        const sachDaTraList = Array.from(document.querySelectorAll('input[name="sachDaTra"]:checked'))
+            .map(checkbox => checkbox.value);
+        let data = {
+            yeuCauId: currentId,
+            status: updatedStatus,
+            phiVanChuyen: phiVanChuyen,
+            sachDaTraList: sachDaTraList
         }
         $.ajax({
             method: 'POST',
             url: url,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
             success: function () {
                 alert("Cập nhật thành công");
                 location.reload();
@@ -197,7 +254,7 @@ document.getElementById('yeuCauMuonSachDetails').addEventListener('submit', func
                 } else if(errorResponse && errorResponse === 'Insufficient amount') {
                     alert("Số lượng sách trong kho không đủ đáp ứng yêu cầu này");
                 } else if(errorResponse && errorResponse === 'No returned books') {
-                    alert("Bạn chưa chọn sách đã trả lại");
+                    alert("Chưa thể cập nhật trạng thái yêu cầu lên 'Đã trả' khi chưa tiếp nhận sách");
                 } else {
                     alert("Có lỗi, vui lòng thử lại sau");
                 }

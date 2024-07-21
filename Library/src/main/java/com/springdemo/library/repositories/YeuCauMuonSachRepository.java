@@ -2,6 +2,7 @@ package com.springdemo.library.repositories;
 
 import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.dto.MissingSach;
+import com.springdemo.library.model.other.SachDuocMuon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,8 +27,11 @@ public interface YeuCauMuonSachRepository extends JpaRepository<YeuCauMuonSach, 
     @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra = GETDATE()", nativeQuery = true)
     List<YeuCauMuonSach> findYeuCauWhereDueDateIsToday();
 
-    @Query("SELECT s.sach, COUNT(s.sach) FROM YeuCauMuonSach y JOIN y.sachDuocMuonList s WHERE y.boiThuong = y.soTienDatCoc GROUP BY s.sach")
+    @Query("SELECT new com.springdemo.library.model.dto.MissingSach(s.sach, COUNT(s.sach)) FROM YeuCauMuonSach y JOIN y.sachDuocMuonList s WHERE s.trangThai = -1 GROUP BY s.sach")
     List<MissingSach> findAllMissingSach();
+
+    @Query("SELECT s FROM YeuCauMuonSach y JOIN y.sachDuocMuonList s WHERE s.sach.Id = :sachId")
+    List<SachDuocMuon> findAllSachDuocMuonBySachId(@Param("sachId") int sachId);
 
     @Query(value = "SELECT y.* FROM YeuCauMuonSach y WHERE y.NgayTra < GETDATE()", nativeQuery = true)
     List<YeuCauMuonSach> findAllOverdueYeuCau();

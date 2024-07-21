@@ -23,13 +23,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="item : ${modelClass}" th:id="'row_' + ${item.getId()}">
-                            <td th:id="'TenSach_' + ${item.getId()}" th:text="${item.getMissingSach().getTenSach()}"></td>
-                            <td th:id="'TacGia_' + ${item.getId()}" th:text="${item.getMissingSach().getTacGia()}"></td>
-                            <td th:id="'NhaXuatBan_' + ${item.getId()}" th:text="${item.getMissingSach().getNhaXuatBan()}"></td>
-                            <td th:id="'SoLuongDaMat_' + ${item.getId()}" th:text="${item.getMissingSach().getSoLuongDaMat()}"></td>
+                        <tr th:each="item : ${modelClass}" th:id="'row_' + ${item.getMissingSach().getId()}">
+                            <td th:id="'TenSach_' + ${item.getMissingSach().getId()}" th:text="${item.getMissingSach().getTenSach()}"></td>
+                            <td th:id="'TacGia_' + ${item.getMissingSach().getId()}" th:text="${item.getMissingSach().getTacGia()}"></td>
+                            <td th:id="'NhaXuatBan_' + ${item.getMissingSach().getId()}" th:text="${item.getMissingSach().getNhaXuatBan()}"></td>
+                            <td th:id="'SoLuongDaMat_' + ${item.getMissingSach().getId()}" th:text="${item.getSoLuongDaMat()}"></td>
                             <td class="d-flex justify-content-center">
-                                <button type="button" class="btn btn-light" th:onclick="'refill(' + ${item.getId()} + ')'">Mua bù</button>
+                                <button type="button" class="btn btn-info" th:onclick="'refill(' + ${item.getMissingSach().getId()} + ')'">Mua bù</button>
                             </td>
                         </tr>
                         </tbody>
@@ -42,17 +42,20 @@
 </div>
 <!-- /.content-wrapper -->
 <script th:inline="javascript">
-    function refill(id) {
-        $.ajax({
-            method: 'POST',
-            url: '/Library/management/missingbooks/refill',
-            success: function () {
-                alert("Đã cập nhật số lượng mua bù vào cơ sở dữ liệu");
-                window.location.reload();
-            },
-            error: function () {
-                alert("Có lỗi");
-            }
-        });
+    function refill(book) {
+        let quantity = $('#SoLuongDaMat_' + book).text();
+        if(window.confirm("Bạn có chắc chắn đã mua bù đầy đủ sách không?")) {
+            $.ajax({
+                method: 'POST',
+                url: '/Library/management/missingbooks/refill?book=' + book + '&quantity=' + quantity,
+                success: function () {
+                    alert("Đã cập nhật số lượng mua bù vào kho hàng");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("Có lỗi");
+                }
+            });
+        }
     }
 </script>
