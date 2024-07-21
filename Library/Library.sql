@@ -78,6 +78,7 @@ CREATE TABLE [dbo].[SachDuocMuon]
 	SachId INT NOT NULL,
 	YeuCauId INT NOT NULL,
 	SoTienDatCoc FLOAT NOT NULL,
+	TrangThai INT NOT NULL DEFAULT 0,
 	PRIMARY KEY (SachId, YeuCauId),
 	FOREIGN KEY (SachId) REFERENCES [dbo].[Sach](Id),
 	FOREIGN KEY (YeuCauId) REFERENCES [dbo].[YeuCauMuonSach](Id)

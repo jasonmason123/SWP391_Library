@@ -77,12 +77,10 @@
 <div class="modal fade" id="RequestModal" tabindex="-1" role="dialog" data-backdrop="static"
      aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <form class="modal-content">
+    <form class="modal-content" id="reportLostBooksForm">
       <div class="modal-header">
         <h5 class="modal-title">Thông tin yêu cầu mượn sách</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div>
@@ -136,7 +134,7 @@
               <b id="PhiVanChuyen" type="text" class="form-control"></b>
             </div>
           </div>
-          <table class="table">
+          <table class="table" id="sachDuocMuonTable">
             <thead>
             <tr>
               <th scope="col" class="text-center">Tên sách</th>
@@ -145,10 +143,13 @@
             </thead>
             <tbody id="sachDuocMuonTableBody"></tbody>
           </table>
-          <p>Tổng số tiền phải cọc: <strong id="totalDeposit"></strong> đ</p>
+          <p>Tổng số tiền đã cọc: <strong id="totalDeposit"></strong> đ</p>
+          <p>Tổng số tiền bồi thường dự kiến nếu không trả đủ sách đúng hạn: <strong id="totalFine"></strong> đ</p>
+          <p>Tổng số tiền dự kiến được nhận lại khi trả sách: <strong id="totalReturn"></strong> đ</p>
         </div>
       </div>
       <div class="modal-footer">
+        <button type="submit" class="btn btn-custom">Lưu</button>
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
       </div>
     </form>

@@ -5,6 +5,7 @@ import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
 import com.springdemo.library.model.dto.EmailDetailsDto;
 import com.springdemo.library.model.dto.SachDuocMuonViewDto;
+import com.springdemo.library.model.dto.YeuCauMuonSachUpdateData;
 import com.springdemo.library.model.other.SachDuocMuon;
 import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 @Controller
 @Slf4j
@@ -59,16 +61,18 @@ public class BookBorrowManagementController {
 
     @PostMapping("/updateRequestStatus")
     public ResponseEntity<String> updateRequestStatus(
-            @RequestParam("yeuCauId") int yeuCauId,
-            @RequestParam("status") int status,
-            @RequestParam(value = "p", required = false) Double phiVanChuyen
+            @RequestBody YeuCauMuonSachUpdateData yeuCauMuonSachUpdateData
     ) {
         //0:Chua duoc duyet, 1:Da duyet - cho muon, 2:Dang muon, 3:Da tra
         try {
+            int yeuCauId = yeuCauMuonSachUpdateData.getYeuCauId();
+            int status = yeuCauMuonSachUpdateData.getStatus();
+            Double phiVanChuyen = yeuCauMuonSachUpdateData.getPhiVanChuyen();
+            List<Integer> sachDaTraIdList = yeuCauMuonSachUpdateData.getSachDaTraList();
             Date today = new Date();
             YeuCauMuonSach yeuCauMuonSach = yeuCauMuonSachRepository.findById(yeuCauId).get();
             //Ngoài từ chối, chỉ được phép cập nhật lên trạng thái tiếp theo (VD: 1->2, 2->3, không đc 1->3)
-            if((status!=-1 && (status <= yeuCauMuonSach.getTrangThai() || status > yeuCauMuonSach.getTrangThai()+1))
+            if((status!=-1 && (status < yeuCauMuonSach.getTrangThai() || status > yeuCauMuonSach.getTrangThai()+1))
                     || (status==-1 && yeuCauMuonSach.getTrangThai()>=2) //Từ sau khi sách đang đc mượn, không đc từ chối
                     || (yeuCauMuonSach.getTrangThai()==-1) //Khi đã từ chối, không thể cập nhật lên các trạng thái khác
                     || (status<-1 || status>3) //Giá trị biên
@@ -76,6 +80,51 @@ public class BookBorrowManagementController {
                 log.warn("Invalid status");
                 return ResponseEntity.badRequest().body("Invalid status");
             }
+//process returned and not-returned books
+            log.warn("processing returned and not-returned books");
+            if(yeuCauMuonSach.getTrangThai()<2 && (sachDaTraIdList!=null && !sachDaTraIdList.isEmpty())) {
+                log.warn("Cannot update sachDuocMuon.trangThai while yeuCauMuonSach.trangThai!=2 or today is before yeuCauMuonSach.ngayTra");
+                return ResponseEntity.badRequest().body("Invalid status");
+            } else if(yeuCauMuonSach.getTrangThai()>=2 && (sachDaTraIdList!=null && !sachDaTraIdList.isEmpty())) {
+                double tienPhatSach = 0;
+                //Chuyển trạng thái của các sách được mượn đã trả sang 1
+                for(SachDuocMuon sachDuocMuon : yeuCauMuonSach.getSachDuocMuonList().stream().filter(x -> x.getTrangThai()!=1).toList()) {
+                    if(sachDaTraIdList.contains(sachDuocMuon.getSach().getId())) {
+                        sachDuocMuon.setTrangThai(1);
+                        Sach sach = sachDuocMuon.getSach();
+                        sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() + 1);
+                        sachRepository.save(sach);
+                    } else {
+                        if(today.after(yeuCauMuonSach.getNgayTra())) {
+                            sachDuocMuon.setTrangThai(-1);
+                        }
+                        tienPhatSach += sachDuocMuon.getSoTienDatCoc();
+                    }
+                }
+                if(tienPhatSach == 0 && (yeuCauMuonSach.getSoTienDatCoc() - yeuCauMuonSach.getQuaHan()*1000) > 0) {
+                    yeuCauMuonSach.setBoiThuong(yeuCauMuonSach.getQuaHan()*1000);
+                }
+                double tongTienPhat = tienPhatSach + yeuCauMuonSach.getQuaHan()*1000;
+                log.warn("tongTienPhat: " + tongTienPhat);
+                if(tongTienPhat < yeuCauMuonSach.getSoTienDatCoc()) {
+                    yeuCauMuonSach.setBoiThuong(tongTienPhat);
+                } else {
+                    yeuCauMuonSach.setBoiThuong(yeuCauMuonSach.getSoTienDatCoc());
+                }
+//if all books are returned, set status to 3 and send return confirmation email
+                if(new HashSet<>(sachDaTraIdList).containsAll(yeuCauMuonSach.getSachDuocMuonList()
+                        .stream().map(x -> x.getSach().getId()).toList())) {
+                    log.warn("All books returned");
+                    yeuCauMuonSach.setTrangThai(3);
+                    yeuCauMuonSach.setDateUpdated(new Date());
+                    yeuCauMuonSachRepository.save(yeuCauMuonSach);
+                    sendReturnConfimationEmail(yeuCauMuonSach);
+                    return ResponseEntity.ok().build();
+                }
+                yeuCauMuonSachRepository.save(yeuCauMuonSach);
+            }
+//update status
+            log.warn("Updating status: " + status);
             if(status==1) {
                 if(yeuCauMuonSach.getSachDuocMuonList().stream().anyMatch(x -> x.getSach().getSoLuongTrongKho()<=0)) {
                     log.warn("Insuffcient amount");
@@ -112,14 +161,11 @@ public class BookBorrowManagementController {
                 yeuCauMuonSachRepository.delete(yeuCauMuonSach);
                 return ResponseEntity.ok().build();
             } else if(status==3) {
-                yeuCauMuonSach.getSachDuocMuonList().forEach(x -> {
-                    Sach sach = x.getSach();
-                    sach.setSoLuongTrongKho(sach.getSoLuongTrongKho() + 1);
-                    sachRepository.save(sach);
-                });
+                //set all sachDuocMuon with trangThai!=1 to -1
+                yeuCauMuonSach.getSachDuocMuonList().stream().filter(x -> x.getTrangThai()!=1).forEach(x -> x.setTrangThai(-1));
+                yeuCauMuonSach.setTrangThai(3);
                 sendReturnConfimationEmail(yeuCauMuonSach);
             }
-            yeuCauMuonSach.setTrangThai(status);
             yeuCauMuonSach.setDateUpdated(new Date());
             yeuCauMuonSachRepository.save(yeuCauMuonSach);
             return ResponseEntity.ok().build();
@@ -196,6 +242,9 @@ public class BookBorrowManagementController {
     private void sendReturnConfimationEmail(YeuCauMuonSach yeuCauMuonSach) {
         double returnAmount = (yeuCauMuonSach.getSoTienDatCoc() - yeuCauMuonSach.getBoiThuong() > 0) ?
                 yeuCauMuonSach.getSoTienDatCoc() - yeuCauMuonSach.getBoiThuong() : 0;
+        double phiBoiThuongSach = 0;
+        List<SachDuocMuon> sachKhongTiepNhan = yeuCauMuonSach.getSachDuocMuonList()
+                .stream().filter(x -> x.getTrangThai()==-1 || x.getTrangThai()==0).toList();
         String receipientEmail = yeuCauMuonSach.getNguoiMuon().getEmail();
         String subject = "[THERASUS] Thông báo xác nhận trả sách";
         StringBuilder messageBodyBuilder = new StringBuilder();
@@ -210,9 +259,25 @@ public class BookBorrowManagementController {
             messageBodyBuilder.append("<li><strong>").append(sachDuocMuon.getSach().getTenSach()).append("</strong>- <span>Đặt cọc: ")
                     .append(sachDuocMuon.getSoTienDatCoc()).append(" đ</span></li>");
         }
-        messageBodyBuilder.append("</ul></div><p>Số tiền đã đặt cọc: <strong>").append(yeuCauMuonSach.getSoTienDatCoc()).append(" đ")
+        messageBodyBuilder.append("</ul></div><p>Danh sách sách thư viện đã tiếp nhận: </p><div><ul>");
+        yeuCauMuonSach.getSachDuocMuonList().stream().filter(x -> x.getTrangThai()==1).forEach(
+                sachDuocMuon -> messageBodyBuilder.append("<li><strong>").append(sachDuocMuon.getSach().getTenSach()).append("</strong></li>"));
+        messageBodyBuilder.append("</ul></div><p>Danh sách sách thư viện không tiếp nhận: </p><div><ul>");
+        if(sachKhongTiepNhan.isEmpty()) {
+            messageBodyBuilder.append("<li><strong>Không có</strong></li>");
+        } else {
+            for(SachDuocMuon sachDuocMuon : sachKhongTiepNhan) {
+                messageBodyBuilder.append("<li><strong>").append(sachDuocMuon.getSach().getTenSach())
+                        .append("</strong>- <span>Giá trị: <strong>").append(sachDuocMuon.getSoTienDatCoc())
+                        .append("</strong> đ</span></li>");
+                phiBoiThuongSach += sachDuocMuon.getSoTienDatCoc();
+            }
+        }
+        messageBodyBuilder.append("</ul></div><p>Số tiền đã đặt cọc: <strong>").append(yeuCauMuonSach.getSoTienDatCoc()).append("</strong> đ")
                 .append("<p>Số ngày quá hạn: <strong>").append(yeuCauMuonSach.getQuaHan()).append("</strong> ngày")
-                .append("<p>Phí bồi thường: <strong>").append(yeuCauMuonSach.getBoiThuong()).append(" </strong> đ")
+                .append("<p>Phí bồi thường trả muộn: <strong>").append(yeuCauMuonSach.getQuaHan()*1000).append("</strong> đ")
+                .append("<p>Phí bồi thường sách: <strong>").append(phiBoiThuongSach).append("</strong> đ")
+                .append("<p>Tổng phí bồi thường: <strong>").append(yeuCauMuonSach.getBoiThuong()).append(" </strong> đ")
                 .append("<p><strong>Số tiền trả lại: ").append(returnAmount).append(" </strong> đ</p>")
                 .append("Bạn đọc vui lòng đến nhận lại tiền cọc tại thư viện hoặc gửi thông tin số tài khoản tới email: sonbmhe180353@fpt.edu.vn");
         emailService.sendHtmlEmail(EmailDetailsDto.builder()
@@ -241,14 +306,18 @@ public class BookBorrowManagementController {
         for (YeuCauMuonSach request : allRequests) {
             double soTienDatCoc = request.getSoTienDatCoc();
             double boiThuong = request.getBoiThuong();
-            if(soTienDatCoc > 0) {
+            if(boiThuong < soTienDatCoc) {
                 request.setQuaHan(request.getQuaHan() + 1);
-                if(soTienDatCoc - 1000 < 0) {
-                    request.setBoiThuong(request.getBoiThuong() + (1000 - soTienDatCoc));
+                if(soTienDatCoc - boiThuong <= 1000) {
+                    request.setBoiThuong(soTienDatCoc);
                 } else {
                     request.setBoiThuong(boiThuong + 1000);
                 }
                 request.setDateUpdated(new Date());
+                yeuCauMuonSachRepository.save(request);
+            } else {
+                request.getSachDuocMuonList().stream().filter(x -> x.getTrangThai()==0).forEach(x -> x.setTrangThai(-1));
+                request.setTrangThai(3);
                 yeuCauMuonSachRepository.save(request);
             }
         }
@@ -277,5 +346,11 @@ public class BookBorrowManagementController {
                 .append("</body></html>");
         emailService.sendHtmlEmail(EmailDetailsDto.builder().recipient(recipient).subject(subject).messageBody(messageBody.toString()).build());
     }
+
+    /*
+    Khi trả sách, staff sẽ kiểm tra xem sách có đc trả đầy đủ k, sách đã trả còn trong tình trạng tốt k. Nếu k, khi mất hay hỏng sách nào,
+    staff sẽ đánh sách đấy đã mất hoặc đã hỏng và hệ thống cập nhật cộng tiền bồi thường bằng đúng giá trị quyển sách đó (YeuCauMuonSach.boiThuong),
+    và đồng thời cập nhật trạng thái sách đó là đã mất (SachDuocMuon.trangThai = 1).
+     */
 
 }

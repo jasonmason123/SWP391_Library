@@ -179,7 +179,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <table class="table">
+                                <table class="table" id="sachDuocMuonTable">
                                     <thead>
                                     <tr>
                                         <th scope="col" class="text-center">Tên sách</th>
@@ -188,7 +188,9 @@
                                     </thead>
                                     <tbody id="sachDuocMuonTableBody"></tbody>
                                 </table>
-                                <p>Tổng số tiền phải cọc: <strong id="totalDeposit"></strong> đ</p>
+                                <p id="totalDepositWrapper">Tổng số tiền <strong>đã cọc</strong>: <strong id="totalDeposit"></strong> đ</p>
+                                <p id="totalFineWrapper">Tổng số tiền dự kiến người mượn phải <strong>bồi thường</strong>: <strong id="totalFine"></strong> đ</p>
+                                <p id="totalReturnWrapper">Tổng số tiền dự kiến thư viện phải <strong>trả lại</strong>: <strong id="totalReturn"></strong> đ</p>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -282,11 +284,14 @@
                                     <tr>
                                         <th scope="col" class="text-center">Tên sách</th>
                                         <th scope="col" class="text-center">Số tiền đặt cọc</th>
+                                        <th scope="col" class="text-center">Trạng thái</th>
                                     </tr>
                                     </thead>
                                     <tbody id="sachDuocMuonTableBodyNotFix"></tbody>
                                 </table>
-                                <p>Tổng số tiền phải cọc: <strong id="totalDepositNotFix"></strong> đ</p>
+                                <p>Tổng số tiền <strong>đã cọc</strong>: <strong id="totalDepositNotFix"></strong> đ</p>
+                                <p>Tổng số tiền người mượn <strong>bồi thường</strong>: <strong id="totalFineNotFix"></strong> đ</p>
+                                <p>Tổng số tiền thư viện <strong>trả lại</strong>: <strong id="totalReturnNotFix"></strong> đ</p>
                             </div>
                         </div>
                         <div class="modal-footer">

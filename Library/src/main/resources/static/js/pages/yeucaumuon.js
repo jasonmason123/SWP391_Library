@@ -52,20 +52,76 @@ function generateModalViewRequestDetail(yeuCauMuonSach) {
         $('#PhiVanChuyen').text(yeuCauMuonSach.phiVanChuyen);
     }
 
-    const sachDuocMuonTableBody = $('#sachDuocMuonTableBody');
+    const sachDuocMuonTableBody = $('#sachDuocMuonTable tbody');
     sachDuocMuonTableBody.empty();
     let sachDuocMuonList = yeuCauMuonSach.sachDuocMuonList;
+    let status = yeuCauMuonSach.trangThai;
+    if((status===2 || status==='2') && $('#daMatHead').length === 0) {
+        $('#sachDuocMuonTable thead tr').append('<th scope="col" id="daMatHead" class="text-center">Đã mất</th>');
+    } else if(!(status===2 || status==='2')) {
+        $('#daMatHead').remove();
+    }
     if(sachDuocMuonList && sachDuocMuonList.length>0) {
+        let bookFine = 0;
         sachDuocMuonList.forEach(sachDuocMuon => {
             const $row = $("<tr></tr>");
             $row.append(`<td class="text-center">${sachDuocMuon.tenSach}</td>`);
             $row.append(`<td class="text-center">${sachDuocMuon.soTienDatCoc} đ</td>`);
+            if((status===2 || status==='2') && $('#daMatHead').length !== 0) {
+                let $checkbox;
+                if(sachDuocMuon.trangThai===1 || sachDuocMuon.trangThai==='1') {
+                    $checkbox = $('<span style="color: #0275d8;">Đã trả</span>');
+                } else if (sachDuocMuon.trangThai===0 || sachDuocMuon.trangThai==='0') {
+                    $checkbox = $(`<input type="checkbox" class="form-check-input" name="lost" value="${sachDuocMuon.sachId}">`);
+                    //bookFine += sachDuocMuon.soTienDatCoc;
+                } else {
+                    $checkbox = $(`<input type="checkbox" class="form-check-input" name="lost" value="${sachDuocMuon.sachId}" checked>`);
+                    bookFine += sachDuocMuon.soTienDatCoc;
+                }
+                const $checkboxCell = $('<td class="text-center"></td>').append($checkbox);
+                $row.append($checkboxCell);
+            }
             sachDuocMuonTableBody.append($row);
         });
+        let totalFine = (bookFine + yeuCauMuonSach.quaHan*1000 < yeuCauMuonSach.soTienDatCoc) ?
+            bookFine + yeuCauMuonSach.quaHan*1000 : yeuCauMuonSach.soTienDatCoc;
+        let totalReturn = Number(yeuCauMuonSach.soTienDatCoc) - Number(totalFine);
+        $('#totalFine').text(totalFine);
+        $('#totalReturn').text(totalReturn);
     }
 
     $('#RequestModal').modal('show');
 
     // Store the current item ID for later use
-    document.getElementById('RequestModal').setAttribute('data-current-id', id);
+    document.getElementById('RequestModal').setAttribute('data-current-id', yeuCauMuonSach.id);
 }
+
+$(document).ready(function () {
+    $('#reportLostBooksForm').on('submit', function (e) {
+        e.preventDefault();
+        if(window.confirm("Bạn có chắc chắn những sách bạn đã đánh dấu là đã mất hay không?")) {
+            const idYeuCau = $('#ID-yeucau').text();
+            const lostBookIdList = [];
+            $('input[name="lost"]:checked').each(function() {
+                lostBookIdList.push($(this).val());
+            });
+            const formData = {
+                yeuCau: [idYeuCau],
+                lost: lostBookIdList
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/Library/borrowing/reportlostbooks',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function() {
+                    alert('Đã thông báo sách đã mất');
+                    window.location.reload();
+                },
+                error: function() {
+                    alert('Có lỗi');
+                }
+            });
+        }
+    });
+});

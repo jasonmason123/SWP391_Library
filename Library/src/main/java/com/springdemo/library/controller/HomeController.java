@@ -3,16 +3,14 @@ package com.springdemo.library.controller;
 import com.springdemo.library.model.Sach;
 import com.springdemo.library.model.User;
 import com.springdemo.library.model.YeuCauMuonSach;
-import com.springdemo.library.model.dto.SachDuocMuonViewDto;
 import com.springdemo.library.model.dto.YeuCauMuonSachViewDto;
+import com.springdemo.library.model.other.SachDuocMuon;
 import com.springdemo.library.repositories.SachRepository;
 import com.springdemo.library.repositories.YeuCauMuonSachRepository;
 import com.springdemo.library.security.userdetails.CustomUserDetails;
 import com.springdemo.library.services.GenerateViewService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,6 +145,33 @@ public class HomeController {
         ModelAndView borrowingViewModel = generateViewService.generateCustomerView("Sách đang mượn", breadCrumb, "borrowing", authentication);
         borrowingViewModel.addObject("modelClass", modelClass);
         return borrowingViewModel;
+    }
+
+    @PostMapping("/borrowing/reportlostbooks")
+    public ResponseEntity<String> reportLostBooks(
+            @RequestBody Map<String, List<Integer>> lostBookIdRequestBody
+    ) {
+        try {
+            int yeuCauId = lostBookIdRequestBody.get("yeuCau").get(0);
+            YeuCauMuonSach yeuCauMuonSach = yeuCauMuonSachRepository.findById(yeuCauId).orElse(null);
+            if(yeuCauMuonSach!=null) {
+                List<Integer> lostBookIdList =  lostBookIdRequestBody.get("lost");
+                for(SachDuocMuon sachDuocMuon : yeuCauMuonSach.getSachDuocMuonList()) {
+                    if(lostBookIdList.contains(sachDuocMuon.getSach().getId())) {
+                        if(sachDuocMuon.getTrangThai()==0) {
+                            sachDuocMuon.setTrangThai(-1);
+                        }
+                    } else if(!lostBookIdList.contains(sachDuocMuon.getSach().getId()) && sachDuocMuon.getTrangThai()==-1) {
+                        sachDuocMuon.setTrangThai(0);
+                    }
+                }
+                yeuCauMuonSachRepository.save(yeuCauMuonSach);
+                return ResponseEntity.ok().build();
+            }
+        } catch (Exception e) {
+            log.error("Error: " + e);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/history")
