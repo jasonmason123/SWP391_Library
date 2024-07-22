@@ -57,11 +57,11 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
             if((status===2 || status==='2') && $('#daTiepNhanHead').length !== 0) {
                 let $checkbox;
                 if(sachDuocMuon.trangThai===1 || sachDuocMuon.trangThai==='1') {
-                    $checkbox = $(`<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra" data-tienCoc="${sachDuocMuon.soTienDatCoc}" checked disabled>`);
+                    $checkbox = $(`<input type="checkbox" class="sachDaTiepNhan form-check-input sach" name="sachDaTra" data-tienCoc="${sachDuocMuon.soTienDatCoc}" checked disabled>`);
                 } else if(sachDuocMuon.trangThai===0 || sachDuocMuon.trangThai==='0') {
-                    $checkbox = $(`<input type="checkbox" class="sachDaTiepNhan form-check-input" name="sachDaTra" data-tienCoc="${sachDuocMuon.soTienDatCoc}">`);
+                    $checkbox = $(`<input type="checkbox" class="sachDaTiepNhan form-check-input sach" name="sachDaTra" data-tienCoc="${sachDuocMuon.soTienDatCoc}">`);
                 } else {
-                    $checkbox = $('<span class="badge badge-danger">Đã mất/hỏng</span>');
+                    $checkbox = $(`<span class="badge badge-danger sach" data-tienCoc="${sachDuocMuon.soTienDatCoc}">Đã mất/hỏng</span>`);
                 }
                 $checkbox.attr('value', sachDuocMuon.sachId);
                 const $checkboxCell = $('<td class="text-center"></td>').append($checkbox);
@@ -69,9 +69,9 @@ function openModalViewRequestDetail(id, sachDuocMuonList) {
             }
             sachDuocMuonTableBody.append($row);
         });
-        const checkboxes = document.querySelectorAll('input[name="sachDaTra"]');
+        const checkboxes = document.querySelectorAll('.sach');
         checkboxes.forEach(checkbox => {
-            if(!checkbox.checked) {
+            if((checkbox.tagName === 'INPUT' && !checkbox.checked) || checkbox.tagName !== 'INPUT') {
                 bookFine += Number(checkbox.getAttribute('data-tienCoc'));
             }
         });
