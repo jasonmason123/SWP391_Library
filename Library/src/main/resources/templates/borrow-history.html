@@ -76,9 +76,7 @@
         <form class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Thông tin yêu cầu mượn sách</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="close btn-close" onclick="$('#RequestModal').modal('hide');" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div>
@@ -132,7 +130,7 @@
                             <b id="PhiVanChuyen" type="text" class="form-control"></b>
                         </div>
                     </div>
-                    <table class="table">
+                    <table class="table" id="sachDuocMuonTable">
                         <thead>
                         <tr>
                             <th scope="col" class="text-center">Tên sách</th>
@@ -141,11 +139,10 @@
                         </thead>
                         <tbody id="sachDuocMuonTableBody"></tbody>
                     </table>
-                    <p>Tổng số tiền phải cọc: <strong id="totalDeposit"></strong> đ</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="$('#RequestModal').modal('hide');">Đóng</button>
             </div>
         </form>
     </div>
@@ -153,6 +150,6 @@
 <script src="js/pages/yeucaumuon.js"></script>
 <script th:inline="javascript">
     function viewDetails(id) {
-        openModalViewDetails(id);
+        openModalViewDetailsStatic(id);
     }
 </script>

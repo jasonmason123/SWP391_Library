@@ -10,6 +10,55 @@ function openModalViewDetails(id) {
         }
     });
 }
+function openModalViewDetailsStatic(id) {
+    $.ajax({
+        method: 'GET',
+        url: '/Library/findyeucau?yeucau=' + id,
+        success: function (response) {
+            generateModalViewRequestDetailStatic(response);
+        },
+        error: function () {
+            alert("Có lỗi");
+        }
+    });
+}
+function generateModalViewRequestDetailStatic(yeuCauMuonSach) {
+    $('#ID-yeucau').text(yeuCauMuonSach.id);
+    $('#NgayMuon').text(yeuCauMuonSach.ngayMuon);
+    $('#NgayTra').text(yeuCauMuonSach.ngayTra);
+    $('#QuaHan').text(yeuCauMuonSach.quaHan);
+    $('#BoiThuong').text(yeuCauMuonSach.boiThuong);
+    $('#SoTienCocSach').text(yeuCauMuonSach.soTienDatCoc);
+    $('#PhiMuonSach').text(yeuCauMuonSach.phiMuonSach);
+    $('#status').css('background-color', '#0275d8').text('Đã trả');
+
+    if(yeuCauMuonSach.diaChiNhanSach!==null && yeuCauMuonSach.diaChiNhanSach!=='') {
+        $('#diaChi-PhiVanChuyen').removeClass('d-none');
+        $('#DiaChi').val(yeuCauMuonSach.diaChiNhanSach);
+    } else {
+        $('#diaChi-PhiVanChuyen').addClass('d-none');
+        $('#PhiVanChuyen').removeAttr('required');
+    }
+    if(yeuCauMuonSach.phiVanChuyen!=null) {
+        $('#PhiVanChuyen').text(yeuCauMuonSach.phiVanChuyen);
+    }
+
+    const sachDuocMuonTableBody = $('#sachDuocMuonTable tbody');
+    sachDuocMuonTableBody.empty();
+    let sachDuocMuonList = yeuCauMuonSach.sachDuocMuonList;
+    sachDuocMuonList.forEach(sachDuocMuon => {
+        const $row = $("<tr></tr>");
+        $row.append(`<td class="text-center">${sachDuocMuon.tenSach}</td>`);
+        $row.append(`<td class="text-center">${sachDuocMuon.soTienDatCoc} đ</td>`);
+        sachDuocMuonTableBody.append($row);
+    });
+
+    $('#RequestModal').modal('show');
+
+    // Store the current item ID for later use
+    document.getElementById('RequestModal').setAttribute('data-current-id', yeuCauMuonSach.id);
+}
+
 function generateModalViewRequestDetail(yeuCauMuonSach) {
     $('#ID-yeucau').text(yeuCauMuonSach.id);
     $('#NgayMuon').text(yeuCauMuonSach.ngayMuon);
