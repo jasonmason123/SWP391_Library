@@ -34,6 +34,33 @@ public class CustomerManagementController {
         return manageCustomerViewModel;
     }
 
+    @PostMapping("/udpateCustomer")
+    @ResponseBody
+    public ResponseEntity<String> updateCustomer(
+        @RequestParam(name = "customer") int id,
+        @RequestParam(name = "email", required = false) String newEmail,
+        @RequestParam(name = "sdt", required = false) String newSdt
+    ) {
+        try {
+            User existedCustomer = userRepository.findById(id).orElse(null);
+            if(existedCustomer!=null) {
+                if((newEmail!=null && !newEmail.isEmpty()) && !newEmail.equals(existedCustomer.getEmail())) {
+                    existedCustomer.setEmail(newEmail);
+                }
+                if((newSdt!=null && !newSdt.isEmpty()) && !newSdt.equals(existedCustomer.getSoDienThoai())) {
+                    existedCustomer.setSoDienThoai(newSdt);
+                }
+                userRepository.save(existedCustomer);
+                return ResponseEntity.ok().build();
+            }
+        } catch (DataIntegrityViolationException e) {
+            log.error("Database error: " + e);
+        } catch (NullPointerException e) {
+            log.error("System error: " + e);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
     @PostMapping("/deactivateCustomer")
     @ResponseBody
     public ResponseEntity<String> deactivateCustomer(
