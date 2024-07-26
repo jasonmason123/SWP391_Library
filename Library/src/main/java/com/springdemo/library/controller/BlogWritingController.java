@@ -109,9 +109,7 @@ public class BlogWritingController {
             List<Integer> tagIds = blogDto.getTagIds();
             if(tagIds!=null && !tagIds.isEmpty()) {
                 List<Tag> addedTags = tagRepository.findAllById(tagIds);
-                if(!new HashSet<>(blog.getTags()).containsAll(addedTags) || !new HashSet<>(addedTags).containsAll(blog.getTags())) {
-                    blog.setTags(addedTags);
-                }
+                blog.setTags(addedTags);
             } else {
                 if(!blog.getTags().isEmpty()) {
                     blog.getTags().clear();
@@ -129,7 +127,7 @@ public class BlogWritingController {
 
     @PostMapping("/submitblog")
     public ResponseEntity<String> submitBlog(
-            @RequestBody Blog blogDto,
+            @RequestBody BlogDto blogDto,
             Authentication authentication
     ) {
         if((blogDto.getTieuDe()==null || blogDto.getTieuDe().isEmpty()) ||
@@ -143,6 +141,9 @@ public class BlogWritingController {
             blogRepository.save(blog);
         } else {
             Blog newBlog = new Blog(user, blogDto.getTieuDe(), blogDto.getNoiDung(), new Date(), 2);
+            List<Integer> tagIds = blogDto.getTagIds();
+            List<Tag> addedTags = tagRepository.findAllById(tagIds);
+            newBlog.setTags(addedTags);
             blogRepository.save(newBlog);
         }
         return ResponseEntity.ok().build();

@@ -121,7 +121,17 @@ public class BlogController {
                 <li><a href="#" class="active">""" + blog.getTieuDe() + """
             </a></li>
             </ul>""";
+            StringBuilder tags = new StringBuilder();
             Map<String, Object> modelClass = new HashMap<>();
+            List<Tag> tagsList = blog.getTags();
+            if(tagsList!=null && !tagsList.isEmpty()) {
+                tags.append(tagsList.get(0).getTenTag()).append(", ");
+                for(int i = 1; i < tagsList.size() - 1; i++) {
+                    tags.append(tagsList.get(i).getTenTag()).append(", ");
+                }
+                tags.append(tagsList.get(tagsList.size() - 1).getTenTag());
+                modelClass.put("tags", tags.toString());
+            }
             modelClass.put("blog", blog);
             modelClass.put("binhLuanBlogList", binhLuanBlogList);
             ModelAndView blogDetailViewModel = generateViewService.generateCustomerView(blog.getTieuDe(), breadCrumb, "blog-details", authentication);

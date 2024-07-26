@@ -48,7 +48,7 @@
 				</div>
 				<div class="comment-tag">
 					<p>Tags: 
-						<strong th:each="tag, iterStat : ${modelClass.get('blog').getTags()}" th:text="${tag.getTenTag()} + (${iterStat.index} < ${modelClass.get('blog').getTags().size() - 1} ? ', ' : '')"></strong>
+						<strong th:text="${modelClass.get('tags')}"></strong>
 					</p>
 				</div>
 				<div class="sharing-post mt-20">
