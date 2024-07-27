@@ -217,6 +217,11 @@ CREATE TABLE  [dbo].[BlogTag]
 --delete from [NhanVien]
 --dbcc checkident ('NhanVien', RESEED, 0)
 
+--Mat khau: ABCabc1234@
+insert into [NhanVien] (TenNhanVien, MatKhau, SoDienThoai, Email, DiaChi, VaiTro, DateCreated, FlagDel)
+values ('Admin', 'def2e40fa1678ceb34df09fe04cd9db1db151ba896ef83dc09ecb0f0cad64bd4', '0123456789', 'buiminhson940@gmail.com', 'Ha Noi', 'ROLE_ADMIN', GETDATE(), 0),
+('Staff', 'def2e40fa1678ceb34df09fe04cd9db1db151ba896ef83dc09ecb0f0cad64bd4', '0912345678', 'mymailfortesting123@gmail.com', 'Ha Noi', 'ROLE_STAFF', GETDATE(), 0)
+
 --Insert data
 INSERT INTO DanhMuc (TenDanhMuc, DateCreated)
 VALUES (N'Thơ', GETDATE()),

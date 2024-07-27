@@ -32,12 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwt = "";
-            if(request.getRequestURI().contains("/Library/management/")) {
-                jwt = getJwt(request, Constants.JWT_COOKIE_NAME_MANAGEMENT);
-            } else {
-                jwt = getJwt(request, Constants.JWT_COOKIE_NAME);
-            }
+            String jwt = getJwt(request, Constants.JWT_COOKIE_NAME);
 
             if (StringUtils.hasText(jwt) && jwtService.validateToken(jwt)) {
                 Claims claims = jwtService.getClaimsFromJWT(jwt);

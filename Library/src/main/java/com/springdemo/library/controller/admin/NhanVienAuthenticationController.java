@@ -120,7 +120,7 @@ public class NhanVienAuthenticationController extends AbstractAuthenticationCont
                 UserDetails nhanVienUserDetails = UserService.builder()
                         .nhanVienRepository(nhanVienRepository).build().loadNhanVienByEmail(email);
                 if(password.equals(nhanVienUserDetails.getPassword()) && nhanVienUserDetails.isEnabled()) {
-                    Cookie jwtCookie = new Cookie(Constants.JWT_COOKIE_NAME_MANAGEMENT, jwtService.generateToken((NhanVienUserDetails) nhanVienUserDetails));
+                    Cookie jwtCookie = new Cookie(Constants.JWT_COOKIE_NAME, jwtService.generateToken((NhanVienUserDetails) nhanVienUserDetails));
                     if(rememberMe) {
                         jwtCookie.setMaxAge(7*24*60*60);
                     }
