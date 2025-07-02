@@ -159,7 +159,7 @@ public class CustomerAuthenticationController extends AbstractAuthenticationCont
     public ResponseEntity<String> processForgotPassword(
         @RequestParam(name = "auth") String auth,
         @RequestParam(name = "new") String newPassword)
-     {
+    {
         String email = getEmailFromAuthToken(auth);
         if(email != null) {
             User foundUser = userRepository.findActiveUserByEmail(email).orElse(null);
